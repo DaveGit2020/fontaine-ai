@@ -973,22 +973,20 @@ function submitWelcome() {
     visitors.push({ name, email, interests: chips, freeText: freetext, timestamp: new Date().toISOString() });
     localStorage.setItem('needham-visitors', JSON.stringify(visitors));
 
-    // Send to Web3Forms → djr@fontainebros.com
+    // Send visitor signup to FormSubmit → djr@fontainebros.com
     if (name || email) {
-        fetch('https://api.web3forms.com/submit', {
+        fetch('https://formsubmit.co/ajax/djr@fontainebros.com', {
             method: 'POST',
             headers: { 'Content-Type':'application/json' },
             body: JSON.stringify({
-                access_key: 'e71b608c-ba69-4dc3-82d0-765910e81fc3',
-                subject: '🏫 Pollard Proposal — New Visitor: ' + (name || 'Anonymous'),
-                from_name: 'Fontaine.ai Pollard Site',
-                to: 'djr@fontainebros.com',
-                name: name || '(not provided)',
-                email: email || '(not provided)',
-                interests: chips.length ? chips.join(', ') : '(none selected)',
-                comments: freetext || '(none)',
-                page: 'fontaine.ai/needham',
-                visited_at: new Date().toLocaleString()
+                _subject: 'Pollard Proposal - New Visitor: ' + (name || 'Anonymous'),
+                _template: 'table',
+                Name: name || '(not provided)',
+                Email: email || '(not provided)',
+                Interests: chips.length ? chips.join(', ') : '(none selected)',
+                Comments: freetext || '(none)',
+                Page: 'fontaine.ai/needham',
+                'Visited At': new Date().toLocaleString()
             })
         }).catch(() => {});
     }
@@ -1085,21 +1083,19 @@ async function sendUdor() {
         msgs.innerHTML += '<div class="msg bot"><div class="msg-bubble">I\'m having trouble connecting. Please scroll through the site for detailed information, or try again in a moment.</div></div>';
     }
 
-    // Send question + Udor's answer to Web3Forms → djr@fontainebros.com
-    fetch('https://api.web3forms.com/submit', {
+    // Send question + Udor's answer to FormSubmit → djr@fontainebros.com
+    fetch('https://formsubmit.co/ajax/djr@fontainebros.com', {
         method: 'POST',
         headers: { 'Content-Type':'application/json' },
         body: JSON.stringify({
-            access_key: 'e71b608c-ba69-4dc3-82d0-765910e81fc3',
-            subject: '💬 Udor Q&A — ' + (lastVisitor.name || 'Anonymous Visitor'),
-            from_name: 'Fontaine.ai Udor Chat',
-            to: 'djr@fontainebros.com',
-            visitor_name: lastVisitor.name || '(unknown)',
-            visitor_email: lastVisitor.email || '(unknown)',
-            question: q,
-            udor_answer: answer,
-            page: 'fontaine.ai/needham',
-            asked_at: new Date().toLocaleString()
+            _subject: 'Udor Q&A - ' + (lastVisitor.name || 'Anonymous Visitor'),
+            _template: 'table',
+            Visitor: lastVisitor.name || '(unknown)',
+            'Visitor Email': lastVisitor.email || '(unknown)',
+            Question: q,
+            'Udor Answer': answer,
+            Page: 'fontaine.ai/needham',
+            'Asked At': new Date().toLocaleString()
         })
     }).catch(() => {});
     msgs.scrollTop = msgs.scrollHeight;
