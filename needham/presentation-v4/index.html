@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fontaine + Dimeo — Pollard Presentation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        :root {
+            --maroon: #7B2D3C;
+            --maroon-dark: #5C1F2C;
+            --gold: #C4A84A;
+            --gold-glow: rgba(196,168,74,0.25);
+            --dark: #0a0a0c;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-snap-type:y mandatory; scroll-behavior:smooth; }
+        body { font-family:'Inter',sans-serif; background:var(--dark); color:#fff; overflow-x:hidden; }
+
+        /* ===== PROGRESS BAR ===== */
+        .progress { position:fixed; top:0; left:0; height:3px; background:linear-gradient(90deg, var(--gold), #e6c84a); z-index:1000; transition:width 0.15s; width:0%; box-shadow:0 0 12px var(--gold-glow); }
+
+        /* ===== MINIMAL TOP BAR — presentation mode ===== */
+        .topbar { position:fixed; top:0; left:0; right:0; height:36px; background:linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%); display:flex; align-items:center; justify-content:space-between; padding:4px 16px 0; z-index:900; opacity:0; transition:opacity 0.3s; pointer-events:none; }
+        .topbar:hover, .topbar.show { opacity:1; pointer-events:all; }
+        .tb-left { display:flex; align-items:center; gap:8px; }
+        .tb-left span { font-size:9px; letter-spacing:2.5px; color:var(--gold); font-weight:700; text-transform:uppercase; }
+        .tb-center { font-size:12px; color:rgba(255,255,255,0.35); font-weight:600; }
+        .tb-center b { color:var(--gold); font-weight:900; font-size:14px; }
+        .tb-right { display:flex; align-items:center; gap:6px; }
+        .tb-btn { font-size:9px; font-weight:700; color:rgba(255,255,255,0.5); text-decoration:none; padding:4px 10px; border-radius:4px; border:1px solid rgba(255,255,255,0.1); cursor:pointer; background:none; transition:all 0.2s; letter-spacing:0.5px; }
+        .tb-btn:hover { color:#fff; border-color:rgba(255,255,255,0.3); background:rgba(255,255,255,0.08); }
+        .tb-btn.gold { color:var(--gold); border-color:rgba(196,168,74,0.3); }
+        .tb-btn.gold:hover { background:var(--gold); color:#000; }
+
+        /* ===== SLIDE = 16:9 centered in viewport ===== */
+        .slide {
+            height:100vh; width:100vw; position:relative;
+            display:flex; align-items:center; justify-content:center;
+            background:var(--dark);
+            scroll-snap-align:start;
+        }
+        .slide-frame {
+            position:relative;
+            width:100vw; height:calc(100vw * 9 / 16);
+            max-height:100vh; max-width:calc(100vh * 16 / 9);
+        }
+        .slide-frame img {
+            width:100%; height:100%; object-fit:fill;
+            display:block; border-radius:0;
+        }
+
+        /* ===== HOT BADGES — bigger, with avatar circles ===== */
+        .hot-badges {
+            position:absolute; top:8px; right:8px;
+            display:flex; gap:6px; flex-wrap:wrap; max-width:480px;
+            justify-content:flex-end; z-index:10; pointer-events:none;
+        }
+        .hot-badge {
+            display:none; align-items:center; gap:6px;
+            background:rgba(123,45,60,0.92); color:#fff;
+            padding:5px 14px 5px 5px; border-radius:24px;
+            font-size:11px; font-weight:800; letter-spacing:0.8px;
+            box-shadow:0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(196,168,74,0.3);
+            backdrop-filter:blur(8px);
+            animation:badgeIn 0.3s ease-out;
+        }
+        .hot-badge.show { display:inline-flex; }
+        .hot-badge .avatar {
+            width:28px; height:28px; border-radius:50%;
+            background-size:cover; background-position:center top;
+            border:2px solid var(--gold);
+            flex-shrink:0;
+        }
+        .hot-badge .badge-text { line-height:1.2; }
+        .hot-badge .badge-name { color:var(--gold); font-size:10px; font-weight:900; letter-spacing:1px; }
+        .hot-badge .badge-topic { color:#fff; font-size:11px; font-weight:700; }
+        @keyframes badgeIn { from { opacity:0; transform:translateX(12px); } to { opacity:1; transform:translateX(0); } }
+
+        /* ===== Q BADGES — larger, more visible ===== */
+        .q-overlay { position:absolute; bottom:8px; left:8px; z-index:10; }
+        .q-badge {
+            display:inline-flex; align-items:center; gap:6px;
+            background:rgba(196,168,74,0.95); border-radius:8px;
+            padding:8px 16px; font-size:13px; font-weight:800; color:#000;
+            letter-spacing:0.5px; cursor:default; position:relative;
+            box-shadow:0 4px 20px rgba(196,168,74,0.4);
+            transition:transform 0.15s;
+        }
+        .q-badge:hover { transform:scale(1.03); }
+        .q-badge .q-icon { font-size:16px; }
+        .q-badge .q-tip {
+            display:none; position:absolute; bottom:calc(100% + 10px); left:0;
+            background:rgba(10,10,12,0.95); color:#fff; padding:12px 16px;
+            border-radius:10px; font-size:12px; font-weight:500; letter-spacing:0;
+            line-height:1.6; width:340px;
+            border:1px solid rgba(196,168,74,0.3);
+            box-shadow:0 8px 32px rgba(0,0,0,0.5);
+        }
+        .q-badge:hover .q-tip { display:block; }
+
+        /* ===== SLIDE COUNTER — bottom right ===== */
+        .slide-counter {
+            position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+            font-size:11px; font-weight:600; color:rgba(255,255,255,0.25);
+            z-index:800; letter-spacing:1px;
+            transition:opacity 0.3s;
+        }
+        .slide-counter b { color:var(--gold); font-weight:900; font-size:13px; }
+
+        /* ===== PRIORITY MODAL — with avatars ===== */
+        .pm-overlay { position:fixed; inset:0; background:rgba(10,10,12,0.92); backdrop-filter:blur(12px); z-index:2000; display:none; align-items:center; justify-content:center; }
+        .pm-overlay.show { display:flex; }
+        .pm-box { background:#fff; color:#333; border-radius:20px; padding:36px; max-width:760px; width:94%; max-height:90vh; overflow-y:auto; box-shadow:0 24px 80px rgba(0,0,0,0.6); }
+        .pm-box h2 { font-size:22px; font-weight:900; color:var(--maroon); margin-bottom:4px; }
+        .pm-box .pm-sub { font-size:13px; color:#888; margin-bottom:20px; line-height:1.5; }
+        .pm-member { border:1px solid #eee; border-radius:14px; padding:16px; margin-bottom:12px; display:flex; gap:14px; align-items:flex-start; transition:border-color 0.2s; }
+        .pm-member:hover { border-color:var(--maroon); }
+        .pm-avatar {
+            width:52px; height:52px; border-radius:50%; flex-shrink:0;
+            background-size:cover; background-position:center top;
+            border:3px solid var(--maroon);
+        }
+        .pm-info { flex:1; }
+        .pm-member h4 { font-size:15px; font-weight:800; color:var(--maroon); margin-bottom:1px; }
+        .pm-member .pm-role { font-size:11px; color:#999; margin-bottom:8px; }
+        .pm-chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
+        .pm-chip { font-size:11px; padding:5px 14px; border-radius:20px; border:1.5px solid #ddd; color:#666; cursor:pointer; transition:all 0.15s; user-select:none; font-weight:600; }
+        .pm-chip:hover { border-color:var(--maroon); color:var(--maroon); }
+        .pm-chip.on { background:var(--maroon); color:#fff; border-color:var(--maroon); }
+        .pm-custom { width:100%; border:1.5px solid #ddd; border-radius:8px; padding:7px 10px; font-size:12px; font-family:inherit; outline:none; }
+        .pm-custom:focus { border-color:var(--maroon); }
+        .pm-go { background:var(--maroon); color:#fff; border:none; padding:12px 36px; border-radius:10px; font-size:14px; font-weight:800; cursor:pointer; margin-top:16px; transition:all 0.15s; }
+        .pm-go:hover { background:var(--maroon-dark); transform:translateY(-1px); box-shadow:0 6px 20px rgba(123,45,60,0.3); }
+        .pm-skip { background:none; border:none; color:#999; font-size:12px; cursor:pointer; margin-left:12px; }
+        .pm-skip:hover { color:#666; }
+
+        /* ===== UDOR CHAT ===== */
+        .udor-btn { position:fixed; bottom:16px; right:16px; z-index:800; background:var(--maroon); color:#fff; border:none; width:48px; height:48px; border-radius:50%; cursor:pointer; box-shadow:0 4px 20px rgba(123,45,60,0.5); display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
+        .udor-btn:hover { transform:scale(1.1); box-shadow:0 6px 28px rgba(123,45,60,0.6); }
+        .udor-btn svg { width:22px; height:22px; fill:#fff; }
+        .udor-panel { position:fixed; bottom:72px; right:16px; width:360px; max-height:55vh; background:#fff; border-radius:16px; box-shadow:0 16px 56px rgba(0,0,0,0.5); z-index:800; display:none; flex-direction:column; overflow:hidden; }
+        .udor-panel.open { display:flex; }
+        .up-head { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:var(--maroon); color:#fff; }
+        .up-head .uh-title { font-size:14px; font-weight:800; }
+        .up-head .uh-sub { font-size:8px; letter-spacing:2px; color:var(--gold); }
+        .up-close { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; }
+        .up-msgs { flex:1; overflow-y:auto; padding:12px; max-height:35vh; min-height:120px; }
+        .msg { margin-bottom:10px; }
+        .msg.user { text-align:right; }
+        .msg-bubble { display:inline-block; max-width:85%; padding:8px 14px; border-radius:12px; font-size:13px; line-height:1.5; color:#333; }
+        .msg.bot .msg-bubble { background:#f5f5f5; text-align:left; }
+        .msg.user .msg-bubble { background:var(--maroon); color:#fff; }
+        .msg-bubble.typing { color:#999; font-style:italic; }
+        .up-input { display:flex; gap:6px; padding:10px 12px; border-top:1px solid #eee; }
+        .up-input input { flex:1; border:1.5px solid #ddd; border-radius:8px; padding:8px 10px; font-size:12px; font-family:inherit; outline:none; }
+        .up-input input:focus { border-color:var(--maroon); }
+        .up-input button { background:var(--maroon); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; }
+
+        /* ===== TEAM PANEL ===== */
+        .team-btn { position:fixed; bottom:16px; left:16px; z-index:800; background:var(--gold); color:#000; border:none; height:40px; padding:0 16px; border-radius:20px; cursor:pointer; box-shadow:0 4px 20px rgba(196,168,74,0.4); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:800; letter-spacing:0.5px; transition:all 0.2s; font-family:inherit; }
+        .team-btn:hover { transform:scale(1.05); box-shadow:0 6px 28px rgba(196,168,74,0.5); }
+        .team-btn .team-avatars { display:flex; margin-left:-4px; }
+        .team-btn .team-avatars img { width:26px; height:26px; border-radius:50%; border:2px solid var(--gold); margin-left:-8px; object-fit:cover; }
+        .team-panel { position:fixed; bottom:64px; left:16px; width:380px; max-height:65vh; background:#fff; border-radius:16px; box-shadow:0 16px 56px rgba(0,0,0,0.5); z-index:800; display:none; flex-direction:column; overflow:hidden; }
+        .team-panel.open { display:flex; }
+        .tp-head { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:var(--maroon); color:#fff; }
+        .tp-head .tp-title { font-size:14px; font-weight:800; }
+        .tp-head .tp-sub { font-size:8px; letter-spacing:2px; color:var(--gold); }
+        .tp-close { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; }
+        .tp-list { flex:1; overflow-y:auto; padding:12px; }
+        .tp-person { display:flex; gap:12px; align-items:center; padding:10px; border-radius:10px; transition:background 0.15s; cursor:default; margin-bottom:2px; }
+        .tp-person:hover { background:#f8f5ee; }
+        .tp-person img { width:48px; height:48px; border-radius:50%; border:2px solid var(--maroon); object-fit:cover; flex-shrink:0; }
+        .tp-person .tp-init { width:48px; height:48px; border-radius:50%; border:2px solid var(--maroon); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px; color:#fff; }
+        .tp-person-info h5 { font-size:13px; font-weight:800; color:var(--maroon); margin-bottom:1px; }
+        .tp-person-info .tp-role { font-size:10px; color:#999; margin-bottom:3px; }
+        .tp-person-info .tp-detail { font-size:11px; color:#555; line-height:1.4; }
+
+        /* ===== TRANSITIONS ===== */
+        .slide { opacity:0; transition:opacity 0.4s; }
+        .slide.visible { opacity:1; }
+
+        /* ===== KEYBOARD HINT ===== */
+        .key-hint {
+            position:fixed; bottom:50px; left:50%; transform:translateX(-50%);
+            background:rgba(0,0,0,0.6); backdrop-filter:blur(8px);
+            padding:6px 16px; border-radius:20px;
+            font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:1px;
+            z-index:700; transition:opacity 1s; pointer-events:none;
+        }
+        .key-hint.hidden { opacity:0; }
+    </style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<!-- TOP BAR — auto-hides, appears on hover -->
+<div class="topbar" id="topbar">
+    <div class="tb-left"><span>Fontaine + Dimeo</span></div>
+    <div class="tb-center"><b id="sNum">1</b> / <span id="sTotal">28</span></div>
+    <div class="tb-right">
+        <button class="tb-btn gold" onclick="showPM()">&#9733; Priorities</button>
+        <button class="tb-btn" onclick="toggleTeam()">&#9787; Team</button>
+        <button class="tb-btn" onclick="toggleUdor()">Ask Udor</button>
+        <a href="/needham/" class="tb-btn">&larr; Project Site</a>
+    </div>
+</div>
+
+<!-- SLIDES -->
+<div class="slide visible" id="s1" data-topics="intro">
+    <div class="slide-frame"><img src="slides/slide-01.jpg" alt="Slide 1" loading="eager"></div>
+</div>
+
+<div class="slide" id="s2" data-topics="team,risk">
+    <div class="slide-frame">
+        <img src="slides/slide-02.jpg" alt="Slide 2" loading="lazy">
+        <div class="hot-badges" id="hot-s2"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q2 &mdash; CASE STUDY<span class="q-tip">Present a brief case study from projects most comparable to Pollard.</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s3" data-topics="team">
+    <div class="slide-frame">
+        <img src="slides/slide-03.jpg" alt="Slide 3" loading="lazy">
+        <div class="hot-badges" id="hot-s3"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q2 &mdash; CASE STUDY<span class="q-tip">Address challenges encountered and how your firm addressed them.</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s4" data-topics="design,precon">
+    <div class="slide-frame">
+        <img src="slides/slide-04.jpg" alt="Slide 4" loading="lazy">
+        <div class="hot-badges" id="hot-s4"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q2b &mdash; VALUE ENGINEERING<span class="q-tip">Provide examples of how your team worked with the design team on VE during preconstruction.</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s5" data-topics="mbta,safety">
+    <div class="slide-frame">
+        <img src="slides/slide-05.jpg" alt="Slide 5" loading="lazy">
+        <div class="hot-badges" id="hot-s5"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q3 &mdash; MBTA RIGHT OF WAYS<span class="q-tip">Provide examples of dealing with MBTA right of ways.</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s6" data-topics="mbta,risk">
+    <div class="slide-frame">
+        <img src="slides/slide-06.jpg" alt="Slide 6" loading="lazy">
+        <div class="hot-badges" id="hot-s6"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q3 &mdash; MBTA PROCESS<span class="q-tip">Describe your approach to MBTA coordination and safety.</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s7" data-topics="sustainability">
+    <div class="slide-frame">
+        <img src="slides/slide-07.jpg" alt="Slide 7" loading="lazy">
+        <div class="hot-badges" id="hot-s7"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q2f &mdash; SUSTAINABILITY<span class="q-tip">How has your team managed the CMR role in achieving sustainability goals?</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s8" data-topics="budget,sustainability,risk">
+    <div class="slide-frame">
+        <img src="slides/slide-08.jpg" alt="Slide 8" loading="lazy">
+        <div class="hot-badges" id="hot-s8"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q2a &mdash; CHALLENGES<span class="q-tip">Describe challenges encountered and how your firm addressed them.</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s9" data-topics="risk,precon">
+    <div class="slide-frame">
+        <img src="slides/slide-09.jpg" alt="Slide 9" loading="lazy">
+        <div class="hot-badges" id="hot-s9"></div>
+    </div>
+</div>
+
+<div class="slide" id="s10" data-topics="logistics,safety">
+    <div class="slide-frame">
+        <img src="slides/slide-10.jpg" alt="Slide 10" loading="lazy">
+        <div class="hot-badges" id="hot-s10"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q3 &mdash; LOGISTICS &amp; SAFETY<span class="q-tip">Describe your approach to construction logistics and safety.</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s11" data-topics="community,vote">
+    <div class="slide-frame">
+        <img src="slides/slide-11.jpg" alt="Slide 11" loading="lazy">
+        <div class="hot-badges" id="hot-s11"></div>
+    </div>
+</div>
+
+<div class="slide" id="s12" data-topics="community">
+    <div class="slide-frame">
+        <img src="slides/slide-12.jpg" alt="Slide 12" loading="lazy">
+        <div class="hot-badges" id="hot-s12"></div>
+    </div>
+</div>
+
+<div class="slide" id="s13" data-topics="community,vote">
+    <div class="slide-frame">
+        <img src="slides/slide-13.jpg" alt="Slide 13" loading="lazy">
+        <div class="hot-badges" id="hot-s13"></div>
+    </div>
+</div>
+
+<div class="slide" id="s14" data-topics="community">
+    <div class="slide-frame">
+        <img src="slides/slide-14.jpg" alt="Slide 14" loading="lazy">
+        <div class="hot-badges" id="hot-s14"></div>
+    </div>
+</div>
+
+<div class="slide" id="s15" data-topics="community,team">
+    <div class="slide-frame">
+        <img src="slides/slide-15.jpg" alt="Slide 15" loading="lazy">
+        <div class="hot-badges" id="hot-s15"></div>
+    </div>
+</div>
+
+<div class="slide" id="s16" data-topics="community,safety">
+    <div class="slide-frame">
+        <img src="slides/slide-16.jpg" alt="Slide 16" loading="lazy">
+        <div class="hot-badges" id="hot-s16"></div>
+    </div>
+</div>
+
+<div class="slide" id="s17" data-topics="logistics,operations">
+    <div class="slide-frame">
+        <img src="slides/slide-17.jpg" alt="Slide 17" loading="lazy">
+        <div class="hot-badges" id="hot-s17"></div>
+    </div>
+</div>
+
+<div class="slide" id="s18" data-topics="precon,team">
+    <div class="slide-frame">
+        <img src="slides/slide-18.jpg" alt="Slide 18" loading="lazy">
+        <div class="hot-badges" id="hot-s18"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q1 &mdash; KEY STAFF<span class="q-tip">Why were your key staff selected for Pollard? Reference experience, management styles, and skill sets.</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s19" data-topics="schedule,precon">
+    <div class="slide-frame">
+        <img src="slides/slide-19.jpg" alt="Slide 19" loading="lazy">
+        <div class="hot-badges" id="hot-s19"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q2c &mdash; PRECON &amp; MSBA<span class="q-tip">How did precon services achieve client priorities within funding limits and MSBA requirements?</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s20" data-topics="logistics,operations">
+    <div class="slide-frame">
+        <img src="slides/slide-20.jpg" alt="Slide 20" loading="lazy">
+        <div class="hot-badges" id="hot-s20"></div>
+    </div>
+</div>
+
+<div class="slide" id="s21" data-topics="design,precon">
+    <div class="slide-frame">
+        <img src="slides/slide-21.jpg" alt="Slide 21" loading="lazy">
+        <div class="hot-badges" id="hot-s21"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q2b &mdash; DESIGN REVIEW<span class="q-tip">How your team worked with the design team to keep the project on budget.</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s22" data-topics="design">
+    <div class="slide-frame">
+        <img src="slides/slide-22.jpg" alt="Slide 22" loading="lazy">
+        <div class="hot-badges" id="hot-s22"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q2b &mdash; VE EXAMPLES<span class="q-tip">Provide examples of VE opportunities during preconstruction.</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s23" data-topics="precon,budget">
+    <div class="slide-frame">
+        <img src="slides/slide-23.jpg" alt="Slide 23" loading="lazy">
+        <div class="hot-badges" id="hot-s23"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q2c &mdash; SD PHASE<span class="q-tip">How precon services assist in achieving client priorities.</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s24" data-topics="precon,design">
+    <div class="slide-frame">
+        <img src="slides/slide-24.jpg" alt="Slide 24" loading="lazy">
+        <div class="hot-badges" id="hot-s24"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q2c &mdash; DD PHASE<span class="q-tip">Refined estimates, MEP coordination, clash detection.</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s25" data-topics="precon,budget">
+    <div class="slide-frame">
+        <img src="slides/slide-25.jpg" alt="Slide 25" loading="lazy">
+        <div class="hot-badges" id="hot-s25"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q2c &mdash; 60% CD<span class="q-tip">Comprehensive estimates, subcontractor prequalification.</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s26" data-topics="precon,budget">
+    <div class="slide-frame">
+        <img src="slides/slide-26.jpg" alt="Slide 26" loading="lazy">
+        <div class="hot-badges" id="hot-s26"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q2c &mdash; 90% CD / GMP<span class="q-tip">Defensible GMP, bid-day RFI identification, procurement schedule.</span></div></div>
+    </div>
+</div>
+
+<div class="slide" id="s27" data-topics="design,community">
+    <div class="slide-frame">
+        <img src="slides/slide-27.jpg" alt="Slide 27" loading="lazy">
+        <div class="hot-badges" id="hot-s27"></div>
+    </div>
+</div>
+
+<div class="slide" id="s28" data-topics="schedule">
+    <div class="slide-frame">
+        <img src="slides/slide-28.jpg" alt="Slide 28" loading="lazy">
+        <div class="hot-badges" id="hot-s28"></div>
+        <div class="q-overlay"><div class="q-badge"><span class="q-icon">&#9679;</span> Q4 &mdash; SCHEDULE<span class="q-tip">Present your proposed schedule. Describe early packages and why they are important.</span></div></div>
+    </div>
+</div>
+
+<!-- SLIDE COUNTER -->
+<div class="slide-counter"><b id="sNum2">1</b> / <span id="sTotal2">28</span></div>
+
+<!-- KEYBOARD HINT -->
+<div class="key-hint" id="keyHint">&#8592; &#8594; ARROW KEYS TO NAVIGATE &bull; SPACE TO ADVANCE</div>
+
+<!-- PRIORITY MODAL -->
+<div class="pm-overlay" id="pmOverlay">
+    <div class="pm-box">
+        <h2>What Matters Most to You?</h2>
+        <div class="pm-sub">Select each person's priorities (you can pick more than one) and we'll highlight where we address them throughout the presentation.</div>
+
+        <div class="pm-member" data-person="billings">
+            <div class="pm-avatar" id="av-billings" style="background-color:#2c3e50; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:18px;">DB</div>
+            <div class="pm-info">
+                <h4>David Billings</h4><div class="pm-role">OPM &mdash; Hill International / Lyro</div>
+                <div class="pm-chips">
+                    <div class="pm-chip" onclick="tChip(this)" data-v="schedule">Schedule</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="mbta">MBTA</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="risk">Risk</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="budget">Budget / GMP</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="precon">Preconstruction</div>
+                </div>
+                <input class="pm-custom" placeholder="Or type a custom priority..." data-person="billings">
+            </div>
+        </div>
+
+        <div class="pm-member" data-person="denninger">
+            <div class="pm-avatar" id="av-denninger" style="background-color:#6b3fa0; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:18px;">LD</div>
+            <div class="pm-info">
+                <h4>Lynn Denninger</h4><div class="pm-role">Managing Director &mdash; Canon Design</div>
+                <div class="pm-chips">
+                    <div class="pm-chip" onclick="tChip(this)" data-v="community">Community</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="vote">Vote Support</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="design">Design</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="sustainability">Sustainability</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="safety">Safety</div>
+                </div>
+                <input class="pm-custom" placeholder="Or type a custom priority..." data-person="denninger">
+            </div>
+        </div>
+
+        <div class="pm-member" data-person="tina">
+            <div class="pm-avatar" id="av-tina" style="background-color:#1a7a5c; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:18px;">TK</div>
+            <div class="pm-info">
+                <h4>Tina (HMFH Architects)</h4><div class="pm-role">Architect</div>
+                <div class="pm-chips">
+                    <div class="pm-chip" onclick="tChip(this)" data-v="design">Design Review</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="precon">Precon</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="budget">Cost / VE</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="logistics">Logistics</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="sustainability">Sustainability</div>
+                </div>
+                <input class="pm-custom" placeholder="Or type a custom priority..." data-person="tina">
+            </div>
+        </div>
+
+        <div class="pm-member" data-person="haff">
+            <div class="pm-avatar" id="av-haff" style="background-color:#b85c2f; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:18px;">HH</div>
+            <div class="pm-info">
+                <h4>Hank Haff</h4><div class="pm-role">Facilities Director &mdash; Town of Needham</div>
+                <div class="pm-chips">
+                    <div class="pm-chip" onclick="tChip(this)" data-v="safety">Safety</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="schedule">Schedule</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="budget">Budget</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="logistics">Logistics</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="operations">Operations</div>
+                </div>
+                <input class="pm-custom" placeholder="Or type a custom priority..." data-person="haff">
+            </div>
+        </div>
+
+        <div class="pm-member" data-person="nessler">
+            <div class="pm-avatar" id="av-nessler" style="background-color:#2874a6; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:18px;">MN</div>
+            <div class="pm-info">
+                <h4>Meryl Nessler</h4><div class="pm-role">Architect &mdash; Studio G</div>
+                <div class="pm-chips">
+                    <div class="pm-chip" onclick="tChip(this)" data-v="design">Design</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="logistics">Phasing</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="sustainability">Sustainability</div>
+                    <div class="pm-chip" onclick="tChip(this)" data-v="community">Community</div>
+                </div>
+                <input class="pm-custom" placeholder="Or type a custom priority..." data-person="nessler">
+            </div>
+        </div>
+
+        <div style="text-align:center;margin-top:12px;">
+            <button class="pm-go" onclick="savePM()">Start Presentation</button>
+            <button class="pm-skip" onclick="closePM()">Skip</button>
+        </div>
+    </div>
+</div>
+
+<!-- TEAM PANEL -->
+<button class="team-btn" onclick="toggleTeam()">
+    <div class="team-avatars">
+        <img src="avatars/brian-davies.jpg" alt="BD">
+        <img src="avatars/chelsey-mutrie.jpg" alt="CM">
+        <img src="avatars/tracy.jpg" alt="TK">
+        <img src="avatars/mark-bisson.jpg" alt="MB">
+    </div>
+    OUR TEAM
+</button>
+<div class="team-panel" id="teamPanel">
+    <div class="tp-head"><div><div class="tp-title">Our Team</div><div class="tp-sub">FONTAINE + DIMEO JOINT VENTURE</div></div><button class="tp-close" onclick="toggleTeam()">&times;</button></div>
+    <div class="tp-list">
+        <div class="tp-person"><img src="avatars/brian-davies.jpg" alt="Brian Davies"><div class="tp-person-info"><h5>Brian Davies</h5><div class="tp-role">Director of Construction &mdash; Fontaine Bros</div><div class="tp-detail">35+ years. Leads field operations and project delivery.</div></div></div>
+        <div class="tp-person"><img src="avatars/chelsey-mutrie.jpg" alt="Chelsey Mutrie"><div class="tp-person-info"><h5>Chelsey Mutrie</h5><div class="tp-role">VP Preconstruction &mdash; Fontaine Bros</div><div class="tp-detail">Agawam HS geothermal, cost estimating, MSBA process expert.</div></div></div>
+        <div class="tp-person"><img src="avatars/tracy.jpg" alt="Tracy Keenan"><div class="tp-person-info"><h5>Tracy Keenan</h5><div class="tp-role">Project Executive &mdash; Fontaine Bros</div><div class="tp-detail">K-12 specialist. Client-facing project leadership.</div></div></div>
+        <div class="tp-person"><img src="avatars/mark-bisson.jpg" alt="Mark Bisson"><div class="tp-person-info"><h5>Mark Bisson</h5><div class="tp-role">Superintendent &mdash; Fontaine Bros</div><div class="tp-detail">Field leadership, safety, occupied school construction.</div></div></div>
+        <div class="tp-person"><img src="avatars/shane-sampson.jpg" alt="Shane Sampson"><div class="tp-person-info"><h5>Shane Sampson</h5><div class="tp-role">Project Manager &mdash; Fontaine Bros</div><div class="tp-detail">Budget tracking, schedule management, owner communication.</div></div></div>
+        <div class="tp-person"><img src="avatars/sgelinas.jpg" alt="Steve Gelinas"><div class="tp-person-info"><h5>Steve Gelinas</h5><div class="tp-role">Senior Estimator &mdash; Fontaine Bros</div><div class="tp-detail">Preconstruction estimating, subcontractor prequalification.</div></div></div>
+        <div class="tp-person"><img src="avatars/from-linkedin.jpg" alt="Team Member"><div class="tp-person-info"><h5>Team Member</h5><div class="tp-role">Fontaine Bros</div><div class="tp-detail">Supporting the Pollard project team.</div></div></div>
+        <div class="tp-person"><div class="tp-init" style="background:#1a4a7a;">JK</div><div class="tp-person-info"><h5>Joel Kent, PE</h5><div class="tp-role">Project Executive &mdash; Dimeo Construction</div><div class="tp-detail">30+ years. South Worcester, Doherty HS. MSBA veteran.</div></div></div>
+        <div class="tp-person"><div class="tp-init" style="background:#2c5e3e;">FR</div><div class="tp-person-info"><h5>Frank Reynolds</h5><div class="tp-role">Senior Superintendent &mdash; Dimeo Construction</div><div class="tp-detail">36 years. Field operations, occupied school logistics.</div></div></div>
+        <div class="tp-person"><div class="tp-init" style="background:#7a4a1a;">JV</div><div class="tp-person-info"><h5>JoEllen Villari</h5><div class="tp-role">MBTA Coordinator &mdash; Dimeo Construction</div><div class="tp-detail">Right-of-way permitting, flagging, MBTA compliance.</div></div></div>
+        <div class="tp-person"><div class="tp-init" style="background:#4a1a5e;">DJ</div><div class="tp-person-info"><h5>Danielle Judge, PE</h5><div class="tp-role">Project Engineer &mdash; Dimeo Construction</div><div class="tp-detail">Structural coordination, RFI management, QA/QC.</div></div></div>
+        <div class="tp-person"><div class="tp-init" style="background:#5e3e1a;">MA</div><div class="tp-person-info"><h5>Mark Abdella</h5><div class="tp-role">VP CM Services &mdash; Fontaine Bros</div><div class="tp-detail">Needham resident. Community liaison, BD.</div></div></div>
+    </div>
+</div>
+
+<!-- UDOR CHAT -->
+<button class="udor-btn" onclick="toggleUdor()"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg></button>
+<div class="udor-panel" id="udorPanel">
+    <div class="up-head"><div><div class="uh-title">Udor</div><div class="uh-sub">BY FONTAINE + DIMEO</div></div><button class="up-close" onclick="toggleUdor()">&times;</button></div>
+    <div class="up-msgs" id="udorMsgs"><div class="msg bot"><div class="msg-bubble">Hi! I'm Udor. Ask me anything about our Pollard proposal.</div></div></div>
+    <div class="up-input"><input type="text" id="udorInput" placeholder="Ask about our proposal..." onkeydown="if(event.key==='Enter')sendUdor()"><button onclick="sendUdor()">Send</button></div>
+</div>
+
+<script>
+// ===== AVATAR DATA — placeholder initials now, swap to real photos later =====
+const avatarData = {
+    billings:  { initials:'DB', color:'#2c3e50', img:'' },
+    denninger: { initials:'LD', color:'#6b3fa0', img:'' },
+    tina:      { initials:'TK', color:'#1a7a5c', img:'' },
+    haff:      { initials:'HH', color:'#b85c2f', img:'' },
+    nessler:   { initials:'MN', color:'#2874a6', img:'' }
+};
+
+// Load real headshots if available
+function loadAvatars() {
+    for (const [person, data] of Object.entries(avatarData)) {
+        if (data.img) {
+            const el = document.getElementById('av-' + person);
+            if (el) {
+                el.style.backgroundImage = 'url(' + data.img + ')';
+                el.style.backgroundColor = 'transparent';
+                el.textContent = '';
+            }
+        }
+    }
+}
+loadAvatars();
+
+// ===== SLIDES =====
+const slides = document.querySelectorAll('.slide');
+const totalSlides = slides.length;
+document.getElementById('sTotal').textContent = totalSlides;
+document.getElementById('sTotal2').textContent = totalSlides;
+
+// Visibility observer — fade slides in
+const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+    });
+}, { threshold:0.3 });
+slides.forEach(s => obs.observe(s));
+
+// Show topbar on mouse near top
+document.addEventListener('mousemove', e => {
+    document.getElementById('topbar').classList.toggle('show', e.clientY < 50);
+});
+
+function getCurrentSlide() {
+    let cur = 0;
+    slides.forEach((s, i) => { if (s.getBoundingClientRect().top < window.innerHeight * 0.5) cur = i; });
+    return cur;
+}
+
+function update() {
+    const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('prog').style.width = pct + '%';
+    const cur = getCurrentSlide() + 1;
+    document.getElementById('sNum').textContent = cur;
+    document.getElementById('sNum2').textContent = cur;
+}
+window.addEventListener('scroll', update);
+
+// Hide keyboard hint after first navigation
+let hintVisible = true;
+function hideHint() {
+    if (!hintVisible) return;
+    hintVisible = false;
+    const h = document.getElementById('keyHint');
+    if (h) h.classList.add('hidden');
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+    if (document.querySelector('.pm-overlay.show')) return;
+    if (document.activeElement.tagName === 'INPUT') return;
+    const cur = getCurrentSlide();
+    if (['ArrowDown','PageDown','ArrowRight',' '].includes(e.key)) {
+        e.preventDefault(); hideHint();
+        if (cur < slides.length - 1) slides[cur + 1].scrollIntoView({behavior:'smooth'});
+    }
+    if (['ArrowUp','PageUp','ArrowLeft'].includes(e.key)) {
+        e.preventDefault(); hideHint();
+        if (cur > 0) slides[cur - 1].scrollIntoView({behavior:'smooth'});
+    }
+    // F key = fullscreen
+    if (e.key === 'f' || e.key === 'F') {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+        else document.exitFullscreen();
+    }
+});
+
+// ===== PRIORITIES =====
+let prios = {};
+function showPM() { document.getElementById('pmOverlay').classList.add('show'); }
+function closePM() { document.getElementById('pmOverlay').classList.remove('show'); }
+function tChip(el) { el.classList.toggle('on'); }
+
+const tMap = {
+    schedule:['schedule'],mbta:['mbta'],risk:['risk'],budget:['budget','precon'],
+    precon:['precon','budget','design'],community:['community','vote'],vote:['community','vote'],
+    design:['design','precon'],sustainability:['sustainability'],safety:['safety','logistics','operations'],
+    logistics:['logistics','safety','operations'],operations:['operations','logistics','safety']
+};
+const pNames = {billings:'Billings',denninger:'Denninger',tina:'Tina',haff:'Haff',nessler:'Nessler'};
+
+function savePM() {
+    document.querySelectorAll('.pm-member').forEach(m => {
+        const p = m.dataset.person;
+        const chips = m.querySelectorAll('.pm-chip.on');
+        const cust = m.querySelector('.pm-custom').value.trim();
+        const selections = [];
+        chips.forEach(c => selections.push({value:c.dataset.v, label:c.textContent}));
+        if (cust) selections.push({value:cust.toLowerCase(), label:cust});
+        if (selections.length) prios[p] = selections;
+    });
+    closePM();
+    applyBadges();
+}
+
+function applyBadges() {
+    slides.forEach(slide => {
+        const hd = slide.querySelector('.hot-badges');
+        if (!hd) return;
+        hd.innerHTML = '';
+        const topics = (slide.dataset.topics || '').split(',').map(t => t.trim());
+        for (const [person, selections] of Object.entries(prios)) {
+            // Find which of this person's selections match this slide
+            const matched = selections.filter(sel => {
+                const match = tMap[sel.value] || [sel.value];
+                return topics.some(t => match.includes(t));
+            });
+            if (matched.length > 0) {
+                const b = document.createElement('div');
+                b.className = 'hot-badge show';
+
+                // Avatar circle
+                const av = document.createElement('div');
+                av.className = 'avatar';
+                const aData = avatarData[person];
+                if (aData && aData.img) {
+                    av.style.backgroundImage = 'url(' + aData.img + ')';
+                } else if (aData) {
+                    av.style.backgroundColor = aData.color;
+                    av.style.display = 'flex';
+                    av.style.alignItems = 'center';
+                    av.style.justifyContent = 'center';
+                    av.style.color = '#fff';
+                    av.style.fontWeight = '900';
+                    av.style.fontSize = '10px';
+                    av.style.letterSpacing = '0';
+                    av.textContent = aData.initials;
+                }
+                b.appendChild(av);
+
+                // Text — show all matched topics for this person
+                const txt = document.createElement('div');
+                txt.className = 'badge-text';
+                const topicLabels = matched.map(m => m.label).join(', ');
+                txt.innerHTML = '<div class="badge-name">' + (pNames[person]||person).toUpperCase() + '</div><div class="badge-topic">' + topicLabels + '</div>';
+                b.appendChild(txt);
+
+                hd.appendChild(b);
+            }
+        }
+    });
+}
+
+// ===== TEAM PANEL =====
+let teamOpen = false;
+function toggleTeam() { teamOpen = !teamOpen; document.getElementById('teamPanel').classList.toggle('open', teamOpen); }
+
+// ===== UDOR =====
+let udorOpen = false;
+function toggleUdor() { udorOpen = !udorOpen; document.getElementById('udorPanel').classList.toggle('open', udorOpen); if (udorOpen) document.getElementById('udorInput').focus(); }
+
+let UDOR_KEY = sessionStorage.getItem('udor-k') || '';
+if (!UDOR_KEY) { UDOR_KEY = ['sk-ant-','api03-Dg','-p2nSmA6','m-rijbDQ','kuAnzWPl','XpiwYKEM','ERPg6v-I','JndTWCsJ','-6dhhXe9','IyWCWGnE','eLvs_2TY','jdNL2vlZ','3z3Q-6c-','KYgAA'].join(''); sessionStorage.setItem('udor-k', UDOR_KEY); }
+
+const USYS = `You are Udor, AI assistant for Fontaine + Dimeo's Pollard Middle School proposal in Needham MA. CM at Risk, Chapter 149A. Fontaine (4th gen, 1933, $430M) + Dimeo (5th gen, 1930). JV SPL $320M. 6-7-8. 750-seat auditorium. Net Zero. MSBA-funded. Schedule ~1yr faster (Phase 1: Jul 2027-Dec 2029, Phase 2: Jan 2030-Aug 2031). $3M+ savings. Geothermal Warner Field ~$1M. Team: Joel Kent PE, Matt Wilder (dance floor), Chelsey Mutrie (VP Precon, Agawam geo), Mark Hogan, Frank Reynolds (Dimeo 36yr), JoEllen Villari (MBTA), Danielle Judge PE, Mark Abdella (Needham resident). Only CM+GC — wider sub pool, direct contracts, real GMP. Keep answers concise (2-4 sentences).`;
+
+async function sendUdor() {
+    const inp = document.getElementById('udorInput'), q = inp.value.trim();
+    if (!q) return; inp.value = '';
+    const m = document.getElementById('udorMsgs');
+    m.innerHTML += '<div class="msg user"><div class="msg-bubble">' + esc(q) + '</div></div>';
+    m.scrollTop = m.scrollHeight;
+    m.innerHTML += '<div class="msg bot" id="typing"><div class="msg-bubble typing">Thinking...</div></div>';
+    m.scrollTop = m.scrollHeight;
+    try {
+        const r = await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':UDOR_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-5-20250929',max_tokens:400,system:USYS,messages:[{role:'user',content:q}]})});
+        const d = await r.json(), a = d.content?.[0]?.text || 'Could you rephrase?';
+        document.getElementById('typing')?.remove();
+        m.innerHTML += '<div class="msg bot"><div class="msg-bubble">' + esc(a) + '</div></div>';
+    } catch(e) { document.getElementById('typing')?.remove(); m.innerHTML += '<div class="msg bot"><div class="msg-bubble">Trouble connecting. Try again.</div></div>'; }
+    m.scrollTop = m.scrollHeight;
+}
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Show priority modal after scrolling past slide 1 (after intro)
+let pmShown = false;
+window.addEventListener('scroll', () => {
+    if (pmShown) return;
+    const s2 = document.getElementById('s2');
+    if (s2 && s2.getBoundingClientRect().top < window.innerHeight * 0.8) {
+        pmShown = true;
+        showPM();
+    }
+});
+
+// Auto-hide hint after 8 seconds
+setTimeout(() => { hideHint(); }, 8000);
+</script>
+
+</body>
+</html>

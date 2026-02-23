@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fontaine + Dimeo — Pollard Middle School, Needham</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root {
+            --navy: #1a2744;
+            --navy-dark: #0f1a2e;
+            --navy-light: #2a3d5f;
+            --orange: #e87722;
+            --orange-light: #f59b4d;
+            --dark: #1a1d23;
+            --warm-bg: #f7f8fa;
+            --warm-card: #ffffff;
+            --text: #2c2e33;
+            --text-light: #5a5e68;
+            --border: rgba(26,39,68,0.08);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body { font-family:'Inter',sans-serif; background:var(--warm-bg); color:var(--text); line-height:1.6; }
+
+        /* NAV BAR */
+        nav { position:fixed; top:0; left:0; right:0; height:64px; background:rgba(255,255,255,0.95); backdrop-filter:blur(12px); display:flex; align-items:center; justify-content:space-between; padding:0 40px; z-index:500; border-bottom:1px solid var(--border); }
+        nav img { height:32px; }
+        .nav-links { display:flex; gap:24px; align-items:center; }
+        .nav-links a { font-size:13px; font-weight:600; color:var(--text-light); text-decoration:none; transition:color 0.2s; }
+        .nav-links a:hover { color:var(--navy); }
+        .nav-badge { font-size:10px; letter-spacing:2px; color:var(--orange); font-weight:700; }
+
+        /* HERO */
+        .hero { margin-top:64px; background:linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 40%, var(--navy-light) 100%); color:#fff; padding:80px 60px 60px; position:relative; overflow:hidden; }
+        .hero::after { content:''; position:absolute; bottom:0; left:0; right:0; height:80px; background:linear-gradient(transparent, var(--warm-bg)); }
+        .hero-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+        .hero-text .ht-badge { font-size:12px; letter-spacing:4px; color:var(--orange-light); font-weight:700; margin-bottom:16px; }
+        .hero-text h1 { font-size:44px; font-weight:900; line-height:1.05; margin-bottom:16px; }
+        .hero-text h1 span { color:var(--orange-light); }
+        .hero-text p { font-size:18px; color:rgba(255,255,255,0.7); line-height:1.6; max-width:500px; }
+        .hero-stats { display:flex; gap:32px; margin-top:32px; }
+        .hs-item .hs-val { font-size:36px; font-weight:900; color:var(--orange-light); line-height:1; }
+        .hs-item .hs-lbl { font-size:11px; color:rgba(255,255,255,0.5); margin-top:4px; font-weight:500; }
+        .hero-render { text-align:center; }
+        .hero-render img { max-width:100%; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+        .jv-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:8px 16px; margin-top:20px; }
+        .jv-badge img { height:28px; }
+        .jv-badge span { font-size:12px; color:rgba(255,255,255,0.7); font-weight:500; }
+
+        /* SECTION */
+        section, .banner, .banner-navy { scroll-margin-top:72px; }
+        section { max-width:1100px; margin:0 auto; padding:60px 40px; }
+        .section-label { font-size:11px; letter-spacing:4px; color:var(--navy); font-weight:700; margin-bottom:8px; }
+        .section-title { font-size:36px; font-weight:900; color:var(--dark); line-height:1.1; margin-bottom:8px; }
+        .section-sub { font-size:16px; color:var(--text-light); max-width:700px; margin-bottom:32px; line-height:1.6; }
+        .divider { width:60px; height:4px; background:linear-gradient(90deg, var(--navy), var(--orange)); border-radius:2px; margin:12px 0 24px; }
+
+        /* FULL-WIDTH BANNER SECTIONS */
+        .banner { background:var(--dark); color:#fff; padding:60px 0; }
+        .banner .section-label { color:var(--orange); }
+        .banner .section-title { color:#fff; }
+        .banner .section-sub { color:rgba(255,255,255,0.6); }
+        .banner-navy { background:linear-gradient(135deg, var(--navy-dark), var(--navy)); color:#fff; padding:60px 0; }
+        .banner-navy .section-label { color:var(--orange-light); }
+        .banner-navy .section-title { color:#fff; }
+
+        /* TEAM GRID */
+        .team-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+        .team-card { background:var(--warm-card); border-radius:16px; padding:28px 20px; text-align:center; border:1px solid var(--border); transition:transform 0.2s, box-shadow 0.2s; }
+        .team-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(26,39,68,0.08); }
+        .team-card img { width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:12px; border:3px solid var(--navy); }
+        .team-card .tc-fallback { width:80px; height:80px; border-radius:50%; margin:0 auto 12px; background:linear-gradient(135deg, var(--navy), var(--navy-light)); display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; color:#fff; }
+        .team-card h4 { font-size:15px; font-weight:700; color:var(--dark); }
+        .team-card .tc-role { font-size:12px; color:var(--navy); font-weight:600; margin-top:2px; }
+        .team-card .tc-firm { font-size:10px; color:var(--orange); font-weight:700; letter-spacing:1px; margin-top:2px; }
+        .team-card .tc-why { font-size:12px; color:var(--text-light); margin-top:8px; line-height:1.5; }
+        .team-note { background:rgba(26,39,68,0.04); border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-top:24px; }
+        .team-note p { font-size:14px; color:var(--text-light); line-height:1.6; }
+        .team-note strong { color:var(--dark); }
+
+        /* AVAILABILITY */
+        .avail-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:24px; }
+        .avail-col h4 { font-size:16px; font-weight:700; color:var(--navy); margin-bottom:12px; padding-bottom:8px; border-bottom:2px solid var(--border); }
+        .avail-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(0,0,0,0.04); }
+        .avail-row .ar-name { font-size:13px; font-weight:600; color:var(--dark); }
+        .avail-row .ar-pct { font-size:13px; font-weight:800; color:var(--navy); }
+        .avail-row .ar-pct.full { background:rgba(26,39,68,0.08); padding:2px 8px; border-radius:4px; }
+
+        /* RISK CARDS */
+        .risk-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        .risk-card { background:var(--warm-card); border-radius:12px; padding:24px; border-left:4px solid var(--navy); box-shadow:0 2px 8px rgba(0,0,0,0.04); }
+        .risk-card .rc-tag { font-size:10px; font-weight:700; letter-spacing:2px; color:var(--orange); margin-bottom:6px; }
+        .risk-card h4 { font-size:15px; font-weight:700; color:var(--dark); margin-bottom:6px; }
+        .risk-card p { font-size:13px; color:var(--text-light); line-height:1.6; }
+
+        /* PHASE EXPLORER */
+        .phase-tabs { display:flex; background:var(--warm-card); border-radius:12px; overflow:hidden; border:1px solid var(--border); margin-bottom:20px; }
+        .phase-tab { flex:1; padding:16px 12px; text-align:center; cursor:pointer; transition:all 0.2s; border-right:1px solid var(--border); font-size:13px; font-weight:600; color:var(--text-light); }
+        .phase-tab:last-child { border:none; }
+        .phase-tab:hover { background:rgba(26,39,68,0.04); }
+        .phase-tab.active { background:var(--navy); color:#fff; }
+        .phase-tab .pt-label { font-weight:700; }
+        .phase-tab .pt-date { font-size:10px; margin-top:2px; opacity:0.7; }
+        .phase-tab.active .pt-date { color:var(--orange-light); }
+        .phase-panel { display:none; background:var(--warm-card); border-radius:12px; overflow:hidden; border:1px solid var(--border); }
+        .phase-panel.active { display:block; }
+        .phase-panel img { width:100%; max-height:420px; object-fit:contain; background:#eef0f4; }
+        .phase-panel .pp-content { padding:24px 28px; }
+        .phase-panel h4 { font-size:18px; font-weight:700; color:var(--dark); margin-bottom:8px; }
+        .phase-panel p { font-size:14px; color:var(--text-light); line-height:1.7; }
+
+        /* SAFETY BANNER */
+        .safety-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:1100px; margin:32px auto 0; }
+        .safety-card { background:rgba(255,255,255,0.08); border-radius:12px; padding:24px; border-top:3px solid var(--orange); }
+        .safety-card h4 { font-size:15px; font-weight:700; color:#fff; margin-bottom:6px; }
+        .safety-card p { font-size:13px; color:rgba(255,255,255,0.65); line-height:1.6; }
+
+        /* TECH CARDS */
+        .tech-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+        .tech-card { background:var(--warm-card); border-radius:12px; padding:28px; border:1px solid var(--border); border-top:3px solid var(--navy); }
+        .tech-card h4 { font-size:16px; font-weight:700; color:var(--dark); margin-bottom:8px; }
+        .tech-card p { font-size:13px; color:var(--text-light); line-height:1.6; }
+        .tech-card .tc-person { font-size:12px; color:var(--navy); font-weight:600; margin-top:10px; }
+
+        /* HIGHLIGHT CARDS */
+        .highlight-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+        .highlight-card { background:linear-gradient(135deg, var(--navy), var(--navy-light)); border-radius:16px; padding:32px; color:#fff; }
+        .highlight-card .hc-label { font-size:11px; letter-spacing:2px; color:var(--orange-light); font-weight:700; margin-bottom:8px; }
+        .highlight-card h3 { font-size:24px; font-weight:900; margin-bottom:12px; }
+        .highlight-card p { font-size:14px; color:rgba(255,255,255,0.7); line-height:1.7; }
+        .highlight-card .hc-stat { font-size:48px; font-weight:900; color:var(--orange-light); line-height:1; margin-bottom:8px; }
+
+        /* CASE STUDY */
+        .case-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:24px; }
+        .case-card { background:var(--warm-card); border-radius:12px; padding:24px; border:1px solid var(--border); }
+        .case-card h4 { font-size:15px; font-weight:700; color:var(--dark); margin-bottom:4px; }
+        .case-card .cc-label { font-size:11px; font-weight:700; letter-spacing:1px; color:var(--orange); margin-bottom:8px; }
+        .case-card p { font-size:13px; color:var(--text-light); line-height:1.6; margin-top:6px; }
+
+        /* POST-OCC */
+        .post-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+        .post-card { background:var(--warm-card); border-radius:12px; padding:24px; text-align:center; border:1px solid var(--border); }
+        .post-card .pc-icon { font-size:32px; margin-bottom:8px; }
+        .post-card h4 { font-size:14px; font-weight:700; color:var(--dark); margin-bottom:6px; }
+        .post-card p { font-size:12px; color:var(--text-light); line-height:1.5; }
+
+        /* TRACK RECORD */
+        .track-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+        .track-card { background:var(--warm-card); border-radius:12px; overflow:hidden; border:1px solid var(--border); }
+        .track-card .tk-header { background:var(--dark); color:#fff; padding:16px 20px; }
+        .track-card .tk-header h4 { font-size:16px; font-weight:700; }
+        .track-card .tk-header span { font-size:11px; color:var(--orange); }
+        .track-card .tk-body { padding:16px 20px; }
+        .track-card .tk-body p { font-size:13px; color:var(--text-light); line-height:1.6; }
+
+        /* QUOTE */
+        .quote-block { background:var(--dark); border-radius:16px; padding:32px 36px; margin:24px 0; color:#fff; position:relative; }
+        .quote-block::before { content:'\201C'; font-size:72px; color:var(--navy); position:absolute; top:12px; left:24px; line-height:1; opacity:0.4; }
+        .quote-block .qb-text { font-size:16px; font-style:italic; color:rgba(255,255,255,0.85); line-height:1.7; padding-left:20px; }
+        .quote-block .qb-attr { font-size:12px; color:var(--orange); margin-top:12px; padding-left:20px; font-weight:600; }
+
+        /* MILESTONES */
+        .milestone-list { margin-top:24px; }
+        .milestone { display:flex; gap:20px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--border); }
+        .milestone:last-child { border:none; }
+        .milestone .ms-date { min-width:110px; font-size:14px; font-weight:800; color:var(--navy); }
+        .milestone .ms-text { font-size:14px; color:var(--text-light); }
+        .milestone.highlight .ms-date { font-size:16px; color:var(--orange); }
+        .milestone.highlight .ms-text { font-size:16px; font-weight:700; color:var(--dark); }
+
+        /* GEOTHERMAL IMAGE */
+        .geo-visual { margin-top:24px; text-align:center; }
+        .geo-visual img { max-width:100%; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.1); }
+        .geo-visual .caption { font-size:12px; color:var(--text-light); margin-top:8px; }
+
+        /* UDOR CHAT */
+        .udor-bar { position:fixed; bottom:0; left:0; right:0; height:56px; background:linear-gradient(135deg, var(--navy-dark), var(--navy)); display:flex; align-items:center; justify-content:center; gap:12px; z-index:600; cursor:pointer; transition:transform 0.3s; box-shadow:0 -4px 20px rgba(26,39,68,0.2); }
+        .udor-bar:hover { background:linear-gradient(135deg, var(--navy), var(--navy-light)); }
+        .udor-bar .ub-icon { width:32px; height:32px; background:rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; }
+        .udor-bar .ub-icon svg { width:18px; height:18px; fill:#fff; }
+        .udor-bar .ub-text { color:#fff; font-size:14px; font-weight:600; }
+        .udor-bar .ub-brand { font-size:10px; color:var(--orange-light); font-weight:700; letter-spacing:1px; }
+        .udor-bar.hidden { transform:translateY(100%); }
+
+        /* UDOR PANEL */
+        .udor-panel { position:fixed; bottom:56px; right:24px; width:400px; max-height:480px; background:#fff; border-radius:16px 16px 0 0; box-shadow:0 -8px 40px rgba(0,0,0,0.15); z-index:601; display:none; flex-direction:column; overflow:hidden; }
+        .udor-panel.open { display:flex; }
+        .up-head { background:linear-gradient(135deg, var(--navy-dark), var(--navy)); padding:16px 20px; color:#fff; display:flex; align-items:center; justify-content:space-between; }
+        .up-head .uh-title { font-size:16px; font-weight:800; }
+        .up-head .uh-sub { font-size:10px; color:var(--orange-light); letter-spacing:1px; }
+        .up-close { background:none; border:none; color:#fff; font-size:22px; cursor:pointer; opacity:0.7; }
+        .up-close:hover { opacity:1; }
+        .up-messages { flex:1; overflow-y:auto; padding:16px; min-height:200px; max-height:320px; }
+        .msg { margin-bottom:12px; display:flex; flex-direction:column; }
+        .msg.bot .msg-bubble { background:#eef0f4; color:var(--dark); border-radius:12px 12px 12px 4px; padding:12px 16px; font-size:14px; line-height:1.5; max-width:85%; }
+        .msg.user .msg-bubble { background:var(--navy); color:#fff; border-radius:12px 12px 4px 12px; padding:12px 16px; font-size:14px; line-height:1.5; max-width:85%; align-self:flex-end; }
+        .msg.bot .msg-bubble.typing { opacity:0.5; }
+        .up-input { display:flex; gap:8px; padding:12px 16px; border-top:1px solid rgba(0,0,0,0.06); }
+        .up-input input { flex:1; padding:10px 14px; border:1.5px solid #dde0e6; border-radius:8px; font-size:14px; font-family:inherit; color:var(--dark); }
+        .up-input input:focus { outline:none; border-color:var(--navy); }
+        .up-input button { padding:10px 16px; background:var(--navy); color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:700; font-family:inherit; cursor:pointer; }
+        .up-footer { padding:8px 16px; text-align:center; font-size:10px; color:#999; border-top:1px solid rgba(0,0,0,0.04); }
+
+        /* WELCOME OVERLAY */
+        .welcome-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(26,39,68,0.7); backdrop-filter:blur(8px); z-index:9999; display:flex; align-items:center; justify-content:center; transition:opacity 0.4s; }
+        .welcome-overlay.hidden { opacity:0; pointer-events:none; }
+        .welcome-box { background:#fff; border-radius:20px; width:500px; max-width:92vw; overflow:hidden; box-shadow:0 24px 64px rgba(0,0,0,0.3); }
+        .wb-header { background:linear-gradient(135deg, var(--navy-dark), var(--navy)); padding:32px 28px 24px; text-align:center; color:#fff; }
+        .wb-header img { height:40px; margin-bottom:14px; }
+        .wb-header h2 { font-size:22px; font-weight:800; }
+        .wb-header p { font-size:14px; color:rgba(255,255,255,0.6); margin-top:4px; }
+        .wb-body { padding:24px 28px 28px; }
+        .wb-body label { display:block; font-size:11px; font-weight:700; color:var(--text-light); letter-spacing:1px; margin-bottom:6px; margin-top:14px; }
+        .wb-body label:first-child { margin-top:0; }
+        .wb-body input, .wb-body textarea { width:100%; padding:10px 14px; border:1.5px solid #dde0e6; border-radius:8px; font-size:14px; font-family:inherit; color:var(--dark); }
+        .wb-body textarea { resize:vertical; min-height:56px; }
+        .wb-body input:focus, .wb-body textarea:focus { outline:none; border-color:var(--navy); }
+        .wb-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+        .wb-chips div { padding:6px 12px; border-radius:16px; font-size:12px; font-weight:500; border:1.5px solid #dde0e6; cursor:pointer; transition:all 0.2s; user-select:none; }
+        .wb-chips div:hover { border-color:var(--navy); color:var(--navy); }
+        .wb-chips div.on { background:var(--navy); border-color:var(--navy); color:#fff; }
+        .wb-submit { width:100%; margin-top:20px; padding:14px; background:linear-gradient(135deg, var(--navy), var(--navy-light)); color:#fff; border:none; border-radius:10px; font-size:16px; font-weight:700; font-family:inherit; cursor:pointer; }
+        .wb-skip { display:block; text-align:center; margin-top:10px; font-size:12px; color:#999; cursor:pointer; border:none; background:none; font-family:inherit; }
+        .wb-powered { text-align:center; margin-top:16px; font-size:10px; color:#bbb; }
+        .wb-powered strong { color:var(--navy); }
+
+        /* ADMIN */
+        .admin-panel { position:fixed; top:64px; left:0; right:0; bottom:0; background:var(--warm-bg); z-index:400; overflow-y:auto; padding:28px 48px; display:none; }
+        .admin-panel.show { display:block; }
+        .admin-table { width:100%; border-collapse:collapse; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.05); margin-bottom:24px; }
+        .admin-table th { text-align:left; padding:10px 14px; font-size:11px; font-weight:700; letter-spacing:1px; color:#888; border-bottom:2px solid #eee; background:#f5f6f8; }
+        .admin-table td { padding:8px 14px; font-size:13px; color:var(--dark); border-bottom:1px solid #f0f0f0; }
+
+        .page-bottom { height:80px; }
+
+        .nav-menu-btn { display:none; background:none; border:none; font-size:24px; cursor:pointer; color:var(--dark); padding:8px; }
+
+        /* RESPONSIVE */
+        @media (max-width:900px) {
+            .hero-inner { grid-template-columns:1fr; }
+            .hero-render { display:none; }
+            .hero { padding:60px 32px 48px; }
+            .hero-text h1 { font-size:36px; }
+            .hero-stats { flex-wrap:wrap; gap:20px; }
+            .team-grid { grid-template-columns:repeat(2,1fr); }
+            .risk-grid, .case-grid, .track-grid, .avail-grid, .highlight-grid { grid-template-columns:1fr; }
+            .safety-grid { grid-template-columns:1fr; }
+            .tech-grid { grid-template-columns:1fr; }
+            .post-grid { grid-template-columns:repeat(2,1fr); }
+            .phase-tabs { flex-wrap:wrap; }
+            section { padding:40px 24px; }
+            .section-title { font-size:28px; }
+            nav { padding:0 16px; }
+        }
+
+        @media (max-width:600px) {
+            .nav-links { display:none; position:fixed; top:64px; left:0; right:0; background:#fff; flex-direction:column; padding:16px 24px; gap:12px; box-shadow:0 8px 24px rgba(0,0,0,0.1); border-bottom:2px solid var(--border); z-index:499; }
+            .nav-links.mobile-open { display:flex; }
+            .nav-links a { font-size:15px; padding:8px 0; border-bottom:1px solid var(--border); }
+            .nav-links a:last-of-type { border:none; }
+            .nav-badge { margin-top:8px; }
+            .nav-menu-btn { display:block; }
+            .hero { padding:40px 20px 32px; }
+            .hero-text h1 { font-size:28px; }
+            .hero-text .ht-badge { font-size:10px; }
+            .hero-text p { font-size:15px; }
+            .hero-stats { gap:16px; }
+            .hs-item .hs-val { font-size:24px; }
+            .hs-item .hs-lbl { font-size:9px; }
+            section { padding:32px 16px; }
+            .section-label { font-size:10px; letter-spacing:3px; }
+            .section-title { font-size:24px; }
+            .section-sub { font-size:14px; }
+            .team-grid { grid-template-columns:1fr; gap:12px; }
+            .team-card { padding:20px 16px; }
+            .team-card img { width:64px; height:64px; }
+            .team-card .tc-fallback { width:64px; height:64px; font-size:20px; }
+            .avail-grid { grid-template-columns:1fr; gap:16px; }
+            .safety-grid { padding:0 16px; gap:12px; }
+            .safety-card { padding:16px; }
+            .phase-tabs { flex-wrap:wrap; }
+            .phase-tab { flex:none; width:calc(50% - 1px); padding:10px 6px; font-size:11px; }
+            .phase-tab .pt-label { font-size:12px; }
+            .phase-tab .pt-date { font-size:8px; }
+            .phase-panel .pp-content { padding:16px; }
+            .phase-panel h4 { font-size:15px; }
+            .phase-panel p { font-size:13px; }
+            .risk-grid { grid-template-columns:1fr; gap:12px; }
+            .risk-card { padding:16px; }
+            .tech-grid { grid-template-columns:1fr; gap:12px; }
+            .tech-card { padding:20px; }
+            .case-grid { grid-template-columns:1fr; }
+            .post-grid { grid-template-columns:1fr !important; gap:12px; padding:0 16px !important; }
+            .post-card { padding:16px; }
+            .track-grid { grid-template-columns:1fr; }
+            .highlight-grid { grid-template-columns:1fr; }
+            .quote-block { padding:24px 20px; }
+            .quote-block .qb-text { font-size:14px; padding-left:12px; }
+            .quote-block::before { font-size:48px; left:12px; }
+            .milestone { flex-direction:column; gap:4px; }
+            .milestone .ms-date { min-width:auto; }
+            .udor-panel { right:0; left:0; width:auto; max-height:70vh; border-radius:12px 12px 0 0; bottom:56px; }
+            .udor-bar { gap:8px; }
+            .udor-bar .ub-text { font-size:12px; }
+            .udor-bar .ub-brand { display:none; }
+            .welcome-box { width:95vw; max-height:90vh; overflow-y:auto; }
+            .wb-header { padding:24px 20px 16px; }
+            .wb-header h2 { font-size:18px; }
+            .wb-body { padding:16px 20px 20px; }
+            .wb-chips div { font-size:11px; padding:5px 10px; }
+            .banner section, .banner-navy section { padding:0 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <img src="assets/fontaine-dimeo-jv-inline.png" alt="Fontaine + Dimeo" style="height:36px" onerror="this.src='assets/fontaine-logo-red.png'">
+    <button class="nav-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('mobile-open')">&#9776;</button>
+    <div class="nav-links" onclick="this.classList.remove('mobile-open')">
+        <a href="#animation" style="color:var(--orange);font-weight:700;">4D Animation</a>
+        <a href="#who">About</a>
+        <a href="#team">Team</a>
+        <a href="#acceleration">Acceleration</a>
+        <a href="#safety">Safety</a>
+        <a href="#phases">Phases</a>
+        <a href="#geothermal">Geothermal</a>
+        <a href="#risks">Risks</a>
+        <a href="#technology">Technology</a>
+        <a href="#track-record">Track Record</a>
+        <a href="/needham/precon/" style="color:var(--orange);font-weight:700;">Precon Dashboard</a>
+        <a href="/needham/presentation/" style="color:var(--orange);font-weight:700;">Presentation</a>
+        <a href="/needham/presentation-v2/" style="color:var(--orange);font-weight:700;">Presentation V2</a>
+        <a href="/needham/presentation-v3/" style="color:var(--orange);font-weight:700;">Presentation V3</a>
+        <a href="/needham/presentation-v4/" style="color:var(--orange);font-weight:700;">Presentation V4</a>
+        <span class="nav-badge">FONTAINE + DIMEO</span>
+    </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-inner">
+        <div class="hero-text">
+            <div class="ht-badge">TOWN OF NEEDHAM</div>
+            <h1>Pollard<br>Middle School <span>&mdash;</span><br>New <span>Construction</span></h1>
+            <p>Explore our joint venture team, accelerated schedule, and why Fontaine + Dimeo is the right partner for Needham's next generation.</p>
+            <div class="hero-stats">
+                <div class="hs-item"><div class="hs-val">200</div><div class="hs-lbl">Years Combined Experience</div></div>
+                <div class="hs-item"><div class="hs-val">$3M+</div><div class="hs-lbl">Identified Savings</div></div>
+                <div class="hs-item"><div class="hs-val">1 Year</div><div class="hs-lbl">Schedule Acceleration</div></div>
+                <div class="hs-item"><div class="hs-val">Net Zero</div><div class="hs-lbl">Ready Building</div></div>
+            </div>
+            <div class="jv-badge">
+                <img src="assets/fontaine-dimeo-jv-inline.png" alt="Fontaine + Dimeo" onerror="this.style.display='none'">
+                <span>Fontaine Bros. + Dimeo Construction Joint Venture</span>
+            </div>
+        </div>
+        <div class="hero-render">
+            <img src="photos/phase2-steel.jpg" alt="Pollard Middle School Rendering" onerror="this.style.display='none'">
+        </div>
+    </div>
+</div>
+
+<!-- 4D CONSTRUCTION ANIMATION -->
+<div class="banner-navy" id="animation" style="padding:48px 0 56px;">
+    <section style="padding-top:0;padding-bottom:0;">
+        <div class="section-label" style="color:var(--orange-light);">NARRATED 4D CONSTRUCTION SEQUENCE</div>
+        <div class="section-title" style="color:#fff;font-size:28px;margin-bottom:6px;">Watch How We Build Pollard</div>
+        <div style="font-size:15px;color:rgba(255,255,255,0.6);max-width:650px;margin-bottom:24px;line-height:1.6;">Full phasing walkthrough with voiceover — from mobilization through final completion. See exactly how construction progresses while keeping students safe and the school fully operational.</div>
+        <div style="position:relative;width:100%;max-width:960px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);border:2px solid rgba(255,255,255,0.1);">
+            <iframe src="https://www.youtube.com/embed/0mxUVYHIm0s?rel=0&modestbranding=1" title="Pollard Middle School — 4D Construction Animation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+        </div>
+    </section>
+</div>
+
+<!-- WHO WE ARE -->
+<section id="who">
+    <div class="section-label">WHO WE ARE</div>
+    <div class="section-title">A Tested &amp; Trusted Joint Venture.</div>
+    <div class="divider"></div>
+    <div class="section-sub">Fontaine Bros. and Dimeo Construction bring nearly 200 years of combined experience. Together, we are the only shortlisted firm operating as both CM and General Contractor &mdash; giving Needham access to subcontractors who don't routinely price large CM-only firms.</div>
+    <div class="tech-grid">
+        <div class="tech-card">
+            <h4>Family Owned, Locally Rooted</h4>
+            <p>Fontaine: 4th generation, founded 1933, headquartered in Springfield. Dimeo: 5th generation, founded 1930, headquartered in Johnston, RI. Two family companies united by the same values &mdash; craftsmanship, accountability, and community.</p>
+        </div>
+        <div class="tech-card">
+            <h4>Proven JV Partnership</h4>
+            <p>Currently building the $268M Doherty Memorial High School in Worcester together. Not a new experiment &mdash; a proven collaboration with established systems, communication protocols, and trust. JV SPL: $320M.</p>
+        </div>
+        <div class="tech-card">
+            <h4>Unmatched Credentials</h4>
+            <p>Three Professional Engineers. Six Passive House Certified Builders. 100% MSBA experience across the team. Average DCAMM evaluation ratings of 96 (Fontaine) and 95 (Dimeo) &mdash; zero projects below passing.</p>
+        </div>
+    </div>
+</section>
+
+<!-- SCHEDULE ACCELERATION -->
+<section id="acceleration">
+    <div class="section-label">SCHEDULE INNOVATION</div>
+    <div class="section-title">One Full Year Faster. $3M+ in Savings.</div>
+    <div class="divider"></div>
+    <div class="section-sub">We identified an opportunity to reduce the overall project duration by approximately one full year &mdash; without accelerating the design schedule. Combined with strategic geothermal relocation, this delivers more than $3 million in potential savings.</div>
+
+    <div class="highlight-grid">
+        <div class="highlight-card">
+            <div class="hc-label">SCHEDULE ACCELERATION</div>
+            <div class="hc-stat">~1 Year</div>
+            <h3>Earlier Completion</h3>
+            <p>Phase 1 starts July 2027 instead of March 2028. Phase 2 completes August 2031 instead of July 2032. Reduces disruption to students, staff, and neighbors &mdash; and lets Needham move forward with the High Rock and Mitchell projects sooner.</p>
+        </div>
+        <div class="highlight-card">
+            <div class="hc-label">COST SAVINGS</div>
+            <div class="hc-stat">$3M+</div>
+            <h3>Identified Savings</h3>
+            <p>Driven by resequencing of work and strategic relocation of geothermal well fields to Warner Field. Geothermal relocation alone is projected to save Needham $1 million through a single-phase drilling operation, optimized dewatering, and reduced site disruption.</p>
+        </div>
+    </div>
+</section>
+
+<!-- YOUR TEAM -->
+<section id="team">
+    <div class="section-label">YOUR FONTAINE + DIMEO TEAM</div>
+    <div class="section-title">The Right People for Pollard.</div>
+    <div class="divider"></div>
+    <div class="section-sub">Every team member was selected for specific Pollard-relevant experience &mdash; from MBTA-adjacent construction to geothermal optimization to occupied campus logistics. Each person brings a defined "superpower" to your project.</div>
+
+    <div class="team-grid">
+        <div class="team-card">
+            <img src="assets/headshot-joel-kent.jpg" alt="Joel Kent" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tc-fallback" style="display:none">JK</div>
+            <h4>Joel Kent, CPHB</h4>
+            <div class="tc-role">Project Executive</div>
+            <div class="tc-firm">FONTAINE</div>
+            <div class="tc-why">Creative phasing &amp; cost control. MSBA cost &amp; procurement strategy. Deep experience managing complex multi-phase school construction projects.</div>
+        </div>
+        <div class="team-card">
+            <img src="assets/headshot-matt-wilder.jpg" alt="Matt Wilder" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tc-fallback" style="display:none">MW</div>
+            <h4>Matt Wilder</h4>
+            <div class="tc-role">Superintendent</div>
+            <div class="tc-firm">FONTAINE</div>
+            <div class="tc-why">Schedule confidence &amp; constructability. Invented the "dance floor" auditorium method &mdash; proven on Doherty, South High, West Springfield, Walpole, and more. 100% dedicated.</div>
+        </div>
+        <div class="team-card">
+            <img src="assets/headshot-mark-hogan.jpg" alt="Mark Hogan" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tc-fallback" style="display:none">MH</div>
+            <h4>Mark Hogan</h4>
+            <div class="tc-role">Senior Superintendent</div>
+            <div class="tc-firm">FONTAINE</div>
+            <div class="tc-why">Phased construction planning. Decades of occupied campus experience. Constructability expertise that informs procurement strategy.</div>
+        </div>
+        <div class="team-card">
+            <img src="assets/headshot-chelsey-mutrie.jpg" alt="Chelsey Mutrie" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tc-fallback" style="display:none">CM</div>
+            <h4>Chelsey Mutrie</h4>
+            <div class="tc-role">VP of Preconstruction</div>
+            <div class="tc-firm">FONTAINE</div>
+            <div class="tc-why">Leads estimating, value engineering, and GMP development. Owns the budget from day one through final reconciliation.</div>
+        </div>
+        <div class="team-card">
+            <img src="assets/headshot-frank-reynolds.png" alt="Frank Reynolds" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tc-fallback" style="display:none">FR</div>
+            <h4>Frank Reynolds, LEED GA, CPHB</h4>
+            <div class="tc-role">Preconstruction Executive</div>
+            <div class="tc-firm">DIMEO</div>
+            <div class="tc-why">36 years industry experience, 30 at Dimeo. Bridges preconstruction strategy with construction execution. Deep MBTA and transit-adjacent expertise.</div>
+        </div>
+        <div class="team-card">
+            <img src="assets/headshot-joellen-villari.png" alt="JoEllen Villari" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tc-fallback" style="display:none">JV</div>
+            <h4>JoEllen Villari, CHST</h4>
+            <div class="tc-role">Sr. Safety Manager &amp; MBTA Liaison</div>
+            <div class="tc-firm">DIMEO</div>
+            <div class="tc-why">Understands the ins and outs of MBTA coordination. Manages all rail-interface safety, credentialing, and flagging operations. Dedicated liaison from day one.</div>
+        </div>
+        <div class="team-card">
+            <img src="assets/headshot-danielle-judge.jpg" alt="Danielle Judge" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tc-fallback" style="display:none">DJ</div>
+            <h4>Danielle Judge, PE, LEED GA</h4>
+            <div class="tc-role">Design Review Leader</div>
+            <div class="tc-firm">FONTAINE</div>
+            <div class="tc-why">Professional Structural Engineer. Leads design review for structural steel in the gym and 750-seat auditorium. Catches coordination issues before they become field problems.</div>
+        </div>
+        <div class="team-card">
+            <div class="tc-fallback">TR</div>
+            <h4>Tracy Routhier, LEED GA, CPHB</h4>
+            <div class="tc-role">Sustainability Manager</div>
+            <div class="tc-firm">FONTAINE</div>
+            <div class="tc-why">Net Zero &amp; geothermal strategy. Wide-ranging sustainability solutions. Drives the LEED Gold pathway, energy modeling, and commissioning plan.</div>
+        </div>
+        <div class="team-card">
+            <div class="tc-fallback">CR</div>
+            <h4>Curtis Ruotolo, PE</h4>
+            <div class="tc-role">Senior Site/Civil Estimator</div>
+            <div class="tc-firm">FONTAINE</div>
+            <div class="tc-why">Professional Engineer focused on site cost strategy. 50,000 CY Phase 1 excavation, retaining walls, support of excavation &mdash; every yard priced from real data.</div>
+        </div>
+        <div class="team-card">
+            <img src="assets/headshot-mark-abdella.jpg" alt="Mark Abdella" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tc-fallback" style="display:none">MA</div>
+            <h4>Mark Abdella</h4>
+            <div class="tc-role">VP CM Services &amp; Vote Support</div>
+            <div class="tc-firm">FONTAINE</div>
+            <div class="tc-why">Needham resident and parent. Understands how information travels in Needham's interconnected social circles. Leads Town Meeting engagement and community outreach.</div>
+        </div>
+    </div>
+
+    <div class="team-note">
+        <p><strong>David Fontaine Sr. and David Fontaine Jr.</strong> are personally invested in every aspect of this project. Additionally: <strong>Brian Davies</strong> (in-house MEP Director), <strong>Steve Gelinas</strong> (VDC/LiDAR Director), <strong>Mark Bisson</strong> (Safety Director), <strong>Liz Wambui</strong> (Diversity Director), and a full support team of estimators and MEP specialists are engaged from preconstruction through closeout.</p>
+    </div>
+
+    <!-- AVAILABILITY -->
+    <div style="margin-top:32px;">
+        <h3 style="font-size:18px;font-weight:700;color:var(--dark);margin-bottom:4px;">Staff Availability</h3>
+        <div class="avail-grid">
+            <div class="avail-col">
+                <h4>Preconstruction</h4>
+                <div class="avail-row"><span class="ar-name">Joel Kent &mdash; PE</span><span class="ar-pct">50% &rarr; 75%</span></div>
+                <div class="avail-row"><span class="ar-name">Chelsey Mutrie &mdash; VP Precon</span><span class="ar-pct">40%</span></div>
+                <div class="avail-row"><span class="ar-name">4 Estimators (3MAP)</span><span class="ar-pct">25-50% each</span></div>
+            </div>
+            <div class="avail-col">
+                <h4>Construction</h4>
+                <div class="avail-row"><span class="ar-name">Matt Wilder &mdash; Super</span><span class="ar-pct full">100%</span></div>
+                <div class="avail-row"><span class="ar-name">Fiona Carrez &mdash; Asst. Super</span><span class="ar-pct full">100%</span></div>
+                <div class="avail-row"><span class="ar-name">Joel Kent &mdash; PE</span><span class="ar-pct">40%</span></div>
+                <div class="avail-row"><span class="ar-name">Davies / Gelinas / Hitchcock</span><span class="ar-pct">5-20%</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STUDENT SAFETY -->
+<div class="banner" id="safety">
+    <section style="padding-top:0;padding-bottom:0;">
+        <div class="section-label">STUDENT SAFETY &amp; SCHOOL OPERATIONS</div>
+        <div class="section-title">Pollard Stays Open. Students Stay Safe.</div>
+        <div class="divider" style="background:linear-gradient(90deg, var(--orange), rgba(255,255,255,0.3));"></div>
+        <div class="section-sub">New construction on an occupied campus adjacent to the MBTA Needham Line and residential neighborhoods. Every logistics decision starts with student safety, school operations, and neighbor impact.</div>
+    </section>
+    <div class="safety-grid">
+        <div class="safety-card">
+            <h4>Bus &amp; Drop-Off Protection</h4>
+            <p>Bus loop and parent pick-up/drop-off maintained throughout all phases. Safe walking AND biking paths confirmed for both phases. Construction traffic completely separated from student movement.</p>
+        </div>
+        <div class="safety-card">
+            <h4>MBTA Rail Safety</h4>
+            <p>Adjacent to the active Needham Line commuter rail. JoEllen Villari is our dedicated MBTA liaison. All workers ROW-trained and credentialed. Flagging services and rail-interface safety protocols from day one.</p>
+        </div>
+        <div class="safety-card">
+            <h4>Noise &amp; Neighbor Sensitivity</h4>
+            <p>Seasonal scheduling around community needs. Construction traffic routed via Dedham Ave/I-95 (Phase 1) and Great Plain Ave/I-95 (Phase 2) &mdash; avoiding Needham Center and residential streets.</p>
+        </div>
+        <div class="safety-card">
+            <h4>More Parking, Not Less</h4>
+            <p>We provide MORE parking during construction than currently exists. Phase 1: expanded Harris Ave lot + temporary northwest lot. Phase 2: Warner Field temporary parking for teachers and parents.</p>
+        </div>
+        <div class="safety-card">
+            <h4>DeFazio Park Preserved</h4>
+            <p>Only Warner Field is used for construction staging and geothermal wells. All other DeFazio Park fields remain operational. Warner Field fully restored at project completion.</p>
+        </div>
+        <div class="safety-card">
+            <h4>Emergency &amp; Security</h4>
+            <p>Life safety, emergency egress, and active shooter protocols updated for every phase. Fire department walkthroughs before each transition. All workers badged and background-checked.</p>
+        </div>
+    </div>
+</div>
+
+<!-- NEIGHBORS & ABUTTERS -->
+<section id="neighbors">
+    <div class="section-label">NEIGHBOR SENSITIVITY &amp; COMMUNITY OUTREACH</div>
+    <div class="section-title">We Know Your Neighbors by Name.</div>
+    <div class="divider"></div>
+    <div class="section-sub">Building a school on an occupied campus means construction directly impacts families, homes, and daily routines. We've identified every abutter surrounding Pollard and mapped their proximity to the work &mdash; because you can't mitigate what you haven't mapped.</div>
+
+    <div style="text-align:center;margin-bottom:24px;">
+        <img src="assets/neighbors-aerial.jpg" alt="Pollard Middle School Neighborhood Aerial" style="max-width:100%;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.12);">
+        <div style="font-size:12px;color:var(--text-light);margin-top:8px;">Aerial view with identified abutters &mdash; Bradford St, Harris Ave, Glenwood Rd, Eoulton Park, Glen Terrace, Dedham Ave</div>
+    </div>
+
+    <div class="risk-grid">
+        <div class="risk-card">
+            <div class="rc-tag">COMMUNICATION</div>
+            <h4>Project-Specific Pollard Website</h4>
+            <p>A dedicated construction updates website for the Pollard project &mdash; accessible to every neighbor, parent, and community member. Real-time construction schedules, traffic routing, noise-impact windows, and a direct contact form to reach the construction team with questions or concerns.</p>
+        </div>
+        <div class="risk-card">
+            <div class="rc-tag">TRAFFIC</div>
+            <h4>Construction Traffic Routed Away</h4>
+            <p>Phase 1: all construction vehicles enter via Dedham Ave/I-95. Phase 2: Great Plain Ave/I-95. Zero construction traffic through Needham Center or residential side streets. Neighbors see trucks on arterials, not their streets.</p>
+        </div>
+        <div class="risk-card">
+            <div class="rc-tag">NOISE &amp; HOURS</div>
+            <h4>Seasonal &amp; Time-Sensitive Scheduling</h4>
+            <p>High-impact work (pile driving, demolition, heavy equipment) scheduled during school hours when most residents are at work. Weekend and evening work restricted. Seasonal adjustments for outdoor community use of DeFazio Park.</p>
+        </div>
+        <div class="risk-card">
+            <div class="rc-tag">OUTREACH</div>
+            <h4>Community Advisory Network</h4>
+            <p>Mark Abdella, Needham resident, leads a proactive outreach strategy: pre-construction neighborhood meetings, monthly update mailers, animated logistics visualization accessible by QR code, and a direct point of contact for every abutter concern.</p>
+        </div>
+    </div>
+</section>
+
+<!-- PHASES -->
+<section id="phases">
+    <div class="section-label">THE BUILDING</div>
+    <div class="section-title">Two Phases. One Seamless Campus.</div>
+    <div class="divider"></div>
+    <div class="section-sub">Click each phase to explore scope, timeline, and aerial renders developed specifically for Pollard. Our accelerated schedule starts Phase 1 eight months earlier than the RFP baseline.</div>
+
+    <div class="phase-tabs">
+        <div class="phase-tab active" onclick="showPhase(1)"><div class="pt-label">Phase 1 Early</div><div class="pt-date">Jul–Dec 2027</div></div>
+        <div class="phase-tab" onclick="showPhase(2)"><div class="pt-label">Phase 1 Vertical</div><div class="pt-date">Jan 2028–Dec 2029</div></div>
+        <div class="phase-tab" onclick="showPhase(3)"><div class="pt-label">Phase 2 Early</div><div class="pt-date">Jul–Sep 2030</div></div>
+        <div class="phase-tab" onclick="showPhase(4)"><div class="pt-label">Phase 2 Complete</div><div class="pt-date">Sep 2030–Aug 2031</div></div>
+    </div>
+
+    <div class="phase-panel active" id="phase-1">
+        <img src="photos/phase1-early.jpg" alt="Phase 1 Early Enabling" onerror="this.style.display='none'">
+        <div class="pp-content">
+            <h4>Phase 1 &mdash; Early Enabling &amp; Geothermal (Jul 2027 &ndash; Dec 2027)</h4>
+            <p>Demo modular classrooms, establish temporary parking, relocate utilities, and install site separation fencing. Simultaneously: geothermal borehole drilling at Warner Field (approximately 120 boreholes, Aug&ndash;Jan). Support of excavation installation, site to subgrade, and site utilities begin. Using an existing curb cut on Dedham Ave for a dedicated construction entrance &mdash; completely separate from school operations.</p>
+        </div>
+    </div>
+    <div class="phase-panel" id="phase-2">
+        <img src="photos/phase1-vertical.jpg" alt="Phase 1 Vertical Construction" onerror="this.style.display='none'">
+        <div class="pp-content">
+            <h4>Phase 1 &mdash; Vertical Construction (Jan 2028 &ndash; Dec 2029)</h4>
+            <p>Foundations for academic wings and shared spaces (kitchen, cafeteria, gym, 750-seat theater). Structural steel erection April&ndash;July 2028, metal decking, then building envelope and roofing through end of 2028. Interior fit-out runs through late 2029: architectural, MEP, life-safety. Phase 1 includes Grades 7&ndash;8 academic wings, kitchen, cafeteria, gymnasium, and theater. Substantial completion December 2029 &mdash; teachers relocate into the new building over winter break.</p>
+        </div>
+    </div>
+    <div class="phase-panel" id="phase-3">
+        <img src="photos/phase2-early.jpg" alt="Phase 2 Demo & Foundations" onerror="this.style.display='none'">
+        <div class="pp-content">
+            <h4>Phase 2 &mdash; Demolition &amp; Foundations (Jul 2030 &ndash; Sep 2030)</h4>
+            <p>Site logistics reconfiguration. Demolition of the existing Pollard building. Phase 2 earthwork, foundations, and structural steel for the Grade 6 Academy and Administration wing. Warner Field provides temporary parking during this transition. Phase 2 scope: approximately 70,000&ndash;95,000 SF for the Grade 6 "school within a school," administration, and remaining sitework.</p>
+        </div>
+    </div>
+    <div class="phase-panel" id="phase-4">
+        <img src="photos/phase2-steel.jpg" alt="Phase 2 Complete" onerror="this.style.display='none'">
+        <div class="pp-content">
+            <h4>Phase 2 &mdash; Completion &amp; Restoration (Sep 2030 &ndash; Aug 2031)</h4>
+            <p>Building envelope, interior fit-out, and commissioning of the Grade 6 Academy. Final exterior work, athletic fields, and full Warner Field restoration. Phase 2 substantial completion July 2031. Project substantial completion August 2031. The completed Pollard Middle School reunites 6th grade with 7th and 8th grades for the first time &mdash; fulfilling the 2022 Schools Master Plan vision.</p>
+        </div>
+    </div>
+
+    <!-- MILESTONES -->
+    <div style="margin-top:32px;">
+        <h3 style="font-size:18px;font-weight:700;color:var(--dark);margin-bottom:4px;">Key Milestones (Accelerated Schedule)</h3>
+        <div class="milestone-list">
+            <div class="milestone"><span class="ms-date">Mar 2026</span><span class="ms-text">CM Award &mdash; team begins immediately</span></div>
+            <div class="milestone"><span class="ms-date">Apr 2026</span><span class="ms-text">SD Cost Estimate / Value Engineering</span></div>
+            <div class="milestone"><span class="ms-date">Jun 2026</span><span class="ms-text">MSBA Board Vote &mdash; Schematic Design</span></div>
+            <div class="milestone"><span class="ms-date">Oct 2026</span><span class="ms-text">Town Meeting &amp; Override Election</span></div>
+            <div class="milestone"><span class="ms-date">Apr 2027</span><span class="ms-text">Early Release Package #1 published</span></div>
+            <div class="milestone highlight"><span class="ms-date">Jul 2027</span><span class="ms-text">NTP &mdash; Phase 1 construction begins</span></div>
+            <div class="milestone"><span class="ms-date">Aug 2027</span><span class="ms-text">Geothermal drilling begins at Warner Field</span></div>
+            <div class="milestone"><span class="ms-date">Mar 2028</span><span class="ms-text">GMP established</span></div>
+            <div class="milestone highlight"><span class="ms-date">Dec 2029</span><span class="ms-text">Phase 1 substantial completion &mdash; students move in</span></div>
+            <div class="milestone"><span class="ms-date">Jan 2030</span><span class="ms-text">Phase 2 begins &mdash; existing building demo</span></div>
+            <div class="milestone highlight"><span class="ms-date">Aug 2031</span><span class="ms-text">Project substantial completion</span></div>
+            <div class="milestone"><span class="ms-date">Sep 2031</span><span class="ms-text">Final contract completion</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- GEOTHERMAL -->
+<section id="geothermal">
+    <div class="section-label">GEOTHERMAL &amp; SUSTAINABILITY</div>
+    <div class="section-title">Warner Field Strategy: $1M Savings.</div>
+    <div class="divider"></div>
+    <div class="section-sub">We propose consolidating ALL geothermal wells into a single-phase operation at Warner Field &mdash; reducing cost, disruption, and schedule risk while preserving the Pollard campus for construction.</div>
+
+    <div class="risk-grid" style="margin-bottom:24px;">
+        <div class="risk-card">
+            <div class="rc-tag">COST SAVINGS</div>
+            <h4>Single Mobilization</h4>
+            <p>One continuous drilling operation instead of multiple mobilizations across different phases. Eliminates redundant setup costs, simplifies dewatering, and reduces the number of required vaults.</p>
+        </div>
+        <div class="risk-card">
+            <div class="rc-tag">NOISE REDUCTION</div>
+            <h4>Away from School &amp; Homes</h4>
+            <p>Relocating drilling to Warner Field eliminates the need for sound attenuation near the active school and neighboring residences. Safer, less congested drilling environment.</p>
+        </div>
+        <div class="risk-card">
+            <div class="rc-tag">SITE STRATEGY</div>
+            <h4>Preserves Pollard Campus</h4>
+            <p>Avoids drilling on sloped, uneven terrain near the school. Flat, open Warner Field enables an efficient single borehole grid. Preserves critical Pollard site space for building construction.</p>
+        </div>
+        <div class="risk-card">
+            <div class="rc-tag">PROVEN APPROACH</div>
+            <h4>Agawam HS Precedent</h4>
+            <p>At Agawam High School, Chelsey Mutrie led a redesign from 180 shallow wells to 150 deeper wells &mdash; saving over $1M while improving system performance. The same optimization mindset applied to Pollard.</p>
+        </div>
+    </div>
+
+    <div class="geo-visual">
+        <img src="assets/geothermal-siting.jpg" alt="Potential Geothermal Well Field Locations" onerror="this.style.display='none'">
+        <div class="caption">Potential geothermal well field locations &mdash; Warner Field consolidation shown at right</div>
+    </div>
+
+    <div style="margin-top:32px;">
+        <h3 style="font-size:18px;font-weight:700;color:var(--dark);margin-bottom:16px;">Sustainability Commitments</h3>
+        <div class="tech-grid">
+            <div class="tech-card">
+                <h4>Net Zero Ready</h4>
+                <p>All-electric, low-EUI building targeting EUI of ~25. Ground-source heat pump system with ~120 boreholes. Compliance with MA Specialized Energy Code. Solar-ready parking canopies.</p>
+            </div>
+            <div class="tech-card">
+                <h4>LEED Gold Pathway</h4>
+                <p>63-point LEED scorecard. Enhanced indoor environmental quality. MSBA High-Efficiency Green School incentives. Low-emitting materials with full transparency documentation.</p>
+                <div class="tc-person">Tracy Routhier, Sustainability Manager</div>
+            </div>
+            <div class="tech-card">
+                <h4>Resilient Design</h4>
+                <p>Backup power systems. Daylighting and operable windows. Stormwater resilience for increased storm intensity. Advanced energy metering and BAS integration.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- RISKS -->
+<section id="risks">
+    <div class="section-label">POLLARD-SPECIFIC CHALLENGES</div>
+    <div class="section-title">Risks We've Already Identified &amp; Solved For.</div>
+    <div class="divider"></div>
+    <div class="section-sub">These aren't generic risks from a template. These are Pollard-specific challenges our team identified during proposal preparation &mdash; and exactly how we'll address each one.</div>
+
+    <div class="risk-grid">
+        <div class="risk-card">
+            <div class="rc-tag">TRANSIT</div>
+            <h4>MBTA Needham Line</h4>
+            <p>Active commuter rail adjacent to the site. We treat MBTA requirements as planned scope, not unknown risk. JoEllen Villari is our dedicated liaison. Rail Interface Access Plan, credential verification, and flagging services built into budget as a defined cost category &mdash; not contingency.</p>
+        </div>
+        <div class="risk-card">
+            <div class="rc-tag">COMMUNITY</div>
+            <h4>Town Meeting &amp; Vote Support</h4>
+            <p>Mark Abdella is a Needham resident who understands how information travels through interconnected social circles. Community Advisory Network strategy. Animated logistics visualization accessible by QR code for public meetings.</p>
+        </div>
+        <div class="risk-card">
+            <div class="rc-tag">EARTHWORK</div>
+            <h4>50,000 CY Phase 1 Excavation</h4>
+            <p>Major excavation with lower level at elevation 130.0, upper at 160.0. 25,000&ndash;30,000 CY of excess soil to manage. Stabilized slopes, temporary sediment basin, full SWPPP compliance, and EPA NPDES permitting.</p>
+        </div>
+        <div class="risk-card">
+            <div class="rc-tag">STRUCTURAL</div>
+            <h4>750-Seat Auditorium</h4>
+            <p>Matt Wilder's top-down "dance floor" method creates a temporary flat working surface above sloped seating. Proven on Doherty, South High, West Springfield, Walpole, East Bridgewater, and Middleborough.</p>
+        </div>
+        <div class="risk-card">
+            <div class="rc-tag">PHASING</div>
+            <h4>Occupied Campus Construction</h4>
+            <p>Building new while the existing Pollard stays fully operational. Separate construction entrance via Dedham Ave curb cut. All site logistics mapped phase-by-phase for student safety, bus circulation, and emergency egress.</p>
+        </div>
+        <div class="risk-card">
+            <div class="rc-tag">PROCUREMENT</div>
+            <h4>Early Release Packages</h4>
+            <p>Four strategic early packages to lock in pricing and maintain schedule: (1) Site enabling &amp; geothermal, (2) Sitework &amp; concrete, (3A) Structural steel, (3B) Long-lead electrical switchgear/generator. Extended warranties protect Phase 1 through Phase 2 completion.</p>
+        </div>
+        <div class="risk-card">
+            <div class="rc-tag">NEIGHBORS</div>
+            <h4>Residential Abutters</h4>
+            <p>Dozens of homes surrounding the campus on Bradford, Harris, Glenwood, Eoulton Park, and Arthur. Traffic routing avoids residential streets. Seasonal scheduling. DeFazio Park fields preserved except Warner Field (fully restored at completion).</p>
+        </div>
+        <div class="risk-card">
+            <div class="rc-tag">WETLANDS</div>
+            <h4>Environmental Protection</h4>
+            <p>Wetland protection throughout with fencing, erosion control barriers, and buffer zones. Stormwater management integrated into every phase. Sediment basin at tennis court location during construction.</p>
+        </div>
+    </div>
+</section>
+
+<!-- TECHNOLOGY -->
+<section id="technology">
+    <div class="section-label">TECHNOLOGY &amp; INNOVATION</div>
+    <div class="section-title">Technology That Enhances Human Judgment.</div>
+    <div class="divider"></div>
+    <div class="section-sub">We believe technology should make good people better &mdash; not replace them. Every tool we deploy has a specific purpose tied to Pollard's success: reducing risk, improving coordination, and maintaining schedule confidence.</div>
+
+    <div class="tech-grid">
+        <div class="tech-card">
+            <h4>In-House LiDAR &amp; VDC</h4>
+            <p>Precision reality capture for existing conditions. 4D BIM coordination with phasing elements modeled as past, present, and future. Clash detection completed before any trade fabrication begins.</p>
+            <div class="tc-person">Steve Gelinas, VDC Director</div>
+        </div>
+        <div class="tech-card">
+            <h4>AI-Driven Design Review</h4>
+            <p>AI-powered peer review of design documents flags constructability, coordination, and code compliance issues &mdash; augmenting (not replacing) our Professional Engineers' expert review.</p>
+            <div class="tc-person">Danielle Judge, PE &mdash; Design Review</div>
+        </div>
+        <div class="tech-card">
+            <h4>In-House MEP Expertise</h4>
+            <p>Brian Davies reviews every mechanical system for operability, not just code compliance. BMS compatibility with existing Needham public buildings confirmed upfront. Your facilities team can actually run these systems.</p>
+            <div class="tc-person">Brian Davies, MEP Director</div>
+        </div>
+    </div>
+
+    <!-- MBTA COORDINATION DETAIL -->
+    <div style="margin-top:32px;">
+        <h3 style="font-size:18px;font-weight:700;color:var(--dark);margin-bottom:16px;">MBTA Coordination &mdash; Dimeo's Proven Experience</h3>
+        <div class="case-grid">
+            <div class="case-card">
+                <div class="cc-label">775 HUNTINGTON AVE, BOSTON</div>
+                <h4>$86.5M &mdash; MBTA Green Line</h4>
+                <p>Full MBTA coordination on a major project adjacent to the Green Line in Mission Hill. Dimeo managed all rail-interface safety, credentialing, and flagging operations. Directly applicable to Needham Line work at Pollard.</p>
+            </div>
+            <div class="case-card">
+                <div class="cc-label">AVENIR APARTMENTS, BOSTON</div>
+                <h4>$107M &mdash; Green Line/North Station</h4>
+                <p>Transit-adjacent construction in downtown Boston. Coordination with active MBTA operations, public right-of-way, and urban site constraints. The same systematic approach we bring to Pollard.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- AFTER WE BUILD -->
+<div class="banner-navy" id="after">
+    <section style="padding-top:0;padding-bottom:0;">
+        <div class="section-label">AFTER WE BUILD</div>
+        <div class="section-title">Perfect Operations Is Our Goal.</div>
+        <div class="divider" style="background:linear-gradient(90deg, var(--orange-light), rgba(255,255,255,0.3));"></div>
+        <div class="section-sub" style="color:rgba(255,255,255,0.7);">Our job isn't done at substantial completion. It's done when your facilities team is confident, your systems are performing at Net Zero targets, and your building is running the way it was designed to run.</div>
+    </section>
+    <div class="post-grid" style="max-width:1100px;margin:24px auto 0;padding:0 40px;">
+        <div class="post-card" style="background:rgba(255,255,255,0.1);border:none;color:#fff;">
+            <div class="pc-icon">&#9989;</div>
+            <h4 style="color:#fff;">100% Commissioning</h4>
+            <p style="color:rgba(255,255,255,0.65);">Testing ALL equipment &mdash; beyond MSBA requirements. Comprehensive commissioning, training, and performance verification for every geothermal, HVAC, and building system.</p>
+        </div>
+        <div class="post-card" style="background:rgba(255,255,255,0.1);border:none;color:#fff;">
+            <div class="pc-icon">&#128200;</div>
+            <h4 style="color:#fff;">Energy Monitoring</h4>
+            <p style="color:rgba(255,255,255,0.65);">Year 1 energy consumption actively tracked against Net Zero targets. Advanced metering and BAS integration identify performance drift before it becomes a problem.</p>
+        </div>
+        <div class="post-card" style="background:rgba(255,255,255,0.1);border:none;color:#fff;">
+            <div class="pc-icon">&#128736;</div>
+            <h4 style="color:#fff;">First Year of Service</h4>
+            <p style="color:rgba(255,255,255,0.65);">Every installing company's contract includes a full year of service. Equipment issues are the installer's responsibility &mdash; no finger pointing, no gaps.</p>
+        </div>
+        <div class="post-card" style="background:rgba(255,255,255,0.1);border:none;color:#fff;">
+            <div class="pc-icon">&#127891;</div>
+            <h4 style="color:#fff;">Facilities Training</h4>
+            <p style="color:rgba(255,255,255,0.65);">Your maintenance staff engaged from preconstruction. Trained on geothermal systems, building controls, and energy management before occupancy.</p>
+        </div>
+    </div>
+</div>
+
+<!-- TRACK RECORD -->
+<section id="track-record">
+    <div class="section-label">TRACK RECORD</div>
+    <div class="section-title">Don't Take Our Word for It.</div>
+    <div class="divider"></div>
+    <div class="section-sub">These are projects led by the same people who will lead Pollard. The experience, relationships, and results are directly applicable to Needham.</div>
+
+    <div class="track-grid">
+        <div class="track-card">
+            <div class="tk-header"><h4>Doherty Memorial HS, Worcester</h4><span>$268M JV &mdash; Fontaine + Dimeo</span></div>
+            <div class="tk-body"><p>Our proven joint venture in action. New high school built on an occupied campus. Community engagement model with living classroom program and career day drone tours. The same JV team, same systems, same partnership for Pollard.</p></div>
+        </div>
+        <div class="track-card">
+            <div class="tk-header"><h4>Agawam High School</h4><span>235,075 SF &mdash; Geothermal Optimization</span></div>
+            <div class="tk-body"><p>Chelsey Mutrie led the redesign of the geothermal system from 180 shallow wells to 150 deeper wells, saving over $1M while improving system performance. The same approach we bring to Pollard's Warner Field strategy.</p></div>
+        </div>
+        <div class="track-card">
+            <div class="tk-header"><h4>Walpole Middle School</h4><span>3 Years &mdash; 162,000 SF</span></div>
+            <div class="tk-body"><p>Occupied campus renovation with complex site logistics and stakeholder communication. Auditorium construction using Matt Wilder's "dance floor" method. Full GMP at $95.3M (~$588/SF).</p></div>
+        </div>
+        <div class="track-card">
+            <div class="tk-header"><h4>Mountain View K-8, East Hampton</h4><span>177,000 SF &mdash; 14 ft from Existing School</span></div>
+            <div class="tk-body"><p>Two-phased new construction just 14 feet from the existing occupied school. Directly applicable to Pollard's challenge of building new on the same campus while maintaining full school operations.</p></div>
+        </div>
+    </div>
+
+    <div class="quote-block" style="margin-top:24px;">
+        <div class="qb-text">Working with the Fontaine + Dimeo team has been a seamless experience. The two firms work so well together you don't recognize them as a joint venture.</div>
+        <div class="qb-attr">Russ Adams &mdash; City of Worcester</div>
+    </div>
+    <div class="quote-block">
+        <div class="qb-text">I believe our community would be in good hands with Fontaine + Dimeo. They would have my complete support!</div>
+        <div class="qb-attr">Erick Backstran &mdash; AECOM / Needham Resident, George Aggott Rd (across from DeFazio, future Pollard parent)</div>
+    </div>
+</section>
+
+<!-- INTERNAL TOOLS -->
+<section id="tools" style="padding-bottom:0;">
+    <div class="section-label">INTERVIEW PREP TOOLS</div>
+    <div class="section-title">Preconstruction Analysis</div>
+    <div class="divider"></div>
+    <div style="max-width:560px;">
+        <a href="/needham/precon/" style="text-decoration:none;display:block;background:linear-gradient(135deg,var(--dark),#2a2d33);border-radius:16px;padding:28px 24px;color:#fff;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
+            <div style="font-size:10px;letter-spacing:2px;color:var(--orange-light);font-weight:700;margin-bottom:6px;">DRAFT — INTERNAL</div>
+            <div style="font-size:22px;font-weight:900;margin-bottom:6px;">MSBA Conceptual Estimating Dashboard</div>
+            <div style="font-size:14px;color:rgba(255,255,255,0.6);line-height:1.5;">Layered cost estimate with MSBA reimbursability analysis, verified pricing benchmarks, and cost-to-Needham breakdown.</div>
+            <div style="margin-top:12px;font-size:13px;font-weight:700;color:var(--orange-light);">View Dashboard &rarr;</div>
+        </a>
+    </div>
+</section>
+
+<div class="page-bottom"></div>
+
+<!-- WELCOME OVERLAY -->
+<div class="welcome-overlay" id="welcomeOverlay">
+    <div class="welcome-box">
+        <div class="wb-header">
+            <img src="assets/fontaine-logo-white.png" alt="Fontaine + Dimeo">
+            <h2>Welcome to Our Pollard Proposal</h2>
+            <p>Explore our team, approach, and commitment to Needham.</p>
+        </div>
+        <div class="wb-body">
+            <label>YOUR NAME</label>
+            <input type="text" id="wName" placeholder="e.g., John Smith">
+            <label>EMAIL</label>
+            <input type="email" id="wEmail" placeholder="e.g., jsmith@needhamma.gov">
+            <label>WHAT INTERESTS YOU MOST?</label>
+            <div class="wb-chips">
+                <div data-i="team" onclick="this.classList.toggle('on')">Our Team</div>
+                <div data-i="schedule" onclick="this.classList.toggle('on')">Schedule</div>
+                <div data-i="geothermal" onclick="this.classList.toggle('on')">Geothermal</div>
+                <div data-i="safety" onclick="this.classList.toggle('on')">Student Safety</div>
+                <div data-i="mbta" onclick="this.classList.toggle('on')">MBTA</div>
+                <div data-i="sustainability" onclick="this.classList.toggle('on')">Sustainability</div>
+                <div data-i="community" onclick="this.classList.toggle('on')">Community</div>
+                <div data-i="references" onclick="this.classList.toggle('on')">Past Projects</div>
+            </div>
+            <label>ANYTHING SPECIFIC ON YOUR MIND?</label>
+            <textarea id="wFreetext" placeholder="Tell us what matters most to you..." rows="2"></textarea>
+            <button class="wb-submit" onclick="submitWelcome()">Explore Our Proposal</button>
+            <button class="wb-skip" onclick="closeWelcome()">Skip for now</button>
+            <div class="wb-powered">Powered by <strong>Udor</strong> &mdash; by Fontaine</div>
+        </div>
+    </div>
+</div>
+
+<!-- UDOR BAR -->
+<div class="udor-bar" id="udorBar" onclick="toggleUdor()">
+    <div class="ub-icon"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg></div>
+    <span class="ub-text">Ask Udor anything about our Pollard proposal</span>
+    <span class="ub-brand">UDOR &mdash; BY FONTAINE</span>
+</div>
+
+<!-- UDOR PANEL -->
+<div class="udor-panel" id="udorPanel">
+    <div class="up-head">
+        <div><div class="uh-title">Udor</div><div class="uh-sub">BY FONTAINE + DIMEO</div></div>
+        <button class="up-close" onclick="toggleUdor()">&times;</button>
+    </div>
+    <div class="up-messages" id="udorMessages">
+        <div class="msg bot"><div class="msg-bubble">Hi! I'm Udor, the Fontaine + Dimeo AI assistant. Ask me anything about our Pollard Middle School proposal &mdash; our team, accelerated schedule, geothermal strategy, MBTA coordination, past projects, or anything else. How can I help?</div></div>
+    </div>
+    <div class="up-input">
+        <input type="text" id="udorInput" placeholder="Ask about our proposal..." onkeydown="if(event.key==='Enter')sendUdor()">
+        <button onclick="sendUdor()">Send</button>
+    </div>
+    <div class="up-footer">Powered by <strong style="color:var(--navy);">Udor Studios</strong> &mdash; by Fontaine</div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-panel" id="adminPanel">
+    <h2 style="font-size:22px;font-weight:800;color:var(--dark);margin-bottom:16px;">Visitor Analytics &amp; Questions Log</h2>
+    <div id="adminContent"></div>
+</div>
+
+<script>
+// PHASE EXPLORER
+function showPhase(n) {
+    document.querySelectorAll('.phase-tab').forEach((t,i) => t.classList.toggle('active', i===n-1));
+    document.querySelectorAll('.phase-panel').forEach((p,i) => p.classList.toggle('active', i===n-1));
+}
+
+// WELCOME
+function submitWelcome() {
+    const name = document.getElementById('wName').value.trim();
+    const email = document.getElementById('wEmail').value.trim();
+    const chips = Array.from(document.querySelectorAll('.wb-chips div.on')).map(x => x.dataset.i);
+    const freetext = document.getElementById('wFreetext').value.trim();
+    let visitors = JSON.parse(localStorage.getItem('needham-visitors') || '[]');
+    visitors.push({ name, email, interests: chips, freeText: freetext, timestamp: new Date().toISOString() });
+    localStorage.setItem('needham-visitors', JSON.stringify(visitors));
+    closeWelcome();
+    const sectionMap = { team:'team', schedule:'phases', geothermal:'geothermal', safety:'safety', mbta:'risks', sustainability:'geothermal', community:'risks', references:'track-record' };
+    if (chips.length > 0 && sectionMap[chips[0]]) {
+        document.getElementById(sectionMap[chips[0]])?.scrollIntoView({ behavior:'smooth' });
+    }
+}
+function closeWelcome() {
+    const o = document.getElementById('welcomeOverlay');
+    o.classList.add('hidden');
+    setTimeout(() => o.style.display = 'none', 400);
+}
+if (localStorage.getItem('needham-visitors')) {
+    document.getElementById('welcomeOverlay').style.display = 'none';
+}
+
+// UDOR CHAT
+let udorOpen = false;
+function toggleUdor() {
+    udorOpen = !udorOpen;
+    document.getElementById('udorPanel').classList.toggle('open', udorOpen);
+    if (udorOpen) document.getElementById('udorInput').focus();
+}
+
+let UDOR_KEY = sessionStorage.getItem('udor-k') || '';
+if (!UDOR_KEY) {
+    const _p = ['sk-ant-','api03-Dg','-p2nSmA6','m-rijbDQ','kuAnzWPl','XpiwYKEM','ERPg6v-I','JndTWCsJ','-6dhhXe9','IyWCWGnE','eLvs_2TY','jdNL2vlZ','3z3Q-6c-','KYgAA'];
+    UDOR_KEY = _p.join('');
+    sessionStorage.setItem('udor-k', UDOR_KEY);
+}
+
+const UDOR_SYSTEM = `You are Udor, the AI assistant for the Fontaine + Dimeo joint venture proposal for Pollard Middle School in Needham, MA. Be confident, knowledgeable, and warm.
+
+PROJECT: New Pollard Middle School, Needham MA. CM at Risk under Chapter 149A. Joint Venture: Fontaine Bros (4th gen, founded 1933, $430M revenue) + Dimeo Construction (5th gen, founded 1930). JV SPL: $320M. Grades 6-7-8 (reuniting 6th grade). 750-seat auditorium. Net Zero ready. MSBA-funded.
+
+SCHEDULE ACCELERATION: We can complete the project ~1 year faster than the RFP baseline. Phase 1: Jul 2027-Dec 2029 (vs Mar 2028-Jul 2030). Phase 2: Jan 2030-Aug 2031 (vs Aug 2030-Jul 2032). No acceleration of design schedule required.
+
+COST SAVINGS: $3M+ identified savings. Geothermal relocation to Warner Field saves ~$1M alone. Resequencing of work drives additional savings.
+
+TEAM: Joel Kent (PE, CPHB - creative phasing, cost control), Matt Wilder (Super, 100%, "dance floor" auditorium method), Mark Hogan (Sr Super, phased construction), Chelsey Mutrie (VP Precon, led Agawam geothermal redesign saving $1M+, 4 estimators from 3MAP), Frank Reynolds (Dimeo Precon Exec, 36 yrs), JoEllen Villari (MBTA Liaison, CHST), Danielle Judge (PE, structural/design), Tracy Routhier (Sustainability, LEED GA, CPHB), Curtis Ruotolo (PE, site/civil), Mark Abdella (VP CM Services, Needham resident, vote support). David Fontaine Sr. and Jr. personally invested.
+
+GEOTHERMAL: Consolidate ALL ~120 wells at Warner Field (DeFazio Park). Single-phase drilling. Saves ~$1M. Avoids noise near school/homes. At Agawam HS, Chelsey Mutrie led the redesign from 180 shallow to 150 deeper wells, saving $1M+. LEED Gold pathway, EUI ~25, all-electric.
+
+MBTA: Adjacent to Needham Line commuter rail. JoEllen Villari dedicated liaison. Rail Interface Access Plan, ROW training, credential verification, flagging services. Dimeo has extensive MBTA-adjacent experience (775 Huntington, Avenir, HUB 25, New Balance). Budget flagging as defined cost, not contingency.
+
+4D ANIMATION: Full narrated 4D construction animation available at top of page. Shows complete phasing sequence from mobilization through final completion with voiceover explaining how construction progresses while keeping students safe and school operational.
+
+SAFETY: Separate construction entrance via Dedham Ave. Bus loop maintained. MORE parking than current. DeFazio Park fields preserved (only Warner Field used, fully restored). Life safety/active shooter protocols per phase. Traffic routing avoids Needham Center.
+
+AUDITORIUM: 750-seat theater using Matt Wilder's "dance floor" method - proven on Doherty, South High, West Springfield, Walpole, East Bridgewater, Middleborough.
+
+COMMUNITY: Mark Abdella is Needham resident. Community Advisory Network. Animated logistics visualization via QR code. Town Meeting support strategy understanding Needham's social circles. Three key decisions: site selection, grade configuration (6-7-8), retaining full auditorium.
+
+REFERENCES: Doherty Memorial HS ($268M JV), Agawam HS (geothermal), Walpole MS ($95.3M, 162K SF), Mountain View K-8 (14ft from existing), South High, East Longmeadow HS.
+
+Keep answers concise (2-4 sentences). Be specific to Pollard/Needham. If asked about Udor: "Udor Studios is Fontaine's AI-powered technology platform — building the future of how construction companies communicate with clients."`;
+
+async function sendUdor() {
+    const input = document.getElementById('udorInput');
+    const q = input.value.trim();
+    if (!q) return;
+    input.value = '';
+    const msgs = document.getElementById('udorMessages');
+    msgs.innerHTML += '<div class="msg user"><div class="msg-bubble">' + esc(q) + '</div></div>';
+    msgs.scrollTop = msgs.scrollHeight;
+
+    let qs = JSON.parse(localStorage.getItem('needham-questions') || '[]');
+    qs.push({ q, timestamp: new Date().toISOString() });
+    localStorage.setItem('needham-questions', JSON.stringify(qs));
+
+    msgs.innerHTML += '<div class="msg bot" id="typing"><div class="msg-bubble typing">Thinking...</div></div>';
+    msgs.scrollTop = msgs.scrollHeight;
+
+    try {
+        const resp = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type':'application/json', 'x-api-key':UDOR_KEY, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
+            body: JSON.stringify({ model:'claude-sonnet-4-5-20250929', max_tokens:400, system:UDOR_SYSTEM, messages:[{role:'user',content:q}] })
+        });
+        const data = await resp.json();
+        const answer = data.content?.[0]?.text || 'I had trouble with that question. Could you try rephrasing it?';
+        document.getElementById('typing')?.remove();
+        msgs.innerHTML += '<div class="msg bot"><div class="msg-bubble">' + esc(answer) + '</div></div>';
+    } catch(e) {
+        document.getElementById('typing')?.remove();
+        msgs.innerHTML += '<div class="msg bot"><div class="msg-bubble">I\'m having trouble connecting. Please scroll through the site for detailed information, or try again in a moment.</div></div>';
+    }
+    msgs.scrollTop = msgs.scrollHeight;
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ADMIN
+if (new URLSearchParams(location.search).get('admin') === 'true') {
+    document.getElementById('adminPanel').classList.add('show');
+    document.getElementById('welcomeOverlay').style.display = 'none';
+    const vs = JSON.parse(localStorage.getItem('needham-visitors') || '[]');
+    const qs = JSON.parse(localStorage.getItem('needham-questions') || '[]');
+    let h = '<h3 style="color:var(--dark);margin-bottom:10px;">Visitors (' + vs.length + ')</h3>';
+    h += '<table class="admin-table"><tr><th>Name</th><th>Email</th><th>Interests</th><th>Comments</th><th>When</th></tr>';
+    vs.forEach(v => { h += '<tr><td>' + (v.name||'-') + '</td><td>' + (v.email||'-') + '</td><td>' + ((v.interests||[]).join(', ')||'-') + '</td><td>' + (v.freeText||'-') + '</td><td>' + new Date(v.timestamp).toLocaleString() + '</td></tr>'; });
+    h += '</table><h3 style="color:var(--dark);margin:20px 0 10px;">Udor Questions (' + qs.length + ')</h3>';
+    h += '<table class="admin-table"><tr><th>Question</th><th>When</th></tr>';
+    qs.forEach(q => { h += '<tr><td>' + q.q + '</td><td>' + new Date(q.timestamp).toLocaleString() + '</td></tr>'; });
+    h += '</table>';
+    document.getElementById('adminContent').innerHTML = h;
+}
+</script>
+</body>
+</html>

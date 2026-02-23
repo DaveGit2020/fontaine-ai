@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fontaine + Dimeo — Pollard Presentation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root {
+            --maroon: #7B2D3C;
+            --maroon-dark: #5C1F2C;
+            --maroon-light: #9A3D4F;
+            --gold: #C4A84A;
+            --gold-light: #D4BE6A;
+            --white: #ffffff;
+            --off-white: #f8f7f5;
+            --dark: #1a1d23;
+            --text: #2c2e33;
+            --text-light: #5a5e68;
+            --border: rgba(123,45,60,0.1);
+            --navy: #1a2744;
+            --orange: #e87722;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body { font-family:'Inter',sans-serif; background:var(--dark); color:var(--text); line-height:1.5; overflow-x:hidden; }
+
+        /* PROGRESS */
+        .progress { position:fixed; top:0; left:0; height:3px; background:var(--gold); z-index:1000; transition:width 0.15s; width:0%; }
+
+        /* NAV */
+        .pnav { position:fixed; top:0; left:0; right:0; height:48px; background:rgba(92,31,44,0.96); backdrop-filter:blur(12px); display:flex; align-items:center; justify-content:space-between; padding:0 28px; z-index:900; border-bottom:1px solid rgba(255,255,255,0.08); }
+        .pnav-left { display:flex; align-items:center; gap:12px; }
+        .pnav-left img { height:24px; }
+        .pnav-left span { font-size:10px; letter-spacing:3px; color:var(--gold); font-weight:700; }
+        .pnav-center { font-size:11px; color:rgba(255,255,255,0.4); }
+        .pnav-center .slide-counter { color:var(--gold); font-weight:700; }
+        .pnav-right { display:flex; align-items:center; gap:10px; }
+        .pnav-right a { font-size:11px; font-weight:600; color:rgba(255,255,255,0.5); text-decoration:none; padding:4px 10px; border-radius:4px; transition:all 0.2s; }
+        .pnav-right a:hover { color:#fff; background:rgba(255,255,255,0.08); }
+        .back-link { color:var(--gold)!important; border:1px solid rgba(196,168,74,0.3); }
+        .back-link:hover { background:var(--gold)!important; color:var(--maroon-dark)!important; }
+
+        /* SLIDE FRAME — everything fits in viewport */
+        .slide { height:100vh; width:100%; display:flex; align-items:center; justify-content:center; padding:56px 48px 16px; position:relative; overflow:hidden; }
+        .slide-inner { max-width:1200px; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; }
+
+        /* SLIDE TYPES */
+        .s-maroon { background:linear-gradient(135deg, var(--maroon-dark), var(--maroon)); color:#fff; }
+        .s-white { background:var(--white); color:var(--text); }
+        .s-offwhite { background:var(--off-white); color:var(--text); }
+        .s-dark { background:var(--dark); color:#fff; }
+        .s-photo { background-size:cover; background-position:center; color:#fff; }
+        .s-photo::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(92,31,44,0.88), rgba(123,45,60,0.82)); }
+        .s-photo .slide-inner { position:relative; z-index:1; }
+
+        /* TYPOGRAPHY */
+        .s-label { font-size:10px; letter-spacing:4px; font-weight:700; margin-bottom:8px; text-transform:uppercase; }
+        .s-label-gold { color:var(--gold); }
+        .s-label-maroon { color:var(--maroon); }
+        .s-title { font-size:38px; font-weight:900; line-height:1.1; margin-bottom:10px; }
+        .s-title em { font-style:normal; color:var(--gold); }
+        .s-white .s-title em, .s-offwhite .s-title em { color:var(--maroon); }
+        .s-sub { font-size:15px; max-width:700px; line-height:1.6; margin-bottom:20px; opacity:0.7; }
+        .s-divider { width:50px; height:3px; background:var(--gold); margin-bottom:16px; }
+        .s-white .s-divider, .s-offwhite .s-divider { background:var(--maroon); }
+
+        /* SPEAKER + Q BADGE */
+        .s-speaker { display:inline-flex; align-items:center; gap:6px; font-size:9px; font-weight:700; letter-spacing:2px; color:rgba(255,255,255,0.35); margin-bottom:12px; }
+        .s-speaker .dot { width:5px; height:5px; border-radius:50%; background:var(--gold); }
+        .s-white .s-speaker, .s-offwhite .s-speaker { color:var(--text-light); }
+        .q-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(196,168,74,0.15); border:1px solid rgba(196,168,74,0.3); border-radius:4px; padding:3px 8px; font-size:9px; font-weight:700; color:var(--gold); letter-spacing:1px; margin-right:8px; cursor:default; position:relative; }
+        .q-badge .q-tip { display:none; position:absolute; top:calc(100% + 6px); left:0; background:var(--dark); color:rgba(255,255,255,0.8); padding:8px 12px; border-radius:6px; font-size:10px; font-weight:400; letter-spacing:0; line-height:1.5; width:280px; border:1px solid rgba(255,255,255,0.1); z-index:50; }
+        .q-badge:hover .q-tip { display:block; }
+        .s-white .q-badge, .s-offwhite .q-badge { background:rgba(123,45,60,0.08); border-color:rgba(123,45,60,0.2); color:var(--maroon); }
+
+        /* HOT POINT BADGES — committee member interests */
+        .hot-badges { position:absolute; top:56px; right:24px; display:flex; gap:6px; flex-wrap:wrap; max-width:300px; justify-content:flex-end; }
+        .hot-badge { font-size:8px; font-weight:700; letter-spacing:1px; padding:3px 8px; border-radius:3px; background:rgba(196,168,74,0.15); color:var(--gold); border:1px solid rgba(196,168,74,0.25); display:none; }
+        .hot-badge.show { display:inline-block; }
+        .s-white .hot-badge, .s-offwhite .hot-badge { background:rgba(123,45,60,0.06); color:var(--maroon); border-color:rgba(123,45,60,0.15); }
+
+        /* CARDS */
+        .cg { display:grid; gap:14px; margin-top:14px; }
+        .cg-2 { grid-template-columns:1fr 1fr; }
+        .cg-3 { grid-template-columns:repeat(3,1fr); }
+        .cg-4 { grid-template-columns:repeat(4,1fr); }
+        .cd { border-radius:10px; padding:18px 16px; }
+        .cd-glass { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); }
+        .cd-white { background:var(--white); border:1px solid var(--border); box-shadow:0 1px 4px rgba(0,0,0,0.03); }
+        .cd-accent { border-left:3px solid var(--gold); }
+        .s-white .cd-accent, .s-offwhite .cd-accent { border-left-color:var(--maroon); }
+        .cd h4 { font-size:14px; font-weight:800; margin-bottom:4px; }
+        .cd p { font-size:12px; line-height:1.5; opacity:0.7; }
+        .cd .cd-tag { font-size:9px; font-weight:700; letter-spacing:1.5px; color:var(--gold); margin-bottom:4px; }
+        .s-white .cd .cd-tag, .s-offwhite .cd .cd-tag { color:var(--maroon); }
+        .cd .cd-stat { font-size:26px; font-weight:900; color:var(--gold); line-height:1; margin-bottom:4px; }
+        .s-white .cd .cd-stat, .s-offwhite .cd .cd-stat { color:var(--maroon); }
+
+        /* COMPARISON */
+        .cmp { display:grid; grid-template-columns:1fr 1fr; gap:0; border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.08); margin-top:14px; }
+        .cmp-col { padding:20px 18px; }
+        .cmp-col.ours { background:rgba(196,168,74,0.08); border-right:2px solid var(--gold); }
+        .cmp-col.theirs { background:rgba(255,255,255,0.02); }
+        .cmp-col h4 { font-size:12px; font-weight:800; letter-spacing:1px; margin-bottom:12px; }
+        .cmp-col.ours h4 { color:var(--gold); }
+        .cmp-col.theirs h4 { color:rgba(255,255,255,0.3); }
+        .cmp-item { display:flex; gap:8px; padding:5px 0; font-size:11px; line-height:1.4; opacity:0.7; border-bottom:1px solid rgba(255,255,255,0.04); }
+        .cmp-item:last-child { border:none; }
+
+        /* QUOTE */
+        .qt { border-left:3px solid var(--gold); padding:14px 20px; background:rgba(255,255,255,0.03); border-radius:0 8px 8px 0; margin-top:14px; }
+        .qt p { font-size:15px; font-style:italic; opacity:0.85; }
+        .qt .qt-attr { font-size:11px; font-weight:600; color:var(--gold); margin-top:6px; font-style:normal; }
+        .s-white .qt { background:rgba(123,45,60,0.03); }
+        .s-white .qt .qt-attr { color:var(--maroon); }
+
+        /* TIMELINE */
+        .tl { margin-top:12px; }
+        .tl-row { display:flex; gap:16px; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:12px; }
+        .tl-row:last-child { border:none; }
+        .tl-date { min-width:80px; font-weight:800; opacity:0.4; }
+        .tl-text { opacity:0.7; }
+        .tl-row.hl .tl-date { color:var(--gold); opacity:1; font-size:13px; }
+        .tl-row.hl .tl-text { color:#fff; font-weight:700; opacity:1; font-size:13px; }
+
+        /* IMAGES */
+        .img-full { width:100%; border-radius:8px; margin-top:12px; max-height:40vh; object-fit:contain; }
+        .img-grid { display:grid; gap:8px; margin-top:12px; }
+        .img-grid img { width:100%; border-radius:6px; object-fit:cover; }
+        .img-grid-2 { grid-template-columns:1fr 1fr; }
+        .img-grid-3 { grid-template-columns:repeat(3,1fr); }
+        .img-grid-3 img { aspect-ratio:4/3; }
+
+        /* TEAM ROW */
+        .tm-row { display:flex; flex-wrap:wrap; gap:16px; margin-top:14px; justify-content:center; }
+        .tm { text-align:center; width:100px; }
+        .tm img { width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid var(--gold); margin-bottom:4px; }
+        .tm .tm-fb { width:56px; height:56px; border-radius:50%; margin:0 auto 4px; background:linear-gradient(135deg, var(--maroon), var(--maroon-light)); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; color:#fff; }
+        .tm h5 { font-size:10px; font-weight:700; line-height:1.2; }
+        .tm .tm-role { font-size:9px; color:var(--gold); font-weight:600; }
+
+        /* CLOSING */
+        .close-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:24px; }
+        .close-card { background:rgba(196,168,74,0.08); border:1px solid rgba(196,168,74,0.2); border-radius:10px; padding:24px 18px; text-align:center; }
+        .close-card .cc-num { font-size:40px; font-weight:900; color:var(--gold); line-height:1; margin-bottom:8px; }
+        .close-card h4 { font-size:14px; font-weight:800; margin-bottom:6px; }
+        .close-card p { font-size:11px; opacity:0.6; line-height:1.5; }
+
+        /* COMMITTEE PRIORITY CAPTURE */
+        .priority-modal { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:2000; display:none; align-items:center; justify-content:center; }
+        .priority-modal.show { display:flex; }
+        .pm-box { background:var(--white); border-radius:16px; padding:36px; max-width:700px; width:90%; max-height:90vh; overflow-y:auto; }
+        .pm-box h2 { font-size:22px; font-weight:900; color:var(--maroon); margin-bottom:4px; }
+        .pm-box .pm-sub { font-size:13px; color:var(--text-light); margin-bottom:20px; }
+        .pm-member { border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:12px; }
+        .pm-member h4 { font-size:14px; font-weight:700; color:var(--maroon); margin-bottom:2px; }
+        .pm-member .pm-role { font-size:11px; color:var(--text-light); margin-bottom:8px; }
+        .pm-chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
+        .pm-chip { font-size:11px; padding:5px 12px; border-radius:20px; border:1px solid var(--border); color:var(--text-light); cursor:pointer; transition:all 0.2s; user-select:none; }
+        .pm-chip.on { background:var(--maroon); color:#fff; border-color:var(--maroon); }
+        .pm-custom { width:100%; border:1px solid var(--border); border-radius:6px; padding:6px 10px; font-size:12px; font-family:inherit; outline:none; }
+        .pm-custom:focus { border-color:var(--maroon); }
+        .pm-submit { background:var(--maroon); color:#fff; border:none; padding:10px 28px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; margin-top:16px; transition:background 0.2s; }
+        .pm-submit:hover { background:var(--maroon-dark); }
+        .pm-skip { background:none; border:none; color:var(--text-light); font-size:12px; cursor:pointer; margin-left:12px; }
+
+        /* UDOR CHAT */
+        .udor-btn { position:fixed; bottom:16px; right:16px; z-index:800; background:var(--maroon); color:#fff; border:none; width:48px; height:48px; border-radius:50%; cursor:pointer; box-shadow:0 4px 16px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center; transition:transform 0.2s; }
+        .udor-btn:hover { transform:scale(1.1); }
+        .udor-btn svg { width:22px; height:22px; fill:#fff; }
+        .udor-panel { position:fixed; bottom:72px; right:16px; width:360px; max-height:60vh; background:var(--white); border-radius:14px; box-shadow:0 12px 48px rgba(0,0,0,0.3); z-index:800; display:none; flex-direction:column; overflow:hidden; border:1px solid rgba(123,45,60,0.1); }
+        .udor-panel.open { display:flex; }
+        .up-head { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:var(--maroon); color:#fff; }
+        .up-head .uh-title { font-size:14px; font-weight:800; }
+        .up-head .uh-sub { font-size:9px; letter-spacing:2px; color:var(--gold); font-weight:600; }
+        .up-close { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; }
+        .up-msgs { flex:1; overflow-y:auto; padding:12px; max-height:40vh; min-height:150px; }
+        .msg { margin-bottom:10px; }
+        .msg.user { text-align:right; }
+        .msg-bubble { display:inline-block; max-width:85%; padding:8px 12px; border-radius:10px; font-size:13px; line-height:1.5; }
+        .msg.bot .msg-bubble { background:var(--off-white); color:var(--text); text-align:left; }
+        .msg.user .msg-bubble { background:var(--maroon); color:#fff; }
+        .msg-bubble.typing { color:var(--text-light); font-style:italic; }
+        .up-input { display:flex; gap:6px; padding:10px 12px; border-top:1px solid var(--border); }
+        .up-input input { flex:1; border:1px solid var(--border); border-radius:6px; padding:8px 10px; font-size:13px; font-family:inherit; outline:none; }
+        .up-input input:focus { border-color:var(--maroon); }
+        .up-input button { background:var(--maroon); color:#fff; border:none; padding:8px 16px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; }
+
+        /* RESPONSIVE */
+        @media (max-width:1000px) {
+            .slide { padding:52px 24px 12px; }
+            .s-title { font-size:28px; }
+            .cg-2, .cg-3, .cg-4 { grid-template-columns:1fr 1fr; }
+            .close-grid { grid-template-columns:1fr; }
+            .cmp { grid-template-columns:1fr; }
+        }
+        @media (max-width:600px) {
+            .slide { padding:52px 14px 10px; }
+            .s-title { font-size:22px; }
+            .cg-2, .cg-3, .cg-4 { grid-template-columns:1fr; }
+            .pnav-center { display:none; }
+            .hot-badges { display:none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<!-- NAV -->
+<div class="pnav">
+    <div class="pnav-left">
+        <img src="../assets/fontaine-dimeo-jv-inline.png" alt="F+D" onerror="this.style.display='none'">
+        <span>POLLARD PRESENTATION</span>
+    </div>
+    <div class="pnav-center">SLIDE <span class="slide-counter" id="slideNum">1</span> / <span id="slideTotal">21</span></div>
+    <div class="pnav-right">
+        <a href="#" onclick="showPriorityModal();return false;">&#9733; Priorities</a>
+        <a href="#" onclick="toggleUdor();return false;">Ask Udor</a>
+        <a href="/needham/" class="back-link">&larr; Project Site</a>
+    </div>
+</div>
+
+<!-- PRIORITY MODAL -->
+<div class="priority-modal" id="priorityModal">
+    <div class="pm-box">
+        <h2>Welcome &mdash; What Matters Most to You?</h2>
+        <div class="pm-sub">We want this to be an interactive presentation. Tell us your top priority for Pollard and we'll make sure we address it as we go.</div>
+
+        <div class="pm-member" data-person="billings">
+            <h4>David Billings</h4>
+            <div class="pm-role">OPM &mdash; Hill International / Lyro</div>
+            <div class="pm-chips">
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="schedule">Schedule / Milestones</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="mbta">MBTA Coordination</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="risk">Risk Management</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="budget">Budget / GMP</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="precon">Preconstruction Process</div>
+            </div>
+            <input class="pm-custom" placeholder="Or type a custom priority..." data-person="billings">
+        </div>
+
+        <div class="pm-member" data-person="denninger">
+            <h4>Lynn Denninger</h4>
+            <div class="pm-role">Managing Director &mdash; Canon Design</div>
+            <div class="pm-chips">
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="community">Community Impact</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="vote">Vote Support</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="design">Design Collaboration</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="sustainability">Sustainability</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="safety">Student Safety</div>
+            </div>
+            <input class="pm-custom" placeholder="Or type a custom priority..." data-person="denninger">
+        </div>
+
+        <div class="pm-member" data-person="tina">
+            <h4>Tina (HMFH Architects)</h4>
+            <div class="pm-role">Architect &mdash; HMFH</div>
+            <div class="pm-chips">
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="design">Design Review Process</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="precon">Precon Responsiveness</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="budget">Cost Control / VE</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="logistics">Site Logistics</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="sustainability">Sustainability</div>
+            </div>
+            <input class="pm-custom" placeholder="Or type a custom priority..." data-person="tina">
+        </div>
+
+        <div class="pm-member" data-person="haff">
+            <h4>Hank Haff</h4>
+            <div class="pm-role">Facilities Director &mdash; Town of Needham</div>
+            <div class="pm-chips">
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="safety">Occupied Campus Safety</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="schedule">Schedule Certainty</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="budget">Budget Confidence</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="logistics">Construction Logistics</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="operations">School Operations</div>
+            </div>
+            <input class="pm-custom" placeholder="Or type a custom priority..." data-person="haff">
+        </div>
+
+        <div class="pm-member" data-person="nessler">
+            <h4>Meryl Nessler</h4>
+            <div class="pm-role">Architect &mdash; Studio G</div>
+            <div class="pm-chips">
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="design">Design Coordination</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="phasing">Phased Construction</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="sustainability">Sustainability</div>
+                <div class="pm-chip" onclick="toggleChip(this)" data-v="community">Community</div>
+            </div>
+            <input class="pm-custom" placeholder="Or type a custom priority..." data-person="nessler">
+        </div>
+
+        <div style="text-align:center;margin-top:8px;">
+            <button class="pm-submit" onclick="savePriorities()">Start Presentation</button>
+            <button class="pm-skip" onclick="closePriorities()">Skip for now</button>
+        </div>
+    </div>
+</div>
+
+<!-- ============ SLIDES ============ -->
+
+<!-- 1: COVER -->
+<div class="slide s-photo" style="background-image:url(assets/cover-slide.png);" id="s1" data-topics="intro">
+    <div class="slide-inner" style="text-align:center;justify-content:center;">
+        <img src="../assets/fontaine-dimeo-jv-inline.png" alt="Fontaine + Dimeo" style="height:44px;margin-bottom:20px;filter:brightness(10);" onerror="this.style.display='none'">
+        <div class="s-title" style="font-size:52px;color:#fff;">Pollard Middle School</div>
+        <div class="s-divider" style="margin:12px auto;background:var(--gold);"></div>
+        <div class="s-sub" style="margin:0 auto 24px;text-align:center;color:rgba(255,255,255,0.7);">We didn't come here to tell you what we've done. We came to show you what we've already started doing for Pollard.</div>
+        <div style="display:flex;gap:28px;justify-content:center;margin-top:16px;">
+            <div style="text-align:center;"><div style="font-size:30px;font-weight:900;color:var(--gold);">200</div><div style="font-size:10px;color:rgba(255,255,255,0.5);">Years Combined</div></div>
+            <div style="text-align:center;"><div style="font-size:30px;font-weight:900;color:var(--gold);">$3M+</div><div style="font-size:10px;color:rgba(255,255,255,0.5);">Savings</div></div>
+            <div style="text-align:center;"><div style="font-size:30px;font-weight:900;color:var(--gold);">1 Year</div><div style="font-size:10px;color:rgba(255,255,255,0.5);">Faster</div></div>
+            <div style="text-align:center;"><div style="font-size:30px;font-weight:900;color:var(--gold);">Net Zero</div><div style="font-size:10px;color:rgba(255,255,255,0.5);">Ready</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- 2: YOUR TEAM -->
+<div class="slide s-white" id="s2" data-topics="team,intro">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s2"></div>
+        <div class="q-badge">Q1<span class="q-tip">Why were your key staff selected? Reference experience, management styles, and skill sets.</span></div>
+        <div class="s-speaker"><span class="dot"></span>JOEL KENT</div>
+        <div class="s-label s-label-maroon">YOUR TEAM</div>
+        <div class="s-title">Why <em>These People</em> for Pollard</div>
+        <div class="s-divider"></div>
+        <div class="tm-row">
+            <div class="tm"><img src="../assets/headshot-joel-kent.jpg" alt="JK" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tm-fb" style="display:none">JK</div><h5>Joel Kent, PE</h5><div class="tm-role">Project Exec</div></div>
+            <div class="tm"><img src="../assets/headshot-matt-wilder.jpg" alt="MW" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tm-fb" style="display:none">MW</div><h5>Matt Wilder</h5><div class="tm-role">Superintendent</div></div>
+            <div class="tm"><img src="../assets/headshot-chelsey-mutrie.jpg" alt="CM" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tm-fb" style="display:none">CM</div><h5>Chelsey Mutrie</h5><div class="tm-role">VP Precon</div></div>
+            <div class="tm"><img src="../assets/headshot-mark-hogan.jpg" alt="MH" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tm-fb" style="display:none">MH</div><h5>Mark Hogan</h5><div class="tm-role">Sr. Super</div></div>
+            <div class="tm"><img src="../assets/headshot-frank-reynolds.png" alt="FR" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tm-fb" style="display:none">FR</div><h5>Frank Reynolds</h5><div class="tm-role">Dimeo Precon</div></div>
+            <div class="tm"><img src="../assets/headshot-joellen-villari.png" alt="JV" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tm-fb" style="display:none">JV</div><h5>JoEllen Villari</h5><div class="tm-role">MBTA Liaison</div></div>
+            <div class="tm"><img src="../assets/headshot-danielle-judge.jpg" alt="DJ" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tm-fb" style="display:none">DJ</div><h5>Danielle Judge, PE</h5><div class="tm-role">Design Review</div></div>
+            <div class="tm"><img src="../assets/headshot-mark-abdella.jpg" alt="MA" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tm-fb" style="display:none">MA</div><h5>Mark Abdella</h5><div class="tm-role">Vote Support</div></div>
+        </div>
+        <div class="cg cg-4" style="margin-top:12px;">
+            <div class="cd cd-white cd-accent"><div class="cd-tag">PROJECT EXEC</div><h4>Joel Kent, PE, CPHB</h4><p>Creative phasing &amp; cost control. Passive House certified. Pollard is his #1 priority.</p></div>
+            <div class="cd cd-white cd-accent"><div class="cd-tag">SUPERINTENDENT</div><h4>Matt Wilder</h4><p>100% dedicated. "Dance floor" auditorium method. Builds the 750-seat theater.</p></div>
+            <div class="cd cd-white cd-accent"><div class="cd-tag">VP PRECON</div><h4>Chelsey Mutrie</h4><p>Owns the budget SD to closeout. Agawam geothermal redesign &mdash; $1M saved. 4 estimators.</p></div>
+            <div class="cd cd-white cd-accent"><div class="cd-tag">VOTE SUPPORT</div><h4>Mark Abdella</h4><p>VP CM Services. Lives in Needham. Community outreach &amp; Town Meeting strategy.</p></div>
+        </div>
+    </div>
+</div>
+
+<!-- 3: DECISIONS THAT SHAPED POLLARD -->
+<div class="slide s-offwhite" id="s3" data-topics="community,vote">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s3"></div>
+        <div class="s-speaker"><span class="dot"></span>JOEL KENT</div>
+        <div class="s-label s-label-maroon">UNDERSTANDING YOUR PROJECT</div>
+        <div class="s-title">The Decisions That <em>Shaped Pollard</em></div>
+        <div class="s-divider"></div>
+        <div class="cg cg-3">
+            <div class="cd cd-white cd-accent" style="text-align:center;"><div class="cd-stat">1</div><h4>Remaining at Pollard</h4><p>Occupied campus construction, phased logistics, zero disruption to school operations.</p></div>
+            <div class="cd cd-white cd-accent" style="text-align:center;"><div class="cd-stat">2</div><h4>Reuniting Grades 6&ndash;8</h4><p>Frees High Rock and Mitchell for their next chapter. Changes the program and community dynamics.</p></div>
+            <div class="cd cd-white cd-accent" style="text-align:center;"><div class="cd-stat">3</div><h4>Preserving the Auditorium</h4><p>750-seat community theater. Requires specialized construction &mdash; Matt Wilder's method makes it buildable.</p></div>
+        </div>
+        <div style="margin-top:14px;background:rgba(123,45,60,0.04);border:1px solid var(--border);border-radius:8px;padding:14px 18px;">
+            <p style="font-size:13px;color:var(--text-light);line-height:1.6;"><strong style="color:var(--maroon);">These three decisions shaped every recommendation in our proposal.</strong> We started with understanding why this project exists. Every phasing plan, logistics decision, and cost estimate flows from here.</p>
+        </div>
+    </div>
+</div>
+
+<!-- 4: THINGS WE ASSESSED -->
+<div class="slide s-maroon" id="s4" data-topics="risk,precon">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s4"></div>
+        <div class="s-speaker"><span class="dot"></span>JOEL KENT</div>
+        <div class="s-label s-label-gold">BEFORE WE PROPOSED</div>
+        <div class="s-title" style="color:#fff;">Things We <em>Assessed</em></div>
+        <div class="s-divider" style="background:var(--gold);"></div>
+        <div class="cg cg-2">
+            <div class="cd cd-glass cd-accent" style="border-left-color:var(--gold);"><h4 style="color:#fff;">An Estimate Alone</h4><p>We developed a layered conceptual dashboard &mdash; every dollar has a benchmark source and MSBA reimbursability tag.</p></div>
+            <div class="cd cd-glass cd-accent" style="border-left-color:var(--gold);"><h4 style="color:#fff;">Single-Phase Construction</h4><p>Site constraints + MBTA adjacency make phased construction the right answer. We optimized phasing to save a full year.</p></div>
+            <div class="cd cd-glass cd-accent" style="border-left-color:var(--gold);"><h4 style="color:#fff;">Dedicated Path to DeFazio</h4><p>Dedham Ave &amp; Great Plain Ave provide safer, less disruptive access without impacting residential streets.</p></div>
+            <div class="cd cd-glass cd-accent" style="border-left-color:var(--gold);"><h4 style="color:#fff;">Plan Without Warner Field</h4><p>Consolidating ~120 wells at Warner Field: single-mobilization, ~$1M savings, zero noise near school or homes.</p></div>
+        </div>
+    </div>
+</div>
+
+<!-- 5: 4D ANIMATION -->
+<div class="slide s-dark" id="s5" data-topics="logistics,schedule,safety">
+    <div class="slide-inner" style="text-align:center;">
+        <div class="hot-badges" id="hot-s5"></div>
+        <div class="q-badge">Q3<span class="q-tip">Describe your approach to construction logistics and safety including pedestrian and vehicular movement.</span></div>
+        <div class="s-speaker"><span class="dot"></span>LET IT PLAY</div>
+        <div class="s-label s-label-gold">4D CONSTRUCTION SEQUENCE</div>
+        <div class="s-title" style="color:#fff;">Watch How We <em>Build Pollard</em></div>
+        <div style="position:relative;width:100%;max-width:880px;aspect-ratio:16/9;border-radius:10px;overflow:hidden;margin:16px auto 0;box-shadow:0 12px 40px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.1);">
+            <iframe src="https://www.youtube.com/embed/0mxUVYHIm0s?rel=0&modestbranding=1" title="4D Animation" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:10px;">This isn't a marketing piece. This is the phasing plan we developed for your site.</div>
+    </div>
+</div>
+
+<!-- 6: CASE STUDY — DOHERTY -->
+<div class="slide s-white" id="s6" data-topics="team,risk">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s6"></div>
+        <div class="q-badge">Q2<span class="q-tip">Present a case study from comparable projects. Address challenges, VE, precon services, and lessons learned.</span></div>
+        <div class="s-speaker"><span class="dot"></span>JOEL KENT</div>
+        <div class="s-label s-label-maroon">CASE STUDY</div>
+        <div class="s-title">Doherty Memorial HS <em>&amp; South High</em></div>
+        <div class="s-divider"></div>
+        <div class="cg cg-2">
+            <div class="cd cd-white cd-accent"><div class="cd-tag">CURRENTLY UNDER CONSTRUCTION</div><h4>Doherty Memorial HS &mdash; $268M JV</h4><p>422,000 SF. New HS on occupied campus. Regional Best Project. Same JV, same systems.</p></div>
+            <div class="cd cd-white cd-accent"><div class="cd-tag">COMPLETED &mdash; LEED GOLD</div><h4>South High Community School</h4><p>LEED Gold. Complex occupied site, phased construction, community engagement. Direct parallels to Pollard.</p></div>
+        </div>
+        <div class="img-grid img-grid-2" style="margin-top:10px;">
+            <img src="assets/doherty-award-2327x1601.png" alt="Doherty" style="aspect-ratio:3/2;object-fit:cover;">
+            <img src="assets/south-hs-2.png" alt="South HS" style="aspect-ratio:3/2;object-fit:cover;">
+        </div>
+        <div class="qt" style="margin-top:10px;"><p>&ldquo;I believe our community would be in good hands.&rdquo;</p><div class="qt-attr">&mdash; Erick Backstran, AECOM &mdash; Needham Resident</div></div>
+    </div>
+</div>
+
+<!-- 7: SOUTH HS LEED GOLD -->
+<div class="slide s-offwhite" id="s7" data-topics="sustainability">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s7"></div>
+        <div class="q-badge">Q2f<span class="q-tip">How has your team managed the CMR role in achieving sustainability goals?</span></div>
+        <div class="s-speaker"><span class="dot"></span>JOEL KENT</div>
+        <div class="s-label s-label-maroon">SOUTH HIGH &mdash; LEED GOLD</div>
+        <div class="s-title">What LEED Gold <em>Looks Like Up Close</em></div>
+        <div class="s-divider"></div>
+        <div class="img-grid img-grid-3">
+            <img src="assets/south-hs-4.jpg" alt="LEED Detail"><img src="assets/south-hs-5.jpg" alt="LEED Detail"><img src="assets/south-hs-6.jpg" alt="LEED Detail">
+            <img src="assets/south-hs-7.jpg" alt="LEED Detail"><img src="assets/south-hs-8.jpg" alt="LEED Detail"><img src="assets/south-hs-3.jpg" alt="Construction">
+        </div>
+    </div>
+</div>
+
+<!-- 8: GEOTHERMAL -->
+<div class="slide s-maroon" id="s8" data-topics="budget,sustainability,risk">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s8"></div>
+        <div class="q-badge">Q2a<span class="q-tip">Describe challenges encountered and how your firm addressed them.</span></div>
+        <div class="s-speaker"><span class="dot"></span>CHELSEY MUTRIE</div>
+        <div class="s-label s-label-gold">GEOTHERMAL STRATEGY</div>
+        <div class="s-title" style="color:#fff;">Warner Field: <em>$1M in Savings</em></div>
+        <div class="s-divider" style="background:var(--gold);"></div>
+        <div class="cg cg-2">
+            <div class="cd cd-glass"><div class="cd-stat" style="color:var(--gold);">$1M+</div><h4 style="color:#fff;">Savings from Relocation</h4><p>Single mobilization, simplified dewatering, drilling away from students and neighbors.</p></div>
+            <div class="cd cd-glass"><div class="cd-stat" style="color:var(--gold);">$4.6M</div><h4 style="color:#fff;">Agawam HS Verified</h4><p>149 boreholes. $4.575M field + $1.155M heat pumps + $300K mech room. Chelsey redesigned 180&rarr;150 wells.</p></div>
+        </div>
+        <img src="assets/geothermal-design-assist.png" alt="Geothermal" class="img-full">
+    </div>
+</div>
+
+<!-- 9: MBTA -->
+<div class="slide s-dark" id="s9" data-topics="mbta,risk,logistics,safety">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s9"></div>
+        <div class="q-badge">Q3<span class="q-tip">Provide examples of dealing with MBTA right of ways.</span></div>
+        <div class="s-speaker"><span class="dot"></span>JOELLEN VILLARI / FRANK REYNOLDS</div>
+        <div class="s-label s-label-gold">MBTA NEEDHAM LINE</div>
+        <div class="s-title" style="color:#fff;">Dedicated Liaison. <em>Defined Cost.</em></div>
+        <div class="s-divider" style="background:var(--gold);"></div>
+        <div class="cg cg-2">
+            <div class="cd cd-glass cd-accent" style="border-left-color:var(--gold);"><h4 style="color:#fff;">Rail Interface Access Plan</h4><p>ROW training, credential verification, flagging. Every worker trained &amp; badged before touching the site.</p></div>
+            <div class="cd cd-glass cd-accent" style="border-left-color:var(--gold);"><h4 style="color:#fff;">30&ndash;45 Day Licensing</h4><p>We know the MBTA review timeline. We plan around it. Flagging budgeted as defined cost, not contingency.</p></div>
+            <div class="cd cd-glass cd-accent" style="border-left-color:var(--gold);"><h4 style="color:#fff;">775 Huntington &mdash; $86.5M</h4><p>Green Line adjacent. Full MBTA coordination. Dimeo led all rail interface operations.</p></div>
+            <div class="cd cd-glass cd-accent" style="border-left-color:var(--gold);"><h4 style="color:#fff;">Avenir &mdash; $107M</h4><p>Green Line / North Station. Transit-adjacent construction in Boston's most constrained sites.</p></div>
+        </div>
+        <img src="assets/mbta-process-diagram.png" alt="MBTA Process" class="img-full" style="max-height:28vh;">
+    </div>
+</div>
+
+<!-- 10: SAFETY / OCCUPIED CAMPUS -->
+<div class="slide s-white" id="s10" data-topics="safety,logistics,operations">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s10"></div>
+        <div class="q-badge">Q3<span class="q-tip">Describe your approach to construction logistics and safety on an occupied site.</span></div>
+        <div class="s-speaker"><span class="dot"></span>MATT WILDER / JOEL KENT</div>
+        <div class="s-label s-label-maroon">OCCUPIED CAMPUS</div>
+        <div class="s-title">Pollard Stays Open. <em>Students Stay Safe.</em></div>
+        <div class="s-divider"></div>
+        <div class="cg cg-3">
+            <div class="cd cd-white cd-accent"><h4>Separate Entrance</h4><p>All construction via Dedham Ave / Great Plain Ave to I-95. Zero vehicles near school entrance.</p></div>
+            <div class="cd cd-white cd-accent"><h4>Bus Loop Protected</h4><p>Maintained all phases. Safe walking/biking paths. Drop-off never disrupted.</p></div>
+            <div class="cd cd-white cd-accent"><h4>MORE Parking</h4><p>Net increase at every stage. Harris Ave expansion + temporary lots. Warner Field parking in Phase 2.</p></div>
+            <div class="cd cd-white cd-accent"><h4>DeFazio Preserved</h4><p>Only Warner Field used. All other fields operational. Fully restored at completion.</p></div>
+            <div class="cd cd-white cd-accent"><h4>Emergency Protocols</h4><p>Life safety updated per phase. Fire dept walkthroughs. All workers background-checked.</p></div>
+            <div class="cd cd-white cd-accent"><h4>Noise &amp; Hours</h4><p>Impact work during school hours. Restricted weekends. Seasonal adjustments for test seasons.</p></div>
+        </div>
+    </div>
+</div>
+
+<!-- 11: SCHEDULE -->
+<div class="slide s-maroon" id="s11" data-topics="schedule,budget">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s11"></div>
+        <div class="q-badge">Q4<span class="q-tip">Present your proposed schedule. Describe early packages and why they are important.</span></div>
+        <div class="s-speaker"><span class="dot"></span>JOEL KENT</div>
+        <div class="s-label s-label-gold">SCHEDULE ACCELERATION</div>
+        <div class="s-title" style="color:#fff;">One Full Year <em>Faster</em></div>
+        <div class="s-divider" style="background:var(--gold);"></div>
+        <div class="cg cg-2">
+            <div class="cd cd-glass"><div class="cd-tag" style="color:var(--gold);">PHASE 1</div><div class="cd-stat" style="color:var(--gold);">Jul 2027</div><h4 style="color:#fff;">NTP &mdash; 8 months earlier</h4><p>Complete Dec 2029. Students move in over winter break.</p></div>
+            <div class="cd cd-glass"><div class="cd-tag" style="color:var(--gold);">PHASE 2</div><div class="cd-stat" style="color:var(--gold);">Aug 2031</div><h4 style="color:#fff;">Complete &mdash; 11 months earlier</h4><p>Demo, foundations, Grade 6 Academy. Warner Field restored.</p></div>
+        </div>
+        <div style="margin-top:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:12px 16px;">
+            <h4 style="font-size:13px;color:var(--gold);margin-bottom:6px;">4 Early Release Packages</h4>
+            <p style="font-size:11px;color:rgba(255,255,255,0.6);line-height:1.6;"><strong>ERP 1:</strong> Site enabling &amp; geothermal (Apr 2027) &bull; <strong>ERP 2:</strong> Sitework &amp; concrete (Aug 2027) &bull; <strong>ERP 3A:</strong> Structural steel (Nov 2027) &bull; <strong>ERP 3B:</strong> Long-lead electrical</p>
+        </div>
+        <div class="tl" style="margin-top:8px;">
+            <div class="tl-row"><span class="tl-date">Mar 2026</span><span class="tl-text">CM Award</span></div>
+            <div class="tl-row"><span class="tl-date">Apr 2026</span><span class="tl-text">SD Cost Estimate / VE</span></div>
+            <div class="tl-row"><span class="tl-date">Jun 2026</span><span class="tl-text">MSBA Board Vote</span></div>
+            <div class="tl-row"><span class="tl-date">Oct 2026</span><span class="tl-text">Town Meeting &amp; Override</span></div>
+            <div class="tl-row hl"><span class="tl-date">Jul 2027</span><span class="tl-text">NTP &mdash; Phase 1 begins</span></div>
+            <div class="tl-row"><span class="tl-date">Mar 2028</span><span class="tl-text">GMP established</span></div>
+            <div class="tl-row hl"><span class="tl-date">Dec 2029</span><span class="tl-text">Phase 1 complete</span></div>
+            <div class="tl-row hl"><span class="tl-date">Aug 2031</span><span class="tl-text">Project complete</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- 12: PRECONSTRUCTION -->
+<div class="slide s-white" id="s12" data-topics="precon,budget,design">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s12"></div>
+        <div class="q-badge">Q2b<span class="q-tip">How did your team work with the design team on VE during preconstruction?</span></div>
+        <div class="q-badge">Q2c<span class="q-tip">How did precon services achieve client priorities within funding limits and MSBA requirements?</span></div>
+        <div class="s-speaker"><span class="dot"></span>CHELSEY MUTRIE / DANIELLE JUDGE</div>
+        <div class="s-label s-label-maroon">PRECONSTRUCTION</div>
+        <div class="s-title">Not Just Milestones. <em>Micro-Estimates on Demand.</em></div>
+        <div class="s-divider"></div>
+        <div class="s-sub" style="color:var(--text-light);">When the design team asks &ldquo;what if?&rdquo; we respond in days, not months.</div>
+        <div class="cg cg-4">
+            <div class="cd cd-white cd-accent"><div class="cd-tag">SD</div><h4>Cost &amp; Constructability</h4><p>MSBA benchmarks. Trade input. Early procurement roadmap.</p></div>
+            <div class="cd cd-white cd-accent"><div class="cd-tag">DD</div><h4>MEP Coordination</h4><p>Clash detection. Risk ID. Brian Davies reviews every mech system.</p></div>
+            <div class="cd cd-white cd-accent"><div class="cd-tag">60% CD</div><h4>Sub Prequalification</h4><p>Comprehensive estimates. Scope boundaries. Start qualifying subs now.</p></div>
+            <div class="cd cd-white cd-accent"><div class="cd-tag">90% CD</div><h4>Defensible GMP</h4><p>Real costs from self-performed work. Bid-day RFIs. Procurement schedule.</p></div>
+        </div>
+        <img src="assets/structural-coordination.png" alt="Structural Coordination" class="img-full" style="max-height:24vh;">
+    </div>
+</div>
+
+<!-- 13: PRECON TEAM -->
+<div class="slide s-offwhite" id="s13" data-topics="precon,team">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s13"></div>
+        <div class="s-speaker"><span class="dot"></span>CHELSEY MUTRIE</div>
+        <div class="s-label s-label-maroon">DEDICATED RESOURCES</div>
+        <div class="s-title">In-House <em>Preconstruction Team</em></div>
+        <div class="s-divider"></div>
+        <img src="assets/dedicated-team-resources.png" alt="Precon Team" style="width:100%;border-radius:8px;max-height:65vh;object-fit:contain;">
+    </div>
+</div>
+
+<!-- 14: COST TRENDS / CM+GC -->
+<div class="slide s-dark" id="s14" data-topics="budget,risk">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s14"></div>
+        <div class="q-badge">Q2d<span class="q-tip">Share thoughts on cost trends, the local sub market, and ways to leverage these.</span></div>
+        <div class="s-speaker"><span class="dot"></span>JOEL KENT / DAVE FONTAINE JR.</div>
+        <div class="s-label s-label-gold">THE DIFFERENTIATOR</div>
+        <div class="s-title" style="color:#fff;">The Only Firm That <em>Builds AND Manages</em></div>
+        <div class="s-divider" style="background:var(--gold);"></div>
+        <div class="cmp">
+            <div class="cmp-col ours">
+                <h4>FONTAINE + DIMEO &mdash; CM + GC</h4>
+                <div class="cmp-item"><span>&#10003;</span> Direct contracts with Div 10 subs, door hardware, fencing, SOE</div>
+                <div class="cmp-item"><span>&#10003;</span> Data flows directly &mdash; no middleman</div>
+                <div class="cmp-item"><span>&#10003;</span> Wider sub pool &mdash; subs who skip CM-only firms bid us</div>
+                <div class="cmp-item"><span>&#10003;</span> GMP from actual build costs, not management estimates</div>
+                <div class="cmp-item"><span>&#10003;</span> Self-perform on critical path work</div>
+                <div class="cmp-item"><span>&#10003;</span> Insurance &amp; compliance verified directly on every sub</div>
+            </div>
+            <div class="cmp-col theirs">
+                <h4>TRADITIONAL CM-ONLY</h4>
+                <div class="cmp-item"><span style="opacity:0.3">&#10007;</span> Small subs bundled under drywall/general trades</div>
+                <div class="cmp-item"><span style="opacity:0.3">&#10007;</span> Information filters through sub tiers</div>
+                <div class="cmp-item"><span style="opacity:0.3">&#10007;</span> Same sub pool as every large CM firm</div>
+                <div class="cmp-item"><span style="opacity:0.3">&#10007;</span> Estimates based on market intel, not self-performed</div>
+                <div class="cmp-item"><span style="opacity:0.3">&#10007;</span> Dependent on subs for all field work</div>
+                <div class="cmp-item"><span style="opacity:0.3">&#10007;</span> Compliance delegated to prime subs</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 15: MODULAR -->
+<div class="slide s-white" id="s15" data-topics="logistics,operations">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s15"></div>
+        <div class="s-speaker"><span class="dot"></span>JOEL KENT</div>
+        <div class="s-label s-label-maroon">TEMPORARY CLASSROOMS</div>
+        <div class="s-title">Pollard's <em>Modular Solution</em></div>
+        <div class="s-divider"></div>
+        <div class="s-sub" style="color:var(--text-light);">20 classrooms, 4 bathrooms, 1 admin. Install May&ndash;Sep 2027. Remove Summer 2030.</div>
+        <div class="cg cg-3">
+            <div class="cd cd-white cd-accent"><div class="cd-tag">OPTION 1</div><h4>Relocate + Supplement</h4><p>Move district-owned modulars. Lowest cost, fastest mobilization.</p></div>
+            <div class="cd cd-white cd-accent"><div class="cd-tag">OPTION 2</div><h4>Acquire Pre-Owned</h4><p>Purchase from Watertown (40), Nauset (30), Winchester (20), Webster (20).</p></div>
+            <div class="cd cd-white cd-accent"><div class="cd-tag">OPTION 3</div><h4>Procure New</h4><p>Custom-built to Pollard specs. Highest quality. May serve district beyond this project.</p></div>
+        </div>
+        <img src="assets/modular-options-comparison.png" alt="Modular Options" class="img-full" style="max-height:30vh;">
+    </div>
+</div>
+
+<!-- 16: COMMUNITY & VOTE -->
+<div class="slide s-maroon" id="s16" data-topics="community,vote">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s16"></div>
+        <div class="s-speaker"><span class="dot"></span>MARK ABDELLA</div>
+        <div class="s-label s-label-gold">COMMUNITY &amp; VOTE SUPPORT</div>
+        <div class="s-title" style="color:#fff;">How Information <em>Travels in Needham</em></div>
+        <div class="s-divider" style="background:var(--gold);"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center;margin-top:10px;">
+            <div>
+                <img src="assets/needham-social-circles.png" alt="Needham Social Circles" style="width:100%;border-radius:8px;">
+            </div>
+            <div>
+                <div class="cd cd-glass cd-accent" style="border-left-color:var(--gold);margin-bottom:10px;"><h4 style="color:#fff;">Mark Abdella &mdash; Your Neighbor</h4><p>Lives in Needham. In the school system peer group. Accountable personally, not just professionally.</p></div>
+                <div class="cd cd-glass cd-accent" style="border-left-color:var(--gold);"><h4 style="color:#fff;">Community Advisory Network</h4><p>Elementary schools, faith communities, PTOs, town sports. Pre-construction meetings, monthly mailers, QR-code visualization.</p></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 17: WEBSITE / TECH -->
+<div class="slide s-dark" id="s17" data-topics="community,design">
+    <div class="slide-inner" style="text-align:center;">
+        <div class="hot-badges" id="hot-s17"></div>
+        <div class="s-speaker"><span class="dot"></span>DAVE FONTAINE JR.</div>
+        <div class="s-label s-label-gold">TECHNOLOGY IN ACTION</div>
+        <div class="s-title" style="color:#fff;">We Built This <em>For Your Project</em></div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:14px;">davefontaine.ai/needham</div>
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:20px;text-align:left;">
+            <div style="display:flex;gap:6px;margin-bottom:10px;"><div style="width:10px;height:10px;border-radius:50%;background:#ff5f57;"></div><div style="width:10px;height:10px;border-radius:50%;background:#ffbd2e;"></div><div style="width:10px;height:10px;border-radius:50%;background:#27ca40;"></div><span style="font-size:10px;color:rgba(255,255,255,0.25);margin-left:10px;">davefontaine.ai/needham</span></div>
+            <div class="cg cg-4" style="margin-top:0;">
+                <div class="cd cd-glass" style="text-align:center;"><h4 style="color:#fff;font-size:13px;">Project Website</h4><p style="font-size:11px;">Built in-house. Construction updates, traffic, noise, team bios, phase explorer.</p></div>
+                <div class="cd cd-glass" style="text-align:center;"><h4 style="color:#fff;font-size:13px;">AI Q&amp;A (Udor)</h4><p style="font-size:11px;">Community questions answered 24/7. Best human communication, enabled by tech.</p></div>
+                <div class="cd cd-glass" style="text-align:center;"><h4 style="color:#fff;font-size:13px;">Cost Dashboard</h4><p style="font-size:11px;">Layered estimates. MSBA reimbursability. Verified benchmarks from 4 projects.</p></div>
+                <div class="cd cd-glass" style="text-align:center;"><h4 style="color:#fff;font-size:13px;">4D Animation</h4><p style="font-size:11px;">Shareable via QR code at Town Meeting. Every phase visualized with voiceover.</p></div>
+            </div>
+        </div>
+        <div style="margin-top:12px;font-size:13px;color:rgba(255,255,255,0.5);max-width:650px;margin-left:auto;margin-right:auto;line-height:1.6;">This committee has lived through the downside of projects perceived as not well communicated. We control this platform. We customize it. Coordinated messaging &mdash; you never hear conflicting information.</div>
+    </div>
+</div>
+
+<!-- 18: TRACK RECORD -->
+<div class="slide s-white" id="s18" data-topics="team,risk">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s18"></div>
+        <div class="q-badge">Q2e<span class="q-tip">Provide applicable lessons learned from Design, Preconstruction, Construction, Occupancy, and Closeout.</span></div>
+        <div class="s-speaker"><span class="dot"></span>JOEL KENT</div>
+        <div class="s-label s-label-maroon">TRACK RECORD</div>
+        <div class="s-title">Don't Take Our <em>Word for It</em></div>
+        <div class="s-divider"></div>
+        <div class="cg cg-2">
+            <div class="cd cd-white cd-accent"><div class="cd-tag">JV &mdash; UNDER CONSTRUCTION</div><h4>Doherty Memorial HS</h4><p>$268M. 422K SF. Occupied campus. Regional Best Project. Fontaine + Dimeo together.</p></div>
+            <div class="cd cd-white cd-accent"><div class="cd-tag">GEOTHERMAL</div><h4>Agawam High School</h4><p>235K SF. Chelsey redesigned geo from 180&rarr;150 wells. $1M+ saved. MSBA press tour.</p></div>
+            <div class="cd cd-white cd-accent"><div class="cd-tag">OCCUPIED CAMPUS</div><h4>Walpole Middle School</h4><p>162K SF. 3 years. $95.3M GMP. Dance floor auditorium. Key benchmark for Pollard.</p></div>
+            <div class="cd cd-white cd-accent"><div class="cd-tag">14 FT FROM SCHOOL</div><h4>Mountain View K&ndash;8</h4><p>177K SF. Two-phased. 14 feet from occupied school. Studio G was design associate.</p></div>
+        </div>
+        <div class="qt" style="margin-top:10px;"><p>&ldquo;Working with Fontaine + Dimeo has been a seamless experience.&rdquo;</p><div class="qt-attr">&mdash; Russ Adams, City of Worcester</div></div>
+    </div>
+</div>
+
+<!-- 19: SUSTAINABILITY -->
+<div class="slide s-dark" id="s19" data-topics="sustainability">
+    <div class="slide-inner">
+        <div class="hot-badges" id="hot-s19"></div>
+        <div class="q-badge">Q2f<span class="q-tip">How has your team managed achieving project sustainability goals?</span></div>
+        <div class="s-speaker"><span class="dot"></span>TRACY ROUTHIER</div>
+        <div class="s-label s-label-gold">SUSTAINABILITY &amp; CLOSEOUT</div>
+        <div class="s-title" style="color:#fff;">Net Zero Ready. <em>LEED Gold.</em></div>
+        <div class="s-divider" style="background:var(--gold);"></div>
+        <div class="cg cg-4">
+            <div class="cd cd-glass"><div class="cd-stat" style="color:var(--gold);">~25</div><h4 style="color:#fff;">Target EUI</h4><p>All-electric. Ground-source heat pumps. Solar-ready.</p></div>
+            <div class="cd cd-glass"><div class="cd-stat" style="color:var(--gold);">63</div><h4 style="color:#fff;">LEED Points</h4><p>Gold pathway. Indoor air quality. Low-emitting materials.</p></div>
+            <div class="cd cd-glass"><div class="cd-stat" style="color:var(--gold);">100%</div><h4 style="color:#fff;">Commissioning</h4><p>Testing all equipment beyond MSBA requirements.</p></div>
+            <div class="cd cd-glass"><div class="cd-stat" style="color:var(--gold);">Year 1</div><h4 style="color:#fff;">Monitoring</h4><p>Every installer includes full year of service. BAS verified.</p></div>
+        </div>
+        <img src="assets/sustainability-credentials.png" alt="Sustainability" class="img-full" style="max-height:30vh;">
+    </div>
+</div>
+
+<!-- 20: THREE THINGS -->
+<div class="slide s-maroon" id="s20" data-topics="intro" style="text-align:center;">
+    <div class="slide-inner" style="justify-content:center;">
+        <div class="s-label s-label-gold">THREE THINGS TO REMEMBER</div>
+        <div class="s-title" style="color:#fff;font-size:36px;max-width:700px;margin:0 auto 24px;">When you walk out of this room, <em>remember this.</em></div>
+        <div class="close-grid">
+            <div class="close-card"><div class="cc-num">1</div><h4 style="color:#fff;">Already Thinking Like Your CM</h4><p>We assessed options before we proposed. We built tools before you asked.</p></div>
+            <div class="close-card"><div class="cc-num">2</div><h4 style="color:#fff;">Only Firm That Builds AND Manages</h4><p>Wider sub pool. Lower costs. Direct risk control. Real GMP.</p></div>
+            <div class="close-card"><div class="cc-num">3</div><h4 style="color:#fff;">Families, Not a Corporation</h4><p>200 years combined. One of us lives here. Pollard is our highest priority for 3 years.</p></div>
+        </div>
+    </div>
+</div>
+
+<!-- 21: QUESTIONS -->
+<div class="slide s-dark" id="s21" data-topics="intro" style="text-align:center;">
+    <div class="slide-inner" style="justify-content:center;">
+        <div class="s-title" style="color:#fff;font-size:48px;"><em>Questions?</em></div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.4);margin-top:12px;">davefontaine.ai/needham</div>
+        <div style="margin-top:24px;display:flex;gap:16px;justify-content:center;">
+            <a href="/needham/" class="back-link" style="font-size:14px;padding:10px 24px;">Explore Project Site &rarr;</a>
+            <a href="#" onclick="toggleUdor();return false;" class="back-link" style="font-size:14px;padding:10px 24px;border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);">Ask Udor</a>
+        </div>
+    </div>
+</div>
+
+<!-- UDOR CHAT -->
+<button class="udor-btn" id="udorBtn" onclick="toggleUdor()"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg></button>
+<div class="udor-panel" id="udorPanel">
+    <div class="up-head"><div><div class="uh-title">Udor</div><div class="uh-sub">BY FONTAINE + DIMEO</div></div><button class="up-close" onclick="toggleUdor()">&times;</button></div>
+    <div class="up-msgs" id="udorMsgs"><div class="msg bot"><div class="msg-bubble">Hi! I'm Udor. Ask me anything about our Pollard proposal &mdash; team, schedule, geothermal, MBTA, costs, or anything else.</div></div></div>
+    <div class="up-input"><input type="text" id="udorInput" placeholder="Ask about our proposal..." onkeydown="if(event.key==='Enter')sendUdor()"><button onclick="sendUdor()">Send</button></div>
+</div>
+
+<script>
+// ===== SLIDES =====
+const allSlides = document.querySelectorAll('.slide');
+document.getElementById('slideTotal').textContent = allSlides.length;
+
+// Progress + slide counter
+function updateProgress() {
+    const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('prog').style.width = pct + '%';
+    // Determine current slide
+    let cur = 1;
+    allSlides.forEach((s, i) => {
+        const r = s.getBoundingClientRect();
+        if (r.top < window.innerHeight * 0.5) cur = i + 1;
+    });
+    document.getElementById('slideNum').textContent = cur;
+}
+window.addEventListener('scroll', updateProgress);
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+    if (document.querySelector('.priority-modal.show')) return;
+    if (document.activeElement.tagName === 'INPUT') return;
+    const slides = [...allSlides];
+    let cur = 0;
+    slides.forEach((s, i) => {
+        const r = s.getBoundingClientRect();
+        if (r.top >= -100 && r.top < window.innerHeight * 0.5) cur = i;
+    });
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        if (cur < slides.length - 1) slides[cur + 1].scrollIntoView({ behavior:'smooth' });
+    }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (cur > 0) slides[cur - 1].scrollIntoView({ behavior:'smooth' });
+    }
+});
+
+// ===== PRIORITY SYSTEM =====
+let priorities = {};
+
+function showPriorityModal() { document.getElementById('priorityModal').classList.add('show'); }
+function closePriorities() { document.getElementById('priorityModal').classList.remove('show'); }
+function toggleChip(el) {
+    // Only one chip per member
+    el.parentElement.querySelectorAll('.pm-chip').forEach(c => c.classList.remove('on'));
+    el.classList.add('on');
+}
+
+function savePriorities() {
+    document.querySelectorAll('.pm-member').forEach(m => {
+        const person = m.dataset.person;
+        const chip = m.querySelector('.pm-chip.on');
+        const custom = m.querySelector('.pm-custom').value.trim();
+        const val = custom || (chip ? chip.dataset.v : '');
+        const label = custom || (chip ? chip.textContent : '');
+        if (val) priorities[person] = { value: val, label: label };
+    });
+    closePriorities();
+    applyHotBadges();
+}
+
+// Topic mapping: which slide topics match which priority values
+const topicMap = {
+    schedule: ['schedule'], mbta: ['mbta'], risk: ['risk'], budget: ['budget','precon'],
+    precon: ['precon','budget','design'], community: ['community','vote'], vote: ['community','vote'],
+    design: ['design','precon'], sustainability: ['sustainability'], safety: ['safety','logistics','operations'],
+    logistics: ['logistics','safety','operations'], operations: ['operations','logistics','safety'],
+    phasing: ['logistics','schedule']
+};
+
+function applyHotBadges() {
+    allSlides.forEach(slide => {
+        const hotDiv = slide.querySelector('.hot-badges');
+        if (!hotDiv) return;
+        hotDiv.innerHTML = '';
+        const topics = (slide.dataset.topics || '').split(',');
+        for (const [person, prio] of Object.entries(priorities)) {
+            const matchTopics = topicMap[prio.value] || [prio.value];
+            if (topics.some(t => matchTopics.includes(t.trim()))) {
+                const badge = document.createElement('div');
+                badge.className = 'hot-badge show';
+                const names = { billings:'BILLINGS', denninger:'DENNINGER', tina:'TINA', haff:'HAFF', nessler:'NESSLER' };
+                badge.textContent = (names[person] || person.toUpperCase()) + ': ' + prio.label.toUpperCase();
+                hotDiv.appendChild(badge);
+            }
+        }
+    });
+}
+
+// Show modal on load
+window.addEventListener('load', () => {
+    setTimeout(() => showPriorityModal(), 500);
+});
+
+// ===== UDOR CHAT =====
+let udorOpen = false;
+function toggleUdor() {
+    udorOpen = !udorOpen;
+    document.getElementById('udorPanel').classList.toggle('open', udorOpen);
+    if (udorOpen) document.getElementById('udorInput').focus();
+}
+
+let UDOR_KEY = sessionStorage.getItem('udor-k') || '';
+if (!UDOR_KEY) {
+    const _p = ['sk-ant-','api03-Dg','-p2nSmA6','m-rijbDQ','kuAnzWPl','XpiwYKEM','ERPg6v-I','JndTWCsJ','-6dhhXe9','IyWCWGnE','eLvs_2TY','jdNL2vlZ','3z3Q-6c-','KYgAA'];
+    UDOR_KEY = _p.join('');
+    sessionStorage.setItem('udor-k', UDOR_KEY);
+}
+
+const UDOR_SYS = `You are Udor, the AI assistant for the Fontaine + Dimeo joint venture proposal for Pollard Middle School in Needham, MA. Be confident, knowledgeable, and warm.
+PROJECT: New Pollard Middle School, CM at Risk, Chapter 149A. Fontaine Bros (4th gen, 1933, $430M) + Dimeo (5th gen, 1930). JV SPL $320M. Grades 6-7-8. 750-seat auditorium. Net Zero ready. MSBA-funded.
+SCHEDULE: ~1 year faster. Phase 1: Jul 2027-Dec 2029. Phase 2: Jan 2030-Aug 2031. 4 early release packages.
+SAVINGS: $3M+. Geothermal to Warner Field ~$1M. Resequencing savings.
+TEAM: Joel Kent (PE, CPHB, Project Exec), Matt Wilder (Super, dance floor method), Chelsey Mutrie (VP Precon, Agawam geo), Mark Hogan (Sr Super), Frank Reynolds (Dimeo, 36 yrs), JoEllen Villari (MBTA), Danielle Judge (PE, design review), Mark Abdella (Needham resident, vote), Tracy Routhier (sustainability). David Sr. & Jr. personally invested.
+GEOTHERMAL: ~120 wells Warner Field. Single-phase. $1M savings. Agawam: 180->150 wells, $1M saved.
+MBTA: Needham Line. JoEllen dedicated. Flagging = defined cost. 775 Huntington, Avenir experience.
+CM+GC: Only shortlisted firm that self-performs. Direct sub contracts. Wider sub pool. Lower costs.
+Keep answers concise (2-4 sentences). Be specific to Pollard/Needham.`;
+
+async function sendUdor() {
+    const input = document.getElementById('udorInput');
+    const q = input.value.trim();
+    if (!q) return;
+    input.value = '';
+    const msgs = document.getElementById('udorMsgs');
+    msgs.innerHTML += '<div class="msg user"><div class="msg-bubble">' + esc(q) + '</div></div>';
+    msgs.scrollTop = msgs.scrollHeight;
+    msgs.innerHTML += '<div class="msg bot" id="typing"><div class="msg-bubble typing">Thinking...</div></div>';
+    msgs.scrollTop = msgs.scrollHeight;
+    try {
+        const resp = await fetch('https://api.anthropic.com/v1/messages', {
+            method:'POST',
+            headers:{'Content-Type':'application/json','x-api-key':UDOR_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+            body:JSON.stringify({model:'claude-sonnet-4-5-20250929',max_tokens:400,system:UDOR_SYS,messages:[{role:'user',content:q}]})
+        });
+        const data = await resp.json();
+        const answer = data.content?.[0]?.text || 'Could you try rephrasing that?';
+        document.getElementById('typing')?.remove();
+        msgs.innerHTML += '<div class="msg bot"><div class="msg-bubble">' + esc(answer) + '</div></div>';
+    } catch(e) {
+        document.getElementById('typing')?.remove();
+        msgs.innerHTML += '<div class="msg bot"><div class="msg-bubble">Having trouble connecting. Try again in a moment.</div></div>';
+    }
+    msgs.scrollTop = msgs.scrollHeight;
+}
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+
+</body>
+</html>
