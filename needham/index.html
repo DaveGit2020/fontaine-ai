@@ -1006,16 +1006,17 @@ function submitWelcome() {
     });
     localStorage.setItem('needham-visitors', JSON.stringify(visitors));
 
-    // Send all visitors to FormSubmit → djr@fontainebros.com
+    // Send all visitors via Web3Forms → djr@fontainebros.com
     if (people.length > 0) {
         const nameList = people.map(p => p.name || 'Anonymous').join(', ');
         const emailList = people.map(p => p.email || '(none)').join(', ');
-        fetch('https://formsubmit.co/ajax/djr@fontainebros.com', {
+        fetch('https://api.web3forms.com/submit', {
             method: 'POST',
             headers: { 'Content-Type':'application/json' },
             body: JSON.stringify({
-                _subject: 'Pollard Proposal - ' + people.length + ' Visitor(s): ' + nameList,
-                _template: 'table',
+                access_key: 'e71b608c-ba69-4dc3-82d0-765910e81fc3',
+                subject: 'Pollard Proposal - ' + people.length + ' Visitor(s): ' + nameList,
+                from_name: 'Fontaine.ai/Needham',
                 'Visitors': nameList,
                 'Emails': emailList,
                 'Count': people.length + ' people',
@@ -1119,13 +1120,14 @@ async function sendUdor() {
         msgs.innerHTML += '<div class="msg bot"><div class="msg-bubble">I\'m having trouble connecting. Please scroll through the site for detailed information, or try again in a moment.</div></div>';
     }
 
-    // Send question + Udor's answer to FormSubmit → djr@fontainebros.com
-    fetch('https://formsubmit.co/ajax/djr@fontainebros.com', {
+    // Send question + Udor's answer via Web3Forms → djr@fontainebros.com
+    fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type':'application/json' },
         body: JSON.stringify({
-            _subject: 'Udor Q&A - ' + (lastVisitor.name || 'Anonymous Visitor'),
-            _template: 'table',
+            access_key: 'e71b608c-ba69-4dc3-82d0-765910e81fc3',
+            subject: 'Udor Q&A - ' + (lastVisitor.name || 'Anonymous Visitor'),
+            from_name: 'Fontaine.ai/Needham Udor',
             Visitor: lastVisitor.name || '(unknown)',
             'Visitor Email': lastVisitor.email || '(unknown)',
             Question: q,
