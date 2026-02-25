@@ -903,10 +903,15 @@
             <p>Explore our team, approach, and commitment to Needham.</p>
         </div>
         <div class="wb-body">
-            <label>YOUR NAME</label>
-            <input type="text" id="wName" placeholder="e.g., John Smith">
-            <label>EMAIL</label>
-            <input type="email" id="wEmail" placeholder="e.g., jsmith@needhamma.gov">
+            <div id="wPeople">
+                <div class="w-person" data-idx="1">
+                    <div style="display:flex;gap:10px;margin-bottom:6px;">
+                        <div style="flex:1"><label>NAME</label><input type="text" class="w-pname" placeholder="e.g., John Smith"></div>
+                        <div style="flex:1"><label>EMAIL</label><input type="email" class="w-pemail" placeholder="e.g., jsmith@needhamma.gov"></div>
+                    </div>
+                </div>
+            </div>
+            <button onclick="addWPerson()" style="width:100%;padding:8px;border:2px dashed rgba(255,255,255,0.15);border-radius:8px;background:none;color:rgba(255,255,255,0.5);font-size:13px;font-weight:700;cursor:pointer;margin:8px 0 16px;font-family:inherit;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)';this.style.color='rgba(255,255,255,0.5)'">+ Add Another Person</button>
             <label>WHAT INTERESTS YOU MOST?</label>
             <div class="wb-chips">
                 <div data-i="team" onclick="this.classList.toggle('on')">Our Team</div>
@@ -963,26 +968,57 @@ function showPhase(n) {
     document.querySelectorAll('.phase-panel').forEach((p,i) => p.classList.toggle('active', i===n-1));
 }
 
-// WELCOME
+// WELCOME — Multi-person support
+let wPersonCount = 1;
+function addWPerson() {
+    wPersonCount++;
+    const container = document.getElementById('wPeople');
+    const div = document.createElement('div');
+    div.className = 'w-person';
+    div.dataset.idx = wPersonCount;
+    div.innerHTML = `
+        <div style="display:flex;gap:10px;margin-bottom:6px;align-items:flex-end;">
+            <div style="flex:1"><label>NAME</label><input type="text" class="w-pname" placeholder="e.g., Jane Doe"></div>
+            <div style="flex:1"><label>EMAIL</label><input type="email" class="w-pemail" placeholder="e.g., jdoe@needhamma.gov"></div>
+            <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:18px;cursor:pointer;padding:0 4px 8px;line-height:1;" title="Remove">&times;</button>
+        </div>
+    `;
+    container.appendChild(div);
+    div.querySelector('.w-pname').focus();
+}
+
 function submitWelcome() {
-    const name = document.getElementById('wName').value.trim();
-    const email = document.getElementById('wEmail').value.trim();
     const chips = Array.from(document.querySelectorAll('.wb-chips div.on')).map(x => x.dataset.i);
     const freetext = document.getElementById('wFreetext').value.trim();
     let visitors = JSON.parse(localStorage.getItem('needham-visitors') || '[]');
-    visitors.push({ name, email, interests: chips, freeText: freetext, timestamp: new Date().toISOString() });
+
+    // Collect all people
+    const people = [];
+    document.querySelectorAll('.w-person').forEach(p => {
+        const name = p.querySelector('.w-pname').value.trim();
+        const email = p.querySelector('.w-pemail').value.trim();
+        if (name || email) people.push({ name, email });
+    });
+
+    // Store each person
+    people.forEach(person => {
+        visitors.push({ name: person.name, email: person.email, interests: chips, freeText: freetext, timestamp: new Date().toISOString() });
+    });
     localStorage.setItem('needham-visitors', JSON.stringify(visitors));
 
-    // Send visitor signup to FormSubmit → djr@fontainebros.com
-    if (name || email) {
+    // Send all visitors to FormSubmit → djr@fontainebros.com
+    if (people.length > 0) {
+        const nameList = people.map(p => p.name || 'Anonymous').join(', ');
+        const emailList = people.map(p => p.email || '(none)').join(', ');
         fetch('https://formsubmit.co/ajax/djr@fontainebros.com', {
             method: 'POST',
             headers: { 'Content-Type':'application/json' },
             body: JSON.stringify({
-                _subject: 'Pollard Proposal - New Visitor: ' + (name || 'Anonymous'),
+                _subject: 'Pollard Proposal - ' + people.length + ' Visitor(s): ' + nameList,
                 _template: 'table',
-                Name: name || '(not provided)',
-                Email: email || '(not provided)',
+                'Visitors': nameList,
+                'Emails': emailList,
+                'Count': people.length + ' people',
                 Interests: chips.length ? chips.join(', ') : '(none selected)',
                 Comments: freetext || '(none)',
                 Page: 'fontaine.ai/needham',
