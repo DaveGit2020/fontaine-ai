@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Fontaine + Dimeo — Pollard Middle School, Needham</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
@@ -255,13 +255,15 @@
         }
 
         @media (max-width:600px) {
+            nav { height:64px; padding:0 12px; }
+            nav img { height:44px; }
             .nav-links { display:none; position:fixed; top:64px; left:0; right:0; background:#fff; flex-direction:column; padding:16px 24px; gap:12px; box-shadow:0 8px 24px rgba(0,0,0,0.1); border-bottom:2px solid var(--border); z-index:499; }
             .nav-links.mobile-open { display:flex; }
             .nav-links a { font-size:15px; padding:8px 0; border-bottom:1px solid var(--border); }
             .nav-links a:last-of-type { border:none; }
             .nav-badge { margin-top:8px; }
             .nav-menu-btn { display:block; }
-            .hero { padding:40px 20px 32px; }
+            .hero { margin-top:64px; padding:40px 20px 32px; }
             .hero-text h1 { font-size:28px; }
             .hero-text .ht-badge { font-size:10px; }
             .hero-text p { font-size:15px; }
@@ -301,15 +303,17 @@
             .milestone { flex-direction:column; gap:4px; }
             .milestone .ms-date { min-width:auto; }
             .udor-panel { right:0; left:0; width:auto; max-height:70vh; border-radius:12px 12px 0 0; bottom:56px; }
-            .udor-bar { gap:8px; }
+            .udor-bar { gap:8px; padding-bottom:env(safe-area-inset-bottom,0px); }
             .udor-bar .ub-text { font-size:12px; }
             .udor-bar .ub-brand { display:none; }
-            .welcome-box { width:95vw; max-height:90vh; overflow-y:auto; }
+            .welcome-overlay { padding:12px; align-items:flex-start; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+            .welcome-box { width:100%; max-width:500px; max-height:none; margin:auto; }
             .wb-header { padding:24px 20px 16px; }
             .wb-header h2 { font-size:18px; }
             .wb-body { padding:16px 20px 20px; }
             .wb-chips div { font-size:11px; padding:5px 10px; }
             .banner section, .banner-navy section { padding:0 16px; }
+            .page-bottom { height:calc(80px + env(safe-area-inset-bottom,0px)); }
         }
     </style>
 </head>
@@ -908,7 +912,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="addWPerson()" style="width:100%;padding:8px;border:2px dashed rgba(255,255,255,0.15);border-radius:8px;background:none;color:rgba(255,255,255,0.5);font-size:13px;font-weight:700;cursor:pointer;margin:8px 0 16px;font-family:inherit;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)';this.style.color='rgba(255,255,255,0.5)'">+ Add Another Person</button>
+            <button onclick="addWPerson()" style="width:100%;padding:8px;border:2px dashed #ccc;border-radius:8px;background:none;color:#888;font-size:13px;font-weight:700;cursor:pointer;margin:8px 0 16px;font-family:inherit;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='#ccc';this.style.color='#888'">+ Add Another Person</button>
             <label>WHAT INTERESTS YOU MOST?</label>
             <div class="wb-chips">
                 <div data-i="team" onclick="this.classList.toggle('on')">Our Team</div>
@@ -977,7 +981,7 @@ function addWPerson() {
         <div style="display:flex;gap:10px;margin-bottom:6px;align-items:flex-end;">
             <div style="flex:1"><label>NAME</label><input type="text" class="w-pname" placeholder="e.g., Jane Doe"></div>
             <div style="flex:1"><label>EMAIL</label><input type="email" class="w-pemail" placeholder="e.g., jdoe@needhamma.gov"></div>
-            <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:18px;cursor:pointer;padding:0 4px 8px;line-height:1;" title="Remove">&times;</button>
+            <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:#999;font-size:18px;cursor:pointer;padding:0 4px 8px;line-height:1;" title="Remove">&times;</button>
         </div>
     `;
     container.appendChild(div);
