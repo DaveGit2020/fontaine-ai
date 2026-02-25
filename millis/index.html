@@ -886,6 +886,26 @@ function submitWelcome() {
     let visitors = JSON.parse(localStorage.getItem('millis-visitors') || '[]');
     visitors.push({ name, email, interests: chips, freeText: freetext, timestamp: new Date().toISOString() });
     localStorage.setItem('millis-visitors', JSON.stringify(visitors));
+
+    // Send visitor data via Web3Forms → djr@fontainebros.com
+    if (name || email) {
+        fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: { 'Content-Type':'application/json' },
+            body: JSON.stringify({
+                access_key: 'e71b608c-ba69-4dc3-82d0-765910e81fc3',
+                subject: 'Millis Proposal - New Visitor: ' + (name || 'Anonymous'),
+                from_name: 'Fontaine.ai/Millis',
+                'Visitor Name': name || '(not provided)',
+                'Visitor Email': email || '(not provided)',
+                Interests: chips.length ? chips.join(', ') : '(none selected)',
+                Comments: freetext || '(none)',
+                Page: 'fontaine.ai/millis',
+                'Visited At': new Date().toLocaleString()
+            })
+        }).catch(() => {});
+    }
+
     closeWelcome();
     // Scroll to relevant section
     const sectionMap = { team:'team', budget:'approach', schedule:'phases', technology:'technology', safety:'safety', sustainability:'technology', renovation:'risks', references:'track-record' };
@@ -957,9 +977,13 @@ async function sendUdor() {
     qs.push({ q, timestamp: new Date().toISOString() });
     localStorage.setItem('millis-questions', JSON.stringify(qs));
 
+    const vData = JSON.parse(localStorage.getItem('millis-visitors') || '[]');
+    const lastVisitor = vData.length ? vData[vData.length - 1] : {};
+
     msgs.innerHTML += '<div class="msg bot" id="typing"><div class="msg-bubble typing">Thinking...</div></div>';
     msgs.scrollTop = msgs.scrollHeight;
 
+    let answer = '';
     try {
         const resp = await fetch('https://api.anthropic.com/v1/messages', {
             method: 'POST',
@@ -967,13 +991,31 @@ async function sendUdor() {
             body: JSON.stringify({ model:'claude-sonnet-4-5-20250929', max_tokens:400, system:UDOR_SYSTEM, messages:[{role:'user',content:q}] })
         });
         const data = await resp.json();
-        const answer = data.content?.[0]?.text || 'I had trouble with that question. Could you try rephrasing it?';
+        answer = data.content?.[0]?.text || 'I had trouble with that question. Could you try rephrasing it?';
         document.getElementById('typing')?.remove();
         msgs.innerHTML += '<div class="msg bot"><div class="msg-bubble">' + esc(answer) + '</div></div>';
     } catch(e) {
         document.getElementById('typing')?.remove();
+        answer = '(Udor failed to respond)';
         msgs.innerHTML += '<div class="msg bot"><div class="msg-bubble">I\'m having trouble connecting. Please scroll through the site for detailed information, or try again in a moment.</div></div>';
     }
+
+    // Send question + Udor's answer via Web3Forms → djr@fontainebros.com
+    fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify({
+            access_key: 'e71b608c-ba69-4dc3-82d0-765910e81fc3',
+            subject: 'Udor Q&A - ' + (lastVisitor.name || 'Anonymous Visitor'),
+            from_name: 'Fontaine.ai/Millis Udor',
+            Visitor: lastVisitor.name || '(unknown)',
+            'Visitor Email': lastVisitor.email || '(unknown)',
+            Question: q,
+            'Udor Answer': answer,
+            Page: 'fontaine.ai/millis',
+            'Asked At': new Date().toLocaleString()
+        })
+    }).catch(() => {});
     msgs.scrollTop = msgs.scrollHeight;
 }
 
