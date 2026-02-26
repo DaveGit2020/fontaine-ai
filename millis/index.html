@@ -884,12 +884,13 @@ function submitWelcome() {
     const name = document.getElementById('wName').value.trim();
     const email = document.getElementById('wEmail').value.trim();
     const chips = Array.from(document.querySelectorAll('.wb-chips div.on')).map(x => x.dataset.i);
+    const chipLabels = Array.from(document.querySelectorAll('.wb-chips div.on')).map(x => x.textContent);
     const freetext = document.getElementById('wFreetext').value.trim();
     let visitors = JSON.parse(localStorage.getItem('millis-visitors') || '[]');
     visitors.push({ name, email, interests: chips, freeText: freetext, timestamp: new Date().toISOString() });
     localStorage.setItem('millis-visitors', JSON.stringify(visitors));
 
-    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Site — New Visitor: ' + (name || 'Anonymous'), from_name: name || 'Millis Visitor', message: 'Name: ' + (name || '(not provided)') + '\nEmail: ' + (email || '(not provided)') + '\nInterests: ' + (chips.join(', ') || '(none selected)') + '\nComments: ' + (freetext || '(none)') + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(() => {});
+    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Site — New Visitor: ' + (name || 'Anonymous'), from_name: name || 'Millis Visitor', message: 'Name: ' + (name || '(not provided)') + '\nEmail: ' + (email || '(not provided)') + '\nInterests: ' + (chipLabels.join(', ') || '(none selected)') + '\nComments: ' + (freetext || '(none)') + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(e => console.error('W3F welcome error:', e));
 
     closeWelcome();
     // Scroll to relevant section
@@ -962,7 +963,7 @@ async function sendUdor() {
     qs.push({ q, timestamp: new Date().toISOString() });
     localStorage.setItem('millis-questions', JSON.stringify(qs));
 
-    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Udor Question: ' + q.substring(0, 60), from_name: 'Udor (Millis)', message: 'Question: ' + q + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(() => {});
+    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Udor Question: ' + q.substring(0, 60), from_name: 'Udor (Millis)', message: 'Question: ' + q + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(e => console.error('W3F:', e));
 
     const vData = JSON.parse(localStorage.getItem('millis-visitors') || '[]');
     const lastVisitor = vData.length ? vData[vData.length - 1] : {};
@@ -1008,7 +1009,7 @@ if (new URLSearchParams(location.search).get('admin') === 'true') {
     document.getElementById('adminContent').innerHTML = h;
 }
 
-fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Site View', from_name: 'tracker', message: JSON.stringify({ event: 'pageview', timestamp: new Date().toISOString(), ua: navigator.userAgent, ref: document.referrer }), page: window.location.href }) }).catch(() => {});
+fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Site View', from_name: 'tracker', message: JSON.stringify({ event: 'pageview', timestamp: new Date().toISOString(), ua: navigator.userAgent, ref: document.referrer }), page: window.location.href }) }).catch(e => console.error('W3F:', e));
 </script>
 </body>
 </html>

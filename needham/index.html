@@ -1000,6 +1000,7 @@ const W3F_KEY = "f0b72711-02f3-4aa1-bbdd-7d649bc8b091";
 
 function submitWelcome() {
     const chips = Array.from(document.querySelectorAll('.wb-chips div.on')).map(x => x.dataset.i);
+    const chipLabels = Array.from(document.querySelectorAll('.wb-chips div.on')).map(x => x.textContent);
     const freetext = document.getElementById('wFreetext').value.trim();
     let visitors = JSON.parse(localStorage.getItem('needham-visitors') || '[]');
 
@@ -1017,10 +1018,13 @@ function submitWelcome() {
     });
     localStorage.setItem('needham-visitors', JSON.stringify(visitors));
 
-    // Send visitor info via Web3Forms
-    const name = people.length ? people[0].name : '';
-    const email = people.length ? people[0].email : '';
-    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Needham Site — New Visitor: ' + (name || 'Anonymous'), from_name: name || 'Needham Visitor', message: 'Name: ' + (name || '(not provided)') + '\nEmail: ' + (email || '(not provided)') + '\nInterests: ' + (chips.join(', ') || '(none selected)') + '\nComments: ' + (freetext || '(none)') + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(() => {});
+    // Send visitor info via Web3Forms — one email per person
+    people.forEach(person => {
+        fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Needham Site — New Visitor: ' + (person.name || 'Anonymous'), from_name: person.name || 'Needham Visitor', message: 'Name: ' + (person.name || '(not provided)') + '\nEmail: ' + (person.email || '(not provided)') + '\nInterests: ' + (chipLabels.join(', ') || '(none selected)') + '\nComments: ' + (freetext || '(none)') + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(e => console.error('W3F welcome error:', e));
+    });
+    if (!people.length) {
+        fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Needham Site — New Visitor: Anonymous', from_name: 'Needham Visitor', message: 'Name: (not provided)\nEmail: (not provided)\nInterests: ' + (chipLabels.join(', ') || '(none selected)') + '\nComments: ' + (freetext || '(none)') + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(e => console.error('W3F welcome error:', e));
+    }
 
     closeWelcome();
     const sectionMap = { team:'team', schedule:'phases', geothermal:'geothermal', safety:'safety', mbta:'risks', sustainability:'geothermal', community:'risks', references:'track-record' };
@@ -1091,7 +1095,7 @@ async function sendUdor() {
     qs.push({ q, timestamp: new Date().toISOString() });
     localStorage.setItem('needham-questions', JSON.stringify(qs));
 
-    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Needham Udor Question: ' + q.substring(0, 60), from_name: 'Udor (Needham)', message: 'Question: ' + q + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(() => {});
+    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Needham Udor Question: ' + q.substring(0, 60), from_name: 'Udor (Needham)', message: 'Question: ' + q + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(e => console.error('W3F:', e));
 
     const vData = JSON.parse(localStorage.getItem('needham-visitors') || '[]');
     const lastVisitor = vData.length ? vData[vData.length - 1] : {};
@@ -1137,7 +1141,7 @@ if (new URLSearchParams(location.search).get('admin') === 'true') {
     document.getElementById('adminContent').innerHTML = h;
 }
 
-fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Needham Site View', from_name: 'tracker', message: JSON.stringify({ event: 'pageview', timestamp: new Date().toISOString(), ua: navigator.userAgent, ref: document.referrer }), page: window.location.href }) }).catch(() => {});
+fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Needham Site View', from_name: 'tracker', message: JSON.stringify({ event: 'pageview', timestamp: new Date().toISOString(), ua: navigator.userAgent, ref: document.referrer }), page: window.location.href }) }).catch(e => console.error('W3F:', e));
 </script>
 </body>
 </html>

@@ -428,9 +428,8 @@ function savePM() {
     closePM();
     applyBadges();
     // Notify priorities selected
-    if (Object.keys(prios).length) {
-        fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Presentation — Priorities Set', from_name: 'tracker', message: JSON.stringify({ event: 'priorities', timestamp: new Date().toISOString(), priorities: prios, ua: navigator.userAgent }), page: window.location.href }) }).catch(() => {});
-    }
+    const prioSummary = Object.values(prios).map(p => p.name + ': ' + p.selections.map(s => s.label).join(', ')).join('\n');
+    if (prioSummary) fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Presentation — Priorities Set', from_name: 'Millis Presentation', message: prioSummary + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(e => console.error('W3F priority error:', e));
 }
 
 function applyBadges() {
@@ -488,7 +487,7 @@ async function sendUdor() {
     m.innerHTML += '<div class="msg user"><div class="msg-bubble">' + esc(q) + '</div></div>';
     m.scrollTop = m.scrollHeight;
     // Notify Udor question
-    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Presentation — Udor Question', from_name: 'tracker', message: JSON.stringify({ event: 'udor_question', question: q, timestamp: new Date().toISOString(), slide: getCurrentSlide() + 1, ua: navigator.userAgent }), page: window.location.href }) }).catch(() => {});
+    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Pres Udor Question: ' + q.substring(0, 60), from_name: 'Udor (Millis Pres)', message: 'Question: ' + q + '\nSlide: ' + (getCurrentSlide() + 1) + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(e => console.error('W3F:', e));
     m.innerHTML += '<div class="msg bot" id="typing"><div class="msg-bubble typing">Thinking...</div></div>';
     m.scrollTop = m.scrollHeight;
     try {
@@ -515,7 +514,7 @@ window.addEventListener('scroll', () => {
 setTimeout(() => { hideHint(); }, 8000);
 
 // ===== PAGEVIEW TRACKER =====
-fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Presentation View', from_name: 'tracker', message: JSON.stringify({ event: 'pageview', timestamp: new Date().toISOString(), ua: navigator.userAgent, ref: document.referrer }), page: window.location.href }) }).catch(() => {});
+fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Presentation View', from_name: 'tracker', message: JSON.stringify({ event: 'pageview', timestamp: new Date().toISOString(), ua: navigator.userAgent, ref: document.referrer }), page: window.location.href }) }).catch(e => console.error('W3F:', e));
 </script>
 
 </body>

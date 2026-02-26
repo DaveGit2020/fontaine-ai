@@ -777,7 +777,7 @@ function savePriorities() {
     applyHotBadges();
     const names = { billings:'Billings', denninger:'Denninger', tina:'Tina', haff:'Haff', nessler:'Nessler' };
     const prioSummary = Object.entries(priorities).map(([p,prio]) => (names[p]||p) + ': ' + prio.label).join('\n');
-    if (prioSummary) fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Presentation V2 — Priorities Set', from_name: 'Presentation V2', message: prioSummary + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(() => {});
+    if (prioSummary) fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Presentation V2 — Priorities Set', from_name: 'Presentation V2', message: prioSummary + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(e => console.error('W3F:', e));
 }
 
 // Topic mapping: which slide topics match which priority values
@@ -848,7 +848,7 @@ async function sendUdor() {
     const msgs = document.getElementById('udorMsgs');
     msgs.innerHTML += '<div class="msg user"><div class="msg-bubble">' + esc(q) + '</div></div>';
     msgs.scrollTop = msgs.scrollHeight;
-    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Pres V2 Udor Question: ' + q.substring(0, 60), from_name: 'Udor (Pres V2)', message: 'Question: ' + q + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(() => {});
+    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Pres V2 Udor Question: ' + q.substring(0, 60), from_name: 'Udor (Pres V2)', message: 'Question: ' + q + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(e => console.error('W3F:', e));
     msgs.innerHTML += '<div class="msg bot" id="typing"><div class="msg-bubble typing">Thinking...</div></div>';
     msgs.scrollTop = msgs.scrollHeight;
     try {
@@ -868,7 +868,7 @@ async function sendUdor() {
     msgs.scrollTop = msgs.scrollHeight;
 }
 function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Presentation V2 View', from_name: 'tracker', message: JSON.stringify({ event: 'pageview', timestamp: new Date().toISOString(), ua: navigator.userAgent, ref: document.referrer }), page: window.location.href }) }).catch(() => {});
+fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Presentation V2 View', from_name: 'tracker', message: JSON.stringify({ event: 'pageview', timestamp: new Date().toISOString(), ua: navigator.userAgent, ref: document.referrer }), page: window.location.href }) }).catch(e => console.error('W3F:', e));
 </script>
 
 </body>
