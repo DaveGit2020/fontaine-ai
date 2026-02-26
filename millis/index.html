@@ -877,6 +877,8 @@ function showPhase(n) {
     document.querySelectorAll('.phase-panel').forEach((p,i) => p.classList.toggle('active', i===n-1));
 }
 
+const W3F_KEY = "f0b72711-02f3-4aa1-bbdd-7d649bc8b091";
+
 // WELCOME
 function submitWelcome() {
     const name = document.getElementById('wName').value.trim();
@@ -887,24 +889,7 @@ function submitWelcome() {
     visitors.push({ name, email, interests: chips, freeText: freetext, timestamp: new Date().toISOString() });
     localStorage.setItem('millis-visitors', JSON.stringify(visitors));
 
-    // Send visitor data via Web3Forms → djr@fontainebros.com
-    if (name || email) {
-        fetch('https://api.web3forms.com/submit', {
-            method: 'POST',
-            headers: { 'Content-Type':'application/json' },
-            body: JSON.stringify({
-                access_key: 'e71b608c-ba69-4dc3-82d0-765910e81fc3',
-                subject: 'Millis Proposal - New Visitor: ' + (name || 'Anonymous'),
-                from_name: 'Fontaine.ai/Millis',
-                'Visitor Name': name || '(not provided)',
-                'Visitor Email': email || '(not provided)',
-                Interests: chips.length ? chips.join(', ') : '(none selected)',
-                Comments: freetext || '(none)',
-                Page: 'fontaine.ai/millis',
-                'Visited At': new Date().toLocaleString()
-            })
-        }).catch(() => {});
-    }
+    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Site — New Visitor: ' + (name || 'Anonymous'), from_name: name || 'Millis Visitor', message: 'Name: ' + (name || '(not provided)') + '\nEmail: ' + (email || '(not provided)') + '\nInterests: ' + (chips.join(', ') || '(none selected)') + '\nComments: ' + (freetext || '(none)') + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(() => {});
 
     closeWelcome();
     // Scroll to relevant section
@@ -977,6 +962,8 @@ async function sendUdor() {
     qs.push({ q, timestamp: new Date().toISOString() });
     localStorage.setItem('millis-questions', JSON.stringify(qs));
 
+    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Udor Question: ' + q.substring(0, 60), from_name: 'Udor (Millis)', message: 'Question: ' + q + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(() => {});
+
     const vData = JSON.parse(localStorage.getItem('millis-visitors') || '[]');
     const lastVisitor = vData.length ? vData[vData.length - 1] : {};
 
@@ -1000,22 +987,6 @@ async function sendUdor() {
         msgs.innerHTML += '<div class="msg bot"><div class="msg-bubble">I\'m having trouble connecting. Please scroll through the site for detailed information, or try again in a moment.</div></div>';
     }
 
-    // Send question + Udor's answer via Web3Forms → djr@fontainebros.com
-    fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify({
-            access_key: 'e71b608c-ba69-4dc3-82d0-765910e81fc3',
-            subject: 'Udor Q&A - ' + (lastVisitor.name || 'Anonymous Visitor'),
-            from_name: 'Fontaine.ai/Millis Udor',
-            Visitor: lastVisitor.name || '(unknown)',
-            'Visitor Email': lastVisitor.email || '(unknown)',
-            Question: q,
-            'Udor Answer': answer,
-            Page: 'fontaine.ai/millis',
-            'Asked At': new Date().toLocaleString()
-        })
-    }).catch(() => {});
     msgs.scrollTop = msgs.scrollHeight;
 }
 
@@ -1036,6 +1007,8 @@ if (new URLSearchParams(location.search).get('admin') === 'true') {
     h += '</table>';
     document.getElementById('adminContent').innerHTML = h;
 }
+
+fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Site View', from_name: 'tracker', message: JSON.stringify({ event: 'pageview', timestamp: new Date().toISOString(), ua: navigator.userAgent, ref: document.referrer }), page: window.location.href }) }).catch(() => {});
 </script>
 </body>
 </html>

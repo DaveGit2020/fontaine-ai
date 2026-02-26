@@ -406,7 +406,7 @@
         <div class="s-title">Doherty Memorial HS <em>&amp; South High</em></div>
         <div class="s-divider"></div>
         <div class="cg cg-2">
-            <div class="cd cd-white cd-accent"><div class="cd-tag">CURRENTLY UNDER CONSTRUCTION</div><h4>Doherty Memorial HS &mdash; $268M JV</h4><p>422,000 SF. New HS on occupied campus. Regional Best Project. Same JV, same systems.</p></div>
+            <div class="cd cd-white cd-accent"><div class="cd-tag">RECENTLY COMPLETED</div><h4>Doherty Memorial HS &mdash; $268M JV</h4><p>422,000 SF. New HS on occupied campus. Regional Best Project. Same JV, same systems.</p></div>
             <div class="cd cd-white cd-accent"><div class="cd-tag">COMPLETED &mdash; LEED GOLD</div><h4>South High Community School</h4><p>LEED Gold. Complex occupied site, phased construction, community engagement. Direct parallels to Pollard.</p></div>
         </div>
         <div class="img-grid img-grid-2" style="margin-top:10px;">
@@ -653,7 +653,7 @@
         <div class="s-title">Don't Take Our <em>Word for It</em></div>
         <div class="s-divider"></div>
         <div class="cg cg-2">
-            <div class="cd cd-white cd-accent"><div class="cd-tag">JV &mdash; UNDER CONSTRUCTION</div><h4>Doherty Memorial HS</h4><p>$268M. 422K SF. Occupied campus. Regional Best Project. Fontaine + Dimeo together.</p></div>
+            <div class="cd cd-white cd-accent"><div class="cd-tag">JV &mdash; RECENTLY COMPLETED</div><h4>Doherty Memorial HS</h4><p>$268M. 422K SF. Occupied campus. Regional Best Project. Fontaine + Dimeo together.</p></div>
             <div class="cd cd-white cd-accent"><div class="cd-tag">GEOTHERMAL</div><h4>Agawam High School</h4><p>235K SF. Chelsey redesigned geo from 180&rarr;150 wells. $1M+ saved. MSBA press tour.</p></div>
             <div class="cd cd-white cd-accent"><div class="cd-tag">OCCUPIED CAMPUS</div><h4>Walpole Middle School</h4><p>162K SF. 3 years. $95.3M GMP. Dance floor auditorium. Key benchmark for Pollard.</p></div>
             <div class="cd cd-white cd-accent"><div class="cd-tag">14 FT FROM SCHOOL</div><h4>Mountain View K&ndash;8</h4><p>177K SF. Two-phased. 14 feet from occupied school. Studio G was design associate.</p></div>
@@ -775,6 +775,9 @@ function savePriorities() {
     });
     closePriorities();
     applyHotBadges();
+    const names = { billings:'Billings', denninger:'Denninger', tina:'Tina', haff:'Haff', nessler:'Nessler' };
+    const prioSummary = Object.entries(priorities).map(([p,prio]) => (names[p]||p) + ': ' + prio.label).join('\n');
+    if (prioSummary) fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Presentation V2 — Priorities Set', from_name: 'Presentation V2', message: prioSummary + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(() => {});
 }
 
 // Topic mapping: which slide topics match which priority values
@@ -825,6 +828,8 @@ if (!UDOR_KEY) {
     sessionStorage.setItem('udor-k', UDOR_KEY);
 }
 
+const W3F_KEY = "f0b72711-02f3-4aa1-bbdd-7d649bc8b091";
+
 const UDOR_SYS = `You are Udor, the AI assistant for the Fontaine + Dimeo joint venture proposal for Pollard Middle School in Needham, MA. Be confident, knowledgeable, and warm.
 PROJECT: New Pollard Middle School, CM at Risk, Chapter 149A. Fontaine Bros (4th gen, 1933, $430M) + Dimeo (5th gen, 1930). JV SPL $320M. Grades 6-7-8. 750-seat auditorium. Net Zero ready. MSBA-funded.
 SCHEDULE: ~1 year faster. Phase 1: Jul 2027-Dec 2029. Phase 2: Jan 2030-Aug 2031. 4 early release packages.
@@ -843,6 +848,7 @@ async function sendUdor() {
     const msgs = document.getElementById('udorMsgs');
     msgs.innerHTML += '<div class="msg user"><div class="msg-bubble">' + esc(q) + '</div></div>';
     msgs.scrollTop = msgs.scrollHeight;
+    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Pres V2 Udor Question: ' + q.substring(0, 60), from_name: 'Udor (Pres V2)', message: 'Question: ' + q + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(() => {});
     msgs.innerHTML += '<div class="msg bot" id="typing"><div class="msg-bubble typing">Thinking...</div></div>';
     msgs.scrollTop = msgs.scrollHeight;
     try {
@@ -862,6 +868,7 @@ async function sendUdor() {
     msgs.scrollTop = msgs.scrollHeight;
 }
 function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Presentation V2 View', from_name: 'tracker', message: JSON.stringify({ event: 'pageview', timestamp: new Date().toISOString(), ua: navigator.userAgent, ref: document.referrer }), page: window.location.href }) }).catch(() => {});
 </script>
 
 </body>

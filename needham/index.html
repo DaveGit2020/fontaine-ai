@@ -7,17 +7,17 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         :root {
-            --navy: #1a2744;
-            --navy-dark: #0f1a2e;
-            --navy-light: #2a3d5f;
-            --orange: #e87722;
-            --orange-light: #f59b4d;
-            --dark: #1a1d23;
-            --warm-bg: #f7f8fa;
+            --crimson: #8c0032;
+            --crimson-dark: #6a0026;
+            --crimson-light: #a8154d;
+            --gold: #b98c14;
+            --gold-light: #d4a82a;
+            --dark: #231e1e;
+            --warm-bg: #faf7f4;
             --warm-card: #ffffff;
-            --text: #2c2e33;
-            --text-light: #5a5e68;
-            --border: rgba(26,39,68,0.08);
+            --text: #2c2424;
+            --text-light: #6b5e58;
+            --border: rgba(140,0,50,0.08);
         }
         * { margin:0; padding:0; box-sizing:border-box; }
         html { scroll-behavior:smooth; }
@@ -28,19 +28,19 @@
         nav img { height:70px; flex-shrink:0; }
         .nav-links { display:flex; gap:14px; align-items:center; }
         .nav-links a { font-size:11px; font-weight:600; color:var(--text-light); text-decoration:none; transition:color 0.2s; white-space:nowrap; }
-        .nav-links a:hover { color:var(--navy); }
-        .nav-badge { font-size:10px; letter-spacing:2px; color:var(--orange); font-weight:700; }
+        .nav-links a:hover { color:var(--crimson); }
+        .nav-badge { font-size:10px; letter-spacing:2px; color:var(--gold); font-weight:700; }
 
         /* HERO */
-        .hero { margin-top:100px; background:linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 40%, var(--navy-light) 100%); color:#fff; padding:80px 60px 60px; position:relative; overflow:hidden; }
+        .hero { margin-top:100px; background:linear-gradient(135deg, var(--crimson-dark) 0%, var(--crimson) 40%, var(--crimson-light) 100%); color:#fff; padding:80px 60px 60px; position:relative; overflow:hidden; }
         .hero::after { content:''; position:absolute; bottom:0; left:0; right:0; height:80px; background:linear-gradient(transparent, var(--warm-bg)); }
         .hero-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
-        .hero-text .ht-badge { font-size:12px; letter-spacing:4px; color:var(--orange-light); font-weight:700; margin-bottom:16px; }
+        .hero-text .ht-badge { font-size:12px; letter-spacing:4px; color:var(--gold-light); font-weight:700; margin-bottom:16px; }
         .hero-text h1 { font-size:44px; font-weight:900; line-height:1.05; margin-bottom:16px; }
-        .hero-text h1 span { color:var(--orange-light); }
+        .hero-text h1 span { color:var(--gold-light); }
         .hero-text p { font-size:18px; color:rgba(255,255,255,0.7); line-height:1.6; max-width:500px; }
         .hero-stats { display:flex; gap:32px; margin-top:32px; }
-        .hs-item .hs-val { font-size:36px; font-weight:900; color:var(--orange-light); line-height:1; }
+        .hs-item .hs-val { font-size:36px; font-weight:900; color:var(--gold-light); line-height:1; }
         .hs-item .hs-lbl { font-size:11px; color:rgba(255,255,255,0.5); margin-top:4px; font-weight:500; }
         .hero-render { text-align:center; }
         .hero-render img { max-width:100%; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
@@ -49,48 +49,48 @@
         .jv-badge span { font-size:12px; color:rgba(255,255,255,0.7); font-weight:500; }
 
         /* SECTION */
-        section, .banner, .banner-navy { scroll-margin-top:72px; }
+        section, .banner, .banner-crimson { scroll-margin-top:72px; }
         section { max-width:1100px; margin:0 auto; padding:60px 40px; }
-        .section-label { font-size:11px; letter-spacing:4px; color:var(--navy); font-weight:700; margin-bottom:8px; }
+        .section-label { font-size:11px; letter-spacing:4px; color:var(--crimson); font-weight:700; margin-bottom:8px; }
         .section-title { font-size:36px; font-weight:900; color:var(--dark); line-height:1.1; margin-bottom:8px; }
         .section-sub { font-size:16px; color:var(--text-light); max-width:700px; margin-bottom:32px; line-height:1.6; }
-        .divider { width:60px; height:4px; background:linear-gradient(90deg, var(--navy), var(--orange)); border-radius:2px; margin:12px 0 24px; }
+        .divider { width:60px; height:4px; background:linear-gradient(90deg, var(--crimson), var(--gold)); border-radius:2px; margin:12px 0 24px; }
 
         /* FULL-WIDTH BANNER SECTIONS */
         .banner { background:var(--dark); color:#fff; padding:60px 0; }
-        .banner .section-label { color:var(--orange); }
+        .banner .section-label { color:var(--gold); }
         .banner .section-title { color:#fff; }
         .banner .section-sub { color:rgba(255,255,255,0.6); }
-        .banner-navy { background:linear-gradient(135deg, var(--navy-dark), var(--navy)); color:#fff; padding:60px 0; }
-        .banner-navy .section-label { color:var(--orange-light); }
-        .banner-navy .section-title { color:#fff; }
+        .banner-crimson { background:linear-gradient(135deg, var(--crimson-dark), var(--crimson)); color:#fff; padding:60px 0; }
+        .banner-crimson .section-label { color:var(--gold-light); }
+        .banner-crimson .section-title { color:#fff; }
 
         /* TEAM GRID */
         .team-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
         .team-card { background:var(--warm-card); border-radius:16px; padding:28px 20px; text-align:center; border:1px solid var(--border); transition:transform 0.2s, box-shadow 0.2s; }
-        .team-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(26,39,68,0.08); }
-        .team-card img { width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:12px; border:3px solid var(--navy); }
-        .team-card .tc-fallback { width:80px; height:80px; border-radius:50%; margin:0 auto 12px; background:linear-gradient(135deg, var(--navy), var(--navy-light)); display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; color:#fff; }
+        .team-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(140,0,50,0.08); }
+        .team-card img { width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:12px; border:3px solid var(--crimson); }
+        .team-card .tc-fallback { width:80px; height:80px; border-radius:50%; margin:0 auto 12px; background:linear-gradient(135deg, var(--crimson), var(--crimson-light)); display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; color:#fff; }
         .team-card h4 { font-size:15px; font-weight:700; color:var(--dark); }
-        .team-card .tc-role { font-size:12px; color:var(--navy); font-weight:600; margin-top:2px; }
-        .team-card .tc-firm { font-size:10px; color:var(--orange); font-weight:700; letter-spacing:1px; margin-top:2px; }
+        .team-card .tc-role { font-size:12px; color:var(--crimson); font-weight:600; margin-top:2px; }
+        .team-card .tc-firm { font-size:10px; color:var(--gold); font-weight:700; letter-spacing:1px; margin-top:2px; }
         .team-card .tc-why { font-size:12px; color:var(--text-light); margin-top:8px; line-height:1.5; }
-        .team-note { background:rgba(26,39,68,0.04); border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-top:24px; }
+        .team-note { background:rgba(140,0,50,0.04); border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-top:24px; }
         .team-note p { font-size:14px; color:var(--text-light); line-height:1.6; }
         .team-note strong { color:var(--dark); }
 
         /* AVAILABILITY */
         .avail-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:24px; }
-        .avail-col h4 { font-size:16px; font-weight:700; color:var(--navy); margin-bottom:12px; padding-bottom:8px; border-bottom:2px solid var(--border); }
+        .avail-col h4 { font-size:16px; font-weight:700; color:var(--crimson); margin-bottom:12px; padding-bottom:8px; border-bottom:2px solid var(--border); }
         .avail-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(0,0,0,0.04); }
         .avail-row .ar-name { font-size:13px; font-weight:600; color:var(--dark); }
-        .avail-row .ar-pct { font-size:13px; font-weight:800; color:var(--navy); }
-        .avail-row .ar-pct.full { background:rgba(26,39,68,0.08); padding:2px 8px; border-radius:4px; }
+        .avail-row .ar-pct { font-size:13px; font-weight:800; color:var(--crimson); }
+        .avail-row .ar-pct.full { background:rgba(140,0,50,0.08); padding:2px 8px; border-radius:4px; }
 
         /* RISK CARDS */
         .risk-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-        .risk-card { background:var(--warm-card); border-radius:12px; padding:24px; border-left:4px solid var(--navy); box-shadow:0 2px 8px rgba(0,0,0,0.04); }
-        .risk-card .rc-tag { font-size:10px; font-weight:700; letter-spacing:2px; color:var(--orange); margin-bottom:6px; }
+        .risk-card { background:var(--warm-card); border-radius:12px; padding:24px; border-left:4px solid var(--crimson); box-shadow:0 2px 8px rgba(0,0,0,0.04); }
+        .risk-card .rc-tag { font-size:10px; font-weight:700; letter-spacing:2px; color:var(--gold); margin-bottom:6px; }
         .risk-card h4 { font-size:15px; font-weight:700; color:var(--dark); margin-bottom:6px; }
         .risk-card p { font-size:13px; color:var(--text-light); line-height:1.6; }
 
@@ -98,44 +98,44 @@
         .phase-tabs { display:flex; background:var(--warm-card); border-radius:12px; overflow:hidden; border:1px solid var(--border); margin-bottom:20px; }
         .phase-tab { flex:1; padding:16px 12px; text-align:center; cursor:pointer; transition:all 0.2s; border-right:1px solid var(--border); font-size:13px; font-weight:600; color:var(--text-light); }
         .phase-tab:last-child { border:none; }
-        .phase-tab:hover { background:rgba(26,39,68,0.04); }
-        .phase-tab.active { background:var(--navy); color:#fff; }
+        .phase-tab:hover { background:rgba(140,0,50,0.04); }
+        .phase-tab.active { background:var(--crimson); color:#fff; }
         .phase-tab .pt-label { font-weight:700; }
         .phase-tab .pt-date { font-size:10px; margin-top:2px; opacity:0.7; }
-        .phase-tab.active .pt-date { color:var(--orange-light); }
+        .phase-tab.active .pt-date { color:var(--gold-light); }
         .phase-panel { display:none; background:var(--warm-card); border-radius:12px; overflow:hidden; border:1px solid var(--border); }
         .phase-panel.active { display:block; }
-        .phase-panel img { width:100%; max-height:420px; object-fit:contain; background:#eef0f4; }
+        .phase-panel img { width:100%; max-height:420px; object-fit:contain; background:#f5f0eb; }
         .phase-panel .pp-content { padding:24px 28px; }
         .phase-panel h4 { font-size:18px; font-weight:700; color:var(--dark); margin-bottom:8px; }
         .phase-panel p { font-size:14px; color:var(--text-light); line-height:1.7; }
 
         /* SAFETY BANNER */
         .safety-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:1100px; margin:32px auto 0; }
-        .safety-card { background:rgba(255,255,255,0.08); border-radius:12px; padding:24px; border-top:3px solid var(--orange); }
+        .safety-card { background:rgba(255,255,255,0.08); border-radius:12px; padding:24px; border-top:3px solid var(--gold); }
         .safety-card h4 { font-size:15px; font-weight:700; color:#fff; margin-bottom:6px; }
         .safety-card p { font-size:13px; color:rgba(255,255,255,0.65); line-height:1.6; }
 
         /* TECH CARDS */
         .tech-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
-        .tech-card { background:var(--warm-card); border-radius:12px; padding:28px; border:1px solid var(--border); border-top:3px solid var(--navy); }
+        .tech-card { background:var(--warm-card); border-radius:12px; padding:28px; border:1px solid var(--border); border-top:3px solid var(--crimson); }
         .tech-card h4 { font-size:16px; font-weight:700; color:var(--dark); margin-bottom:8px; }
         .tech-card p { font-size:13px; color:var(--text-light); line-height:1.6; }
-        .tech-card .tc-person { font-size:12px; color:var(--navy); font-weight:600; margin-top:10px; }
+        .tech-card .tc-person { font-size:12px; color:var(--crimson); font-weight:600; margin-top:10px; }
 
         /* HIGHLIGHT CARDS */
         .highlight-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-        .highlight-card { background:linear-gradient(135deg, var(--navy), var(--navy-light)); border-radius:16px; padding:32px; color:#fff; }
-        .highlight-card .hc-label { font-size:11px; letter-spacing:2px; color:var(--orange-light); font-weight:700; margin-bottom:8px; }
+        .highlight-card { background:linear-gradient(135deg, var(--crimson), var(--crimson-light)); border-radius:16px; padding:32px; color:#fff; }
+        .highlight-card .hc-label { font-size:11px; letter-spacing:2px; color:var(--gold-light); font-weight:700; margin-bottom:8px; }
         .highlight-card h3 { font-size:24px; font-weight:900; margin-bottom:12px; }
         .highlight-card p { font-size:14px; color:rgba(255,255,255,0.7); line-height:1.7; }
-        .highlight-card .hc-stat { font-size:48px; font-weight:900; color:var(--orange-light); line-height:1; margin-bottom:8px; }
+        .highlight-card .hc-stat { font-size:48px; font-weight:900; color:var(--gold-light); line-height:1; margin-bottom:8px; }
 
         /* CASE STUDY */
         .case-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:24px; }
         .case-card { background:var(--warm-card); border-radius:12px; padding:24px; border:1px solid var(--border); }
         .case-card h4 { font-size:15px; font-weight:700; color:var(--dark); margin-bottom:4px; }
-        .case-card .cc-label { font-size:11px; font-weight:700; letter-spacing:1px; color:var(--orange); margin-bottom:8px; }
+        .case-card .cc-label { font-size:11px; font-weight:700; letter-spacing:1px; color:var(--gold); margin-bottom:8px; }
         .case-card p { font-size:13px; color:var(--text-light); line-height:1.6; margin-top:6px; }
 
         /* POST-OCC */
@@ -150,23 +150,23 @@
         .track-card { background:var(--warm-card); border-radius:12px; overflow:hidden; border:1px solid var(--border); }
         .track-card .tk-header { background:var(--dark); color:#fff; padding:16px 20px; }
         .track-card .tk-header h4 { font-size:16px; font-weight:700; }
-        .track-card .tk-header span { font-size:11px; color:var(--orange); }
+        .track-card .tk-header span { font-size:11px; color:var(--gold); }
         .track-card .tk-body { padding:16px 20px; }
         .track-card .tk-body p { font-size:13px; color:var(--text-light); line-height:1.6; }
 
         /* QUOTE */
         .quote-block { background:var(--dark); border-radius:16px; padding:32px 36px; margin:24px 0; color:#fff; position:relative; }
-        .quote-block::before { content:'\201C'; font-size:72px; color:var(--navy); position:absolute; top:12px; left:24px; line-height:1; opacity:0.4; }
+        .quote-block::before { content:'\201C'; font-size:72px; color:var(--crimson); position:absolute; top:12px; left:24px; line-height:1; opacity:0.4; }
         .quote-block .qb-text { font-size:16px; font-style:italic; color:rgba(255,255,255,0.85); line-height:1.7; padding-left:20px; }
-        .quote-block .qb-attr { font-size:12px; color:var(--orange); margin-top:12px; padding-left:20px; font-weight:600; }
+        .quote-block .qb-attr { font-size:12px; color:var(--gold); margin-top:12px; padding-left:20px; font-weight:600; }
 
         /* MILESTONES */
         .milestone-list { margin-top:24px; }
         .milestone { display:flex; gap:20px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--border); }
         .milestone:last-child { border:none; }
-        .milestone .ms-date { min-width:110px; font-size:14px; font-weight:800; color:var(--navy); }
+        .milestone .ms-date { min-width:110px; font-size:14px; font-weight:800; color:var(--crimson); }
         .milestone .ms-text { font-size:14px; color:var(--text-light); }
-        .milestone.highlight .ms-date { font-size:16px; color:var(--orange); }
+        .milestone.highlight .ms-date { font-size:16px; color:var(--gold); }
         .milestone.highlight .ms-text { font-size:16px; font-weight:700; color:var(--dark); }
 
         /* GEOTHERMAL IMAGE */
@@ -175,61 +175,61 @@
         .geo-visual .caption { font-size:12px; color:var(--text-light); margin-top:8px; }
 
         /* UDOR CHAT */
-        .udor-bar { position:fixed; bottom:0; left:0; right:0; height:56px; background:linear-gradient(135deg, var(--navy-dark), var(--navy)); display:flex; align-items:center; justify-content:center; gap:12px; z-index:600; cursor:pointer; transition:transform 0.3s; box-shadow:0 -4px 20px rgba(26,39,68,0.2); }
-        .udor-bar:hover { background:linear-gradient(135deg, var(--navy), var(--navy-light)); }
+        .udor-bar { position:fixed; bottom:0; left:0; right:0; height:56px; background:linear-gradient(135deg, var(--crimson-dark), var(--crimson)); display:flex; align-items:center; justify-content:center; gap:12px; z-index:600; cursor:pointer; transition:transform 0.3s; box-shadow:0 -4px 20px rgba(140,0,50,0.2); }
+        .udor-bar:hover { background:linear-gradient(135deg, var(--crimson), var(--crimson-light)); }
         .udor-bar .ub-icon { width:32px; height:32px; background:rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; }
         .udor-bar .ub-icon svg { width:18px; height:18px; fill:#fff; }
         .udor-bar .ub-text { color:#fff; font-size:14px; font-weight:600; }
-        .udor-bar .ub-brand { font-size:10px; color:var(--orange-light); font-weight:700; letter-spacing:1px; }
+        .udor-bar .ub-brand { font-size:10px; color:var(--gold-light); font-weight:700; letter-spacing:1px; }
         .udor-bar.hidden { transform:translateY(100%); }
 
         /* UDOR PANEL */
         .udor-panel { position:fixed; bottom:56px; right:24px; width:400px; max-height:480px; background:#fff; border-radius:16px 16px 0 0; box-shadow:0 -8px 40px rgba(0,0,0,0.15); z-index:601; display:none; flex-direction:column; overflow:hidden; }
         .udor-panel.open { display:flex; }
-        .up-head { background:linear-gradient(135deg, var(--navy-dark), var(--navy)); padding:16px 20px; color:#fff; display:flex; align-items:center; justify-content:space-between; }
+        .up-head { background:linear-gradient(135deg, var(--crimson-dark), var(--crimson)); padding:16px 20px; color:#fff; display:flex; align-items:center; justify-content:space-between; }
         .up-head .uh-title { font-size:16px; font-weight:800; }
-        .up-head .uh-sub { font-size:10px; color:var(--orange-light); letter-spacing:1px; }
+        .up-head .uh-sub { font-size:10px; color:var(--gold-light); letter-spacing:1px; }
         .up-close { background:none; border:none; color:#fff; font-size:22px; cursor:pointer; opacity:0.7; }
         .up-close:hover { opacity:1; }
         .up-messages { flex:1; overflow-y:auto; padding:16px; min-height:200px; max-height:320px; }
         .msg { margin-bottom:12px; display:flex; flex-direction:column; }
-        .msg.bot .msg-bubble { background:#eef0f4; color:var(--dark); border-radius:12px 12px 12px 4px; padding:12px 16px; font-size:14px; line-height:1.5; max-width:85%; }
-        .msg.user .msg-bubble { background:var(--navy); color:#fff; border-radius:12px 12px 4px 12px; padding:12px 16px; font-size:14px; line-height:1.5; max-width:85%; align-self:flex-end; }
+        .msg.bot .msg-bubble { background:#f5f0eb; color:var(--dark); border-radius:12px 12px 12px 4px; padding:12px 16px; font-size:14px; line-height:1.5; max-width:85%; }
+        .msg.user .msg-bubble { background:var(--crimson); color:#fff; border-radius:12px 12px 4px 12px; padding:12px 16px; font-size:14px; line-height:1.5; max-width:85%; align-self:flex-end; }
         .msg.bot .msg-bubble.typing { opacity:0.5; }
         .up-input { display:flex; gap:8px; padding:12px 16px; border-top:1px solid rgba(0,0,0,0.06); }
-        .up-input input { flex:1; padding:10px 14px; border:1.5px solid #dde0e6; border-radius:8px; font-size:14px; font-family:inherit; color:var(--dark); }
-        .up-input input:focus { outline:none; border-color:var(--navy); }
-        .up-input button { padding:10px 16px; background:var(--navy); color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:700; font-family:inherit; cursor:pointer; }
+        .up-input input { flex:1; padding:10px 14px; border:1.5px solid #e0d8d2; border-radius:8px; font-size:14px; font-family:inherit; color:var(--dark); }
+        .up-input input:focus { outline:none; border-color:var(--crimson); }
+        .up-input button { padding:10px 16px; background:var(--crimson); color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:700; font-family:inherit; cursor:pointer; }
         .up-footer { padding:8px 16px; text-align:center; font-size:10px; color:#999; border-top:1px solid rgba(0,0,0,0.04); }
 
         /* WELCOME OVERLAY */
-        .welcome-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(26,39,68,0.7); backdrop-filter:blur(8px); z-index:9999; display:flex; align-items:center; justify-content:center; transition:opacity 0.4s; }
+        .welcome-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(140,0,50,0.7); backdrop-filter:blur(8px); z-index:9999; display:flex; align-items:center; justify-content:center; transition:opacity 0.4s; }
         .welcome-overlay.hidden { opacity:0; pointer-events:none; }
         .welcome-box { background:#fff; border-radius:20px; width:500px; max-width:92vw; overflow:hidden; box-shadow:0 24px 64px rgba(0,0,0,0.3); }
-        .wb-header { background:linear-gradient(135deg, var(--navy-dark), var(--navy)); padding:32px 28px 24px; text-align:center; color:#fff; }
+        .wb-header { background:linear-gradient(135deg, var(--crimson-dark), var(--crimson)); padding:32px 28px 24px; text-align:center; color:#fff; }
         .wb-header img { height:40px; margin-bottom:14px; }
         .wb-header h2 { font-size:22px; font-weight:800; }
         .wb-header p { font-size:14px; color:rgba(255,255,255,0.6); margin-top:4px; }
         .wb-body { padding:24px 28px 28px; }
         .wb-body label { display:block; font-size:11px; font-weight:700; color:var(--text-light); letter-spacing:1px; margin-bottom:6px; margin-top:14px; }
         .wb-body label:first-child { margin-top:0; }
-        .wb-body input, .wb-body textarea { width:100%; padding:10px 14px; border:1.5px solid #dde0e6; border-radius:8px; font-size:14px; font-family:inherit; color:var(--dark); }
+        .wb-body input, .wb-body textarea { width:100%; padding:10px 14px; border:1.5px solid #e0d8d2; border-radius:8px; font-size:14px; font-family:inherit; color:var(--dark); }
         .wb-body textarea { resize:vertical; min-height:56px; }
-        .wb-body input:focus, .wb-body textarea:focus { outline:none; border-color:var(--navy); }
+        .wb-body input:focus, .wb-body textarea:focus { outline:none; border-color:var(--crimson); }
         .wb-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
-        .wb-chips div { padding:6px 12px; border-radius:16px; font-size:12px; font-weight:500; border:1.5px solid #dde0e6; cursor:pointer; transition:all 0.2s; user-select:none; }
-        .wb-chips div:hover { border-color:var(--navy); color:var(--navy); }
-        .wb-chips div.on { background:var(--navy); border-color:var(--navy); color:#fff; }
-        .wb-submit { width:100%; margin-top:20px; padding:14px; background:linear-gradient(135deg, var(--navy), var(--navy-light)); color:#fff; border:none; border-radius:10px; font-size:16px; font-weight:700; font-family:inherit; cursor:pointer; }
+        .wb-chips div { padding:6px 12px; border-radius:16px; font-size:12px; font-weight:500; border:1.5px solid #e0d8d2; cursor:pointer; transition:all 0.2s; user-select:none; }
+        .wb-chips div:hover { border-color:var(--crimson); color:var(--crimson); }
+        .wb-chips div.on { background:var(--crimson); border-color:var(--crimson); color:#fff; }
+        .wb-submit { width:100%; margin-top:20px; padding:14px; background:linear-gradient(135deg, var(--crimson), var(--crimson-light)); color:#fff; border:none; border-radius:10px; font-size:16px; font-weight:700; font-family:inherit; cursor:pointer; }
         .wb-skip { display:block; text-align:center; margin-top:10px; font-size:12px; color:#999; cursor:pointer; border:none; background:none; font-family:inherit; }
         .wb-powered { text-align:center; margin-top:16px; font-size:10px; color:#bbb; }
-        .wb-powered strong { color:var(--navy); }
+        .wb-powered strong { color:var(--crimson); }
 
         /* ADMIN */
         .admin-panel { position:fixed; top:64px; left:0; right:0; bottom:0; background:var(--warm-bg); z-index:400; overflow-y:auto; padding:28px 48px; display:none; }
         .admin-panel.show { display:block; }
         .admin-table { width:100%; border-collapse:collapse; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.05); margin-bottom:24px; }
-        .admin-table th { text-align:left; padding:10px 14px; font-size:11px; font-weight:700; letter-spacing:1px; color:#888; border-bottom:2px solid #eee; background:#f5f6f8; }
+        .admin-table th { text-align:left; padding:10px 14px; font-size:11px; font-weight:700; letter-spacing:1px; color:#888; border-bottom:2px solid #eee; background:#f8f5f0; }
         .admin-table td { padding:8px 14px; font-size:13px; color:var(--dark); border-bottom:1px solid #f0f0f0; }
 
         .page-bottom { height:80px; }
@@ -312,7 +312,7 @@
             .wb-header h2 { font-size:18px; }
             .wb-body { padding:16px 20px 20px; }
             .wb-chips div { font-size:11px; padding:5px 10px; }
-            .banner section, .banner-navy section { padding:0 16px; }
+            .banner section, .banner-crimson section { padding:0 16px; }
             .page-bottom { height:calc(80px + env(safe-area-inset-bottom,0px)); }
         }
     </style>
@@ -324,7 +324,7 @@
     <img src="assets/fontaine-dimeo-jv-inline.png" alt="Fontaine + Dimeo" onerror="this.src='assets/fontaine-logo-red.png'">
     <button class="nav-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('mobile-open')">&#9776;</button>
     <div class="nav-links" onclick="this.classList.remove('mobile-open')">
-        <a href="#animation" style="color:var(--orange);font-weight:700;">4D Animation</a>
+        <a href="#animation" style="color:var(--gold);font-weight:700;">4D Animation</a>
         <a href="#who">About</a>
         <a href="#team">Team</a>
         <a href="#acceleration">Acceleration</a>
@@ -334,8 +334,8 @@
         <a href="#risks">Risks</a>
         <a href="#technology">Technology</a>
         <a href="#track-record">Track Record</a>
-        <a href="/needham/precon/" style="color:var(--orange);font-weight:700;">Precon Dashboard</a>
-        <a href="/needham/presentation/" style="color:var(--orange);font-weight:700;">Presentation</a>
+        <a href="/needham/precon/" style="color:var(--gold);font-weight:700;">Precon Dashboard</a>
+        <a href="/needham/presentation/" style="color:var(--gold);font-weight:700;">Presentation</a>
         <span class="nav-badge">FONTAINE + DIMEO</span>
     </div>
 </nav>
@@ -365,9 +365,9 @@
 </div>
 
 <!-- 4D CONSTRUCTION ANIMATION -->
-<div class="banner-navy" id="animation" style="padding:48px 0 56px;">
+<div class="banner-crimson" id="animation" style="padding:48px 0 56px;">
     <section style="padding-top:0;padding-bottom:0;">
-        <div class="section-label" style="color:var(--orange-light);">NARRATED 4D CONSTRUCTION SEQUENCE</div>
+        <div class="section-label" style="color:var(--gold-light);">NARRATED 4D CONSTRUCTION SEQUENCE</div>
         <div class="section-title" style="color:#fff;font-size:28px;margin-bottom:6px;">Watch How We Build Pollard</div>
         <div style="font-size:15px;color:rgba(255,255,255,0.6);max-width:650px;margin-bottom:24px;line-height:1.6;">Full phasing walkthrough with voiceover — from mobilization through final completion. See exactly how construction progresses while keeping students safe and the school fully operational.</div>
         <div style="position:relative;width:100%;max-width:960px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);border:2px solid rgba(255,255,255,0.1);">
@@ -389,7 +389,7 @@
         </div>
         <div class="tech-card">
             <h4>Proven JV Partnership</h4>
-            <p>Currently building the $268M Doherty Memorial High School in Worcester together. Not a new experiment &mdash; a proven collaboration with established systems, communication protocols, and trust. JV SPL: $320M.</p>
+            <p>Recently successfully completed the $268M Doherty Memorial High School in Worcester together. Not a new experiment &mdash; a proven collaboration with established systems, communication protocols, and trust. JV SPL: $320M.</p>
         </div>
         <div class="tech-card">
             <h4>Unmatched Credentials</h4>
@@ -486,7 +486,7 @@
             <div class="tc-why">Professional Structural Engineer. Leads design review for structural steel in the gym and 750-seat auditorium. Catches coordination issues before they become field problems.</div>
         </div>
         <div class="team-card">
-            <div class="tc-fallback">TR</div>
+            <img src="assets/headshot-tracy-routhier.jpg" alt="Tracy Routhier" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="tc-fallback" style="display:none">TR</div>
             <h4>Tracy Routhier, LEED GA, CPHB</h4>
             <div class="tc-role">Sustainability Manager</div>
             <div class="tc-firm">FONTAINE</div>
@@ -538,7 +538,7 @@
     <section style="padding-top:0;padding-bottom:0;">
         <div class="section-label">STUDENT SAFETY &amp; SCHOOL OPERATIONS</div>
         <div class="section-title">Pollard Stays Open. Students Stay Safe.</div>
-        <div class="divider" style="background:linear-gradient(90deg, var(--orange), rgba(255,255,255,0.3));"></div>
+        <div class="divider" style="background:linear-gradient(90deg, var(--gold), rgba(255,255,255,0.3));"></div>
         <div class="section-sub">New construction on an occupied campus adjacent to the MBTA Needham Line and residential neighborhoods. Every logistics decision starts with student safety, school operations, and neighbor impact.</div>
     </section>
     <div class="safety-grid">
@@ -818,11 +818,11 @@
 </section>
 
 <!-- AFTER WE BUILD -->
-<div class="banner-navy" id="after">
+<div class="banner-crimson" id="after">
     <section style="padding-top:0;padding-bottom:0;">
         <div class="section-label">AFTER WE BUILD</div>
         <div class="section-title">Perfect Operations Is Our Goal.</div>
-        <div class="divider" style="background:linear-gradient(90deg, var(--orange-light), rgba(255,255,255,0.3));"></div>
+        <div class="divider" style="background:linear-gradient(90deg, var(--gold-light), rgba(255,255,255,0.3));"></div>
         <div class="section-sub" style="color:rgba(255,255,255,0.7);">Our job isn't done at substantial completion. It's done when your facilities team is confident, your systems are performing at Net Zero targets, and your building is running the way it was designed to run.</div>
     </section>
     <div class="post-grid" style="max-width:1100px;margin:24px auto 0;padding:0 40px;">
@@ -870,9 +870,10 @@
             <div class="tk-body"><p>Occupied campus renovation with complex site logistics and stakeholder communication. Auditorium construction using Matt Wilder's "dance floor" method. Full GMP at $95.3M (~$588/SF).</p></div>
         </div>
         <div class="track-card">
-            <div class="tk-header"><h4>Mountain View K-8, East Hampton</h4><span>177,000 SF &mdash; 14 ft from Existing School</span></div>
+            <div class="tk-header"><h4>Mountain View K-8, Easthampton</h4><span>177,000 SF &mdash; 14 ft from Existing School</span></div>
             <div class="tk-body"><p>Two-phased new construction just 14 feet from the existing occupied school. Directly applicable to Pollard's challenge of building new on the same campus while maintaining full school operations.</p></div>
         </div>
+        <div class="track-card"><div class="tk-header"><h4>South High Community School, Worcester</h4><span>LEED Gold Certified</span></div><div class="tk-body"><p>Comprehensive renovation and addition achieving LEED Gold certification. Complex occupied site with phased construction and sustained community engagement throughout. Set the standard for LEED Gold school construction in Worcester — direct parallels to Pollard's sustainability and logistics challenges.</p></div></div>
     </div>
 
     <div class="quote-block" style="margin-top:24px;">
@@ -892,10 +893,10 @@
     <div class="divider"></div>
     <div style="max-width:560px;">
         <a href="/needham/precon/" style="text-decoration:none;display:block;background:linear-gradient(135deg,var(--dark),#2a2d33);border-radius:16px;padding:28px 24px;color:#fff;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
-            <div style="font-size:10px;letter-spacing:2px;color:var(--orange-light);font-weight:700;margin-bottom:6px;">DRAFT — INTERNAL</div>
+            <div style="font-size:10px;letter-spacing:2px;color:var(--gold-light);font-weight:700;margin-bottom:6px;">DRAFT — INTERNAL</div>
             <div style="font-size:22px;font-weight:900;margin-bottom:6px;">MSBA Conceptual Estimating Dashboard</div>
             <div style="font-size:14px;color:rgba(255,255,255,0.6);line-height:1.5;">Layered cost estimate with MSBA reimbursability analysis, verified pricing benchmarks, and cost-to-Needham breakdown.</div>
-            <div style="margin-top:12px;font-size:13px;font-weight:700;color:var(--orange-light);">View Dashboard &rarr;</div>
+            <div style="margin-top:12px;font-size:13px;font-weight:700;color:var(--gold-light);">View Dashboard &rarr;</div>
         </a>
     </div>
 </section>
@@ -919,7 +920,7 @@
                     </div>
                 </div>
             </div>
-            <button onclick="addWPerson()" style="width:100%;padding:8px;border:2px dashed #ccc;border-radius:8px;background:none;color:#888;font-size:13px;font-weight:700;cursor:pointer;margin:8px 0 16px;font-family:inherit;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='#ccc';this.style.color='#888'">+ Add Another Person</button>
+            <button onclick="addWPerson()" style="width:100%;padding:8px;border:2px dashed #ccc;border-radius:8px;background:none;color:#888;font-size:13px;font-weight:700;cursor:pointer;margin:8px 0 16px;font-family:inherit;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='#ccc';this.style.color='#888'">+ Add Another Person</button>
             <label>WHAT INTERESTS YOU MOST?</label>
             <div class="wb-chips">
                 <div data-i="team" onclick="this.classList.toggle('on')">Our Team</div>
@@ -960,7 +961,7 @@
         <input type="text" id="udorInput" placeholder="Ask about our proposal..." onkeydown="if(event.key==='Enter')sendUdor()">
         <button onclick="sendUdor()">Send</button>
     </div>
-    <div class="up-footer">Powered by <strong style="color:var(--navy);">Udor Studios</strong> &mdash; by Fontaine</div>
+    <div class="up-footer">Powered by <strong style="color:var(--crimson);">Udor Studios</strong> &mdash; by Fontaine</div>
 </div>
 
 <!-- ADMIN PANEL -->
@@ -995,6 +996,8 @@ function addWPerson() {
     div.querySelector('.w-pname').focus();
 }
 
+const W3F_KEY = "f0b72711-02f3-4aa1-bbdd-7d649bc8b091";
+
 function submitWelcome() {
     const chips = Array.from(document.querySelectorAll('.wb-chips div.on')).map(x => x.dataset.i);
     const freetext = document.getElementById('wFreetext').value.trim();
@@ -1014,27 +1017,10 @@ function submitWelcome() {
     });
     localStorage.setItem('needham-visitors', JSON.stringify(visitors));
 
-    // Send all visitors via Web3Forms → djr@fontainebros.com
-    if (people.length > 0) {
-        const nameList = people.map(p => p.name || 'Anonymous').join(', ');
-        const emailList = people.map(p => p.email || '(none)').join(', ');
-        fetch('https://api.web3forms.com/submit', {
-            method: 'POST',
-            headers: { 'Content-Type':'application/json' },
-            body: JSON.stringify({
-                access_key: 'e71b608c-ba69-4dc3-82d0-765910e81fc3',
-                subject: 'Pollard Proposal - ' + people.length + ' Visitor(s): ' + nameList,
-                from_name: 'Fontaine.ai/Needham',
-                'Visitors': nameList,
-                'Emails': emailList,
-                'Count': people.length + ' people',
-                Interests: chips.length ? chips.join(', ') : '(none selected)',
-                Comments: freetext || '(none)',
-                Page: 'fontaine.ai/needham',
-                'Visited At': new Date().toLocaleString()
-            })
-        }).catch(() => {});
-    }
+    // Send visitor info via Web3Forms
+    const name = people.length ? people[0].name : '';
+    const email = people.length ? people[0].email : '';
+    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Needham Site — New Visitor: ' + (name || 'Anonymous'), from_name: name || 'Needham Visitor', message: 'Name: ' + (name || '(not provided)') + '\nEmail: ' + (email || '(not provided)') + '\nInterests: ' + (chips.join(', ') || '(none selected)') + '\nComments: ' + (freetext || '(none)') + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(() => {});
 
     closeWelcome();
     const sectionMap = { team:'team', schedule:'phases', geothermal:'geothermal', safety:'safety', mbta:'risks', sustainability:'geothermal', community:'risks', references:'track-record' };
@@ -1088,7 +1074,7 @@ AUDITORIUM: 750-seat theater using Matt Wilder's "dance floor" method - proven o
 
 COMMUNITY: Mark Abdella is Needham resident. Community Advisory Network. Animated logistics visualization via QR code. Town Meeting support strategy understanding Needham's social circles. Three key decisions: site selection, grade configuration (6-7-8), retaining full auditorium.
 
-REFERENCES: Doherty Memorial HS ($268M JV), Agawam HS (geothermal), Walpole MS ($95.3M, 162K SF), Mountain View K-8 (14ft from existing), South High, East Longmeadow HS.
+REFERENCES: Doherty Memorial HS ($268M JV, recently completed), Agawam HS (geothermal), Walpole MS ($95.3M, 162K SF), Mountain View K-8 Easthampton (14ft from existing), South High Community School Worcester (LEED Gold, complex occupied site, phased construction), East Longmeadow HS.
 
 Keep answers concise (2-4 sentences). Be specific to Pollard/Needham. If asked about Udor: "Udor Studios is Fontaine's AI-powered technology platform — building the future of how construction companies communicate with clients."`;
 
@@ -1104,6 +1090,8 @@ async function sendUdor() {
     let qs = JSON.parse(localStorage.getItem('needham-questions') || '[]');
     qs.push({ q, timestamp: new Date().toISOString() });
     localStorage.setItem('needham-questions', JSON.stringify(qs));
+
+    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Needham Udor Question: ' + q.substring(0, 60), from_name: 'Udor (Needham)', message: 'Question: ' + q + '\nTime: ' + new Date().toLocaleString(), page: window.location.href }) }).catch(() => {});
 
     const vData = JSON.parse(localStorage.getItem('needham-visitors') || '[]');
     const lastVisitor = vData.length ? vData[vData.length - 1] : {};
@@ -1128,22 +1116,6 @@ async function sendUdor() {
         msgs.innerHTML += '<div class="msg bot"><div class="msg-bubble">I\'m having trouble connecting. Please scroll through the site for detailed information, or try again in a moment.</div></div>';
     }
 
-    // Send question + Udor's answer via Web3Forms → djr@fontainebros.com
-    fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify({
-            access_key: 'e71b608c-ba69-4dc3-82d0-765910e81fc3',
-            subject: 'Udor Q&A - ' + (lastVisitor.name || 'Anonymous Visitor'),
-            from_name: 'Fontaine.ai/Needham Udor',
-            Visitor: lastVisitor.name || '(unknown)',
-            'Visitor Email': lastVisitor.email || '(unknown)',
-            Question: q,
-            'Udor Answer': answer,
-            Page: 'fontaine.ai/needham',
-            'Asked At': new Date().toLocaleString()
-        })
-    }).catch(() => {});
     msgs.scrollTop = msgs.scrollHeight;
 }
 
@@ -1164,6 +1136,8 @@ if (new URLSearchParams(location.search).get('admin') === 'true') {
     h += '</table>';
     document.getElementById('adminContent').innerHTML = h;
 }
+
+fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Needham Site View', from_name: 'tracker', message: JSON.stringify({ event: 'pageview', timestamp: new Date().toISOString(), ua: navigator.userAgent, ref: document.referrer }), page: window.location.href }) }).catch(() => {});
 </script>
 </body>
 </html>
