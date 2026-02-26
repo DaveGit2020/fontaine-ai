@@ -158,26 +158,6 @@
         .up-input input:focus { border-color:var(--maroon); }
         .up-input button { background:var(--maroon); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; }
 
-        /* ===== TEAM PANEL ===== */
-        .team-btn { position:fixed; bottom:16px; left:16px; z-index:800; background:var(--gold); color:#000; border:none; height:40px; padding:0 16px; border-radius:20px; cursor:pointer; box-shadow:0 4px 20px rgba(196,168,74,0.4); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:800; letter-spacing:0.5px; transition:all 0.2s; font-family:inherit; }
-        .team-btn:hover { transform:scale(1.05); box-shadow:0 6px 28px rgba(196,168,74,0.5); }
-        .team-btn .team-avatars { display:flex; margin-left:-4px; }
-        .team-btn .team-avatars img { width:26px; height:26px; border-radius:50%; border:2px solid var(--gold); margin-left:-8px; object-fit:cover; }
-        .team-panel { position:fixed; bottom:64px; left:16px; width:380px; max-height:65vh; background:#fff; border-radius:16px; box-shadow:0 16px 56px rgba(0,0,0,0.5); z-index:800; display:none; flex-direction:column; overflow:hidden; }
-        .team-panel.open { display:flex; }
-        .tp-head { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:var(--maroon); color:#fff; }
-        .tp-head .tp-title { font-size:14px; font-weight:800; }
-        .tp-head .tp-sub { font-size:8px; letter-spacing:2px; color:var(--gold); }
-        .tp-close { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; }
-        .tp-list { flex:1; overflow-y:auto; padding:12px; }
-        .tp-person { display:flex; gap:12px; align-items:center; padding:10px; border-radius:10px; transition:background 0.15s; cursor:default; margin-bottom:2px; }
-        .tp-person:hover { background:#f8f5ee; }
-        .tp-person img { width:48px; height:48px; border-radius:50%; border:2px solid var(--maroon); object-fit:cover; flex-shrink:0; }
-        .tp-person .tp-init { width:48px; height:48px; border-radius:50%; border:2px solid var(--maroon); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px; color:#fff; }
-        .tp-person-info h5 { font-size:13px; font-weight:800; color:var(--maroon); margin-bottom:1px; }
-        .tp-person-info .tp-role { font-size:10px; color:#999; margin-bottom:3px; }
-        .tp-person-info .tp-detail { font-size:11px; color:#555; line-height:1.4; }
-
         /* ===== TRANSITIONS ===== */
         .slide { opacity:0; transition:opacity 0.4s; }
         .slide.visible { opacity:1; }
@@ -203,7 +183,6 @@
     <div class="tb-center"><b id="sNum">1</b> / <span id="sTotal">45</span></div>
     <div class="tb-right">
         <button class="tb-btn gold" onclick="showPM()">&#9733; Priorities</button>
-        <button class="tb-btn" onclick="toggleTeam()">&#9787; Team</button>
         <button class="tb-btn" onclick="toggleUdor()">Ask Udor</button>
         <a href="/millis/" class="tb-btn">&larr; Project Site</a>
     </div>
@@ -288,31 +267,6 @@
             <button class="pm-go" onclick="savePM()">Start Presentation</button>
             <button class="pm-skip" onclick="closePM()">Skip</button>
         </div>
-    </div>
-</div>
-
-<!-- TEAM PANEL -->
-<button class="team-btn" onclick="toggleTeam()">
-    <div class="team-avatars">
-        <img src="../assets/headshot-brian-davies.jpg" alt="BD">
-        <img src="../assets/headshot-chelsey-mutrie.jpg" alt="CM">
-        <img src="../assets/headshot-mark-bisson.jpg" alt="MB">
-        <img src="../assets/headshot-shane-sampson.jpg" alt="SS">
-    </div>
-    OUR TEAM
-</button>
-<div class="team-panel" id="teamPanel">
-    <div class="tp-head"><div><div class="tp-title">Our Team</div><div class="tp-sub">FONTAINE BROS</div></div><button class="tp-close" onclick="toggleTeam()">&times;</button></div>
-    <div class="tp-list">
-        <div class="tp-person"><img src="../assets/headshot-brian-davies.jpg" alt="Brian Davies"><div class="tp-person-info"><h5>Brian Davies</h5><div class="tp-role">Director of Construction &mdash; Fontaine Bros</div><div class="tp-detail">35+ years. Leads field operations and project delivery.</div></div></div>
-        <div class="tp-person"><img src="../assets/headshot-chelsey-mutrie.jpg" alt="Chelsey Mutrie"><div class="tp-person-info"><h5>Chelsey Mutrie</h5><div class="tp-role">VP Preconstruction &mdash; Fontaine Bros</div><div class="tp-detail">Agawam HS geothermal, cost estimating, MSBA process expert.</div></div></div>
-        <div class="tp-person"><img src="../assets/headshot-mark-bisson.jpg" alt="Mark Bisson"><div class="tp-person-info"><h5>Mark Bisson</h5><div class="tp-role">Superintendent &mdash; Fontaine Bros</div><div class="tp-detail">Field leadership, safety, occupied school construction.</div></div></div>
-        <div class="tp-person"><img src="../assets/headshot-shane-sampson.jpg" alt="Shane Sampson"><div class="tp-person-info"><h5>Shane Sampson</h5><div class="tp-role">Project Manager &mdash; Fontaine Bros</div><div class="tp-detail">Budget tracking, schedule management, owner communication.</div></div></div>
-        <div class="tp-person"><img src="../assets/headshot-steve-gelinas.jpg" alt="Steve Gelinas"><div class="tp-person-info"><h5>Steve Gelinas</h5><div class="tp-role">Senior Estimator &mdash; Fontaine Bros</div><div class="tp-detail">Preconstruction estimating, subcontractor prequalification.</div></div></div>
-        <div class="tp-person"><img src="../assets/headshot-griffin-couture.jpeg" alt="Griffin Couture"><div class="tp-person-info"><h5>Griffin Couture</h5><div class="tp-role">Project Engineer &mdash; Fontaine Bros</div><div class="tp-detail">Coordination, RFI management, QA/QC.</div></div></div>
-        <div class="tp-person"><img src="../assets/headshot-mark-abdella.jpg" alt="Mark Abdella"><div class="tp-person-info"><h5>Mark Abdella</h5><div class="tp-role">VP CM Services &mdash; Fontaine Bros</div><div class="tp-detail">Community liaison, business development.</div></div></div>
-        <div class="tp-person"><img src="../assets/headshot-nick-skebos.jpg" alt="Nick Skebos"><div class="tp-person-info"><h5>Nick Skebos</h5><div class="tp-role">Safety Director &mdash; Fontaine Bros</div><div class="tp-detail">Site safety, OSHA compliance, safety planning.</div></div></div>
-        <div class="tp-person"><img src="../assets/headshot-nate-bonesteel.jpeg" alt="Nate Bonesteel"><div class="tp-person-info"><h5>Nate Bonesteel</h5><div class="tp-role">Fontaine Bros</div><div class="tp-detail">Supporting the Millis project team.</div></div></div>
     </div>
 </div>
 
@@ -473,6 +427,10 @@ function savePM() {
     });
     closePM();
     applyBadges();
+    // Notify priorities selected
+    if (Object.keys(prios).length) {
+        fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Presentation — Priorities Set', from_name: 'tracker', message: JSON.stringify({ event: 'priorities', timestamp: new Date().toISOString(), priorities: prios, ua: navigator.userAgent }), page: window.location.href }) }).catch(() => {});
+    }
 }
 
 function applyBadges() {
@@ -511,9 +469,8 @@ function applyBadges() {
     });
 }
 
-// ===== TEAM PANEL =====
-let teamOpen = false;
-function toggleTeam() { teamOpen = !teamOpen; document.getElementById('teamPanel').classList.toggle('open', teamOpen); }
+// ===== EMAIL NOTIFICATIONS =====
+const W3F_KEY = "f0b72711-02f3-4aa1-bbdd-7d649bc8b091";
 
 // ===== UDOR =====
 let udorOpen = false;
@@ -530,6 +487,8 @@ async function sendUdor() {
     const m = document.getElementById('udorMsgs');
     m.innerHTML += '<div class="msg user"><div class="msg-bubble">' + esc(q) + '</div></div>';
     m.scrollTop = m.scrollHeight;
+    // Notify Udor question
+    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Presentation — Udor Question', from_name: 'tracker', message: JSON.stringify({ event: 'udor_question', question: q, timestamp: new Date().toISOString(), slide: getCurrentSlide() + 1, ua: navigator.userAgent }), page: window.location.href }) }).catch(() => {});
     m.innerHTML += '<div class="msg bot" id="typing"><div class="msg-bubble typing">Thinking...</div></div>';
     m.scrollTop = m.scrollHeight;
     try {
@@ -554,6 +513,9 @@ window.addEventListener('scroll', () => {
 });
 
 setTimeout(() => { hideHint(); }, 8000);
+
+// ===== PAGEVIEW TRACKER =====
+fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ access_key: W3F_KEY, subject: 'Millis Presentation View', from_name: 'tracker', message: JSON.stringify({ event: 'pageview', timestamp: new Date().toISOString(), ua: navigator.userAgent, ref: document.referrer }), page: window.location.href }) }).catch(() => {});
 </script>
 
 </body>
