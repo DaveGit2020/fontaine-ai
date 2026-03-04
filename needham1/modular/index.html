@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pollard Modular Solution — Fontaine + Dimeo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root {
+            --navy: #1a2744;
+            --navy-dark: #0f1a2e;
+            --navy-light: #2a3d5f;
+            --orange: #e87722;
+            --orange-light: #f59b4d;
+            --green: #16a34a;
+            --green-light: #22c55e;
+            --amber: #d97706;
+            --red: #dc2626;
+            --dark: #1a1d23;
+            --warm-bg: #f7f8fa;
+            --warm-card: #ffffff;
+            --text: #2c2e33;
+            --text-light: #5a5e68;
+            --border: rgba(26,39,68,0.08);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body { font-family:'Inter',sans-serif; background:var(--warm-bg); color:var(--text); line-height:1.6; }
+
+        /* NAV */
+        nav { position:fixed; top:0; left:0; right:0; height:56px; background:rgba(255,255,255,0.95); backdrop-filter:blur(12px); display:flex; align-items:center; justify-content:space-between; padding:0 32px; z-index:500; border-bottom:1px solid var(--border); }
+        nav a { font-size:13px; font-weight:600; color:var(--navy); text-decoration:none; }
+        nav a:hover { text-decoration:underline; }
+        .nav-title { font-size:14px; font-weight:800; color:var(--dark); }
+        .nav-badge { font-size:10px; letter-spacing:2px; color:var(--orange); font-weight:700; }
+        .draft-flag { background:var(--amber); color:#fff; font-size:10px; font-weight:800; letter-spacing:1px; padding:3px 10px; border-radius:4px; }
+
+        /* HERO */
+        .hero { margin-top:56px; background:linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 50%, var(--navy-light) 100%); color:#fff; padding:64px 48px 48px; }
+        .hero-inner { max-width:960px; margin:0 auto; }
+        .hero-label { font-size:11px; letter-spacing:4px; color:var(--orange-light); font-weight:700; margin-bottom:12px; }
+        .hero h1 { font-size:40px; font-weight:900; line-height:1.08; margin-bottom:12px; }
+        .hero h1 span { color:var(--orange-light); }
+        .hero p { font-size:17px; color:rgba(255,255,255,0.65); max-width:700px; line-height:1.6; }
+        .hero-stats { display:flex; gap:40px; margin-top:28px; }
+        .hs-item .hs-val { font-size:32px; font-weight:900; color:var(--orange-light); line-height:1; }
+        .hs-item .hs-lbl { font-size:11px; color:rgba(255,255,255,0.45); margin-top:3px; font-weight:500; }
+
+        /* SECTION */
+        section { max-width:960px; margin:0 auto; padding:48px 32px; }
+        .section-label { font-size:11px; letter-spacing:4px; color:var(--navy); font-weight:700; margin-bottom:6px; }
+        .section-title { font-size:30px; font-weight:900; color:var(--dark); line-height:1.1; margin-bottom:6px; }
+        .section-sub { font-size:15px; color:var(--text-light); max-width:700px; margin-bottom:28px; line-height:1.6; }
+        .divider { width:50px; height:3px; background:linear-gradient(90deg, var(--navy), var(--orange)); border-radius:2px; margin:10px 0 20px; }
+
+        /* ASSUMPTION BOX */
+        .assumption-box { background:var(--navy-dark); border-radius:14px; padding:28px 32px; color:#fff; margin-bottom:32px; }
+        .assumption-box h3 { font-size:18px; font-weight:800; margin-bottom:12px; }
+        .assumption-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+        .assumption-item { text-align:center; }
+        .assumption-item .ai-val { font-size:28px; font-weight:900; color:var(--orange-light); }
+        .assumption-item .ai-lbl { font-size:11px; color:rgba(255,255,255,0.5); margin-top:2px; }
+
+        /* TIMELINE BAR */
+        .timeline-bar { background:var(--warm-card); border:1px solid var(--border); border-radius:14px; padding:24px 28px; margin-bottom:32px; }
+        .timeline-bar h3 { font-size:16px; font-weight:800; color:var(--dark); margin-bottom:16px; }
+        .tl-track { position:relative; height:56px; background:#eef0f4; border-radius:8px; overflow:hidden; }
+        .tl-phase { position:absolute; top:0; height:100%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#fff; border-radius:8px; }
+        .tl-phase.install { background:var(--orange); left:0; width:14%; }
+        .tl-phase.use { background:var(--navy); left:14%; width:72%; }
+        .tl-phase.remove { background:var(--green); left:86%; width:14%; }
+        .tl-labels { display:flex; justify-content:space-between; margin-top:8px; font-size:11px; color:var(--text-light); font-weight:600; }
+
+        /* OPTIONS CARDS */
+        .options-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:32px; }
+        .option-card { background:var(--warm-card); border-radius:14px; border:2px solid var(--border); overflow:hidden; transition:all 0.2s; position:relative; }
+        .option-card:hover { border-color:var(--navy); box-shadow:0 8px 28px rgba(26,39,68,0.1); transform:translateY(-2px); }
+        .option-card.recommended { border-color:var(--green); }
+        .option-card.recommended::after { content:'RECOMMENDED'; position:absolute; top:12px; right:12px; background:var(--green); color:#fff; font-size:9px; font-weight:800; letter-spacing:1px; padding:3px 8px; border-radius:4px; }
+        .oc-header { padding:24px 24px 16px; }
+        .oc-number { font-size:11px; font-weight:800; letter-spacing:2px; color:var(--orange); }
+        .oc-header h3 { font-size:20px; font-weight:900; color:var(--dark); margin-top:4px; line-height:1.2; }
+        .oc-header p { font-size:13px; color:var(--text-light); margin-top:6px; line-height:1.5; }
+        .oc-cost { padding:16px 24px; background:rgba(26,39,68,0.03); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+        .oc-cost-label { font-size:10px; font-weight:700; letter-spacing:1.5px; color:var(--text-light); }
+        .oc-cost-val { font-size:28px; font-weight:900; color:var(--navy); margin-top:2px; }
+        .oc-cost-note { font-size:11px; color:var(--text-light); margin-top:2px; }
+        .oc-details { padding:16px 24px 24px; }
+        .oc-details h5 { font-size:11px; font-weight:700; letter-spacing:1px; color:var(--text-light); margin-bottom:8px; }
+        .oc-detail-row { display:flex; align-items:flex-start; gap:8px; margin-bottom:6px; }
+        .oc-detail-row .dot { width:6px; height:6px; border-radius:50%; background:var(--navy); margin-top:6px; flex-shrink:0; }
+        .oc-detail-row .dot.pro { background:var(--green); }
+        .oc-detail-row .dot.con { background:var(--red); }
+        .oc-detail-row span { font-size:13px; color:var(--text); line-height:1.5; }
+
+        /* INFRA TABLE */
+        .infra-table { width:100%; border-collapse:collapse; background:var(--warm-card); border-radius:14px; overflow:hidden; border:1px solid var(--border); }
+        .infra-table th { text-align:left; padding:12px 16px; font-size:11px; font-weight:700; letter-spacing:1px; color:var(--text-light); background:#f5f6f8; border-bottom:2px solid var(--border); }
+        .infra-table td { padding:10px 16px; font-size:14px; color:var(--text); border-bottom:1px solid rgba(0,0,0,0.04); }
+        .infra-table td:last-child { font-weight:700; color:var(--navy); text-align:right; }
+        .infra-table tr:last-child td { border:none; }
+        .infra-total { background:var(--navy-dark) !important; }
+        .infra-total td { color:#fff !important; font-weight:800 !important; font-size:15px !important; }
+
+        /* COMP TABLE */
+        .comp-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:20px; }
+        .comp-card { background:var(--warm-card); border-radius:12px; padding:20px; text-align:center; border:1px solid var(--border); }
+        .comp-card h4 { font-size:16px; font-weight:800; color:var(--dark); }
+        .comp-card .cc-val { font-size:36px; font-weight:900; color:var(--navy); margin:8px 0 4px; }
+        .comp-card .cc-lbl { font-size:11px; color:var(--text-light); font-weight:500; }
+
+        /* NEXT STEPS */
+        .next-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        .next-card { background:var(--warm-card); border-radius:12px; padding:20px 24px; border:1px solid var(--border); border-left:4px solid var(--navy); }
+        .next-card.needed { border-left-color:var(--orange); }
+        .next-card h4 { font-size:15px; font-weight:700; color:var(--dark); margin-bottom:4px; }
+        .next-card p { font-size:13px; color:var(--text-light); line-height:1.5; }
+        .next-card .nc-tag { font-size:10px; font-weight:700; letter-spacing:1px; margin-bottom:4px; }
+        .next-card .nc-tag.action { color:var(--navy); }
+        .next-card .nc-tag.data { color:var(--orange); }
+
+        /* BANNER */
+        .banner { background:var(--dark); color:#fff; padding:48px 0; }
+        .banner section { padding-top:0; padding-bottom:0; }
+        .banner .section-label { color:var(--orange); }
+        .banner .section-title { color:#fff; }
+
+        /* KEY QUESTION */
+        .question-box { background:linear-gradient(135deg, var(--navy), var(--navy-light)); border-radius:14px; padding:32px; color:#fff; margin-top:32px; }
+        .question-box h3 { font-size:20px; font-weight:800; margin-bottom:12px; }
+        .question-box p { font-size:14px; color:rgba(255,255,255,0.7); line-height:1.6; }
+        .question-box .qb-items { margin-top:16px; }
+        .question-box .qb-item { display:flex; gap:10px; align-items:flex-start; margin-bottom:8px; }
+        .question-box .qb-num { background:var(--orange); color:#fff; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; flex-shrink:0; }
+        .question-box .qb-text { font-size:14px; color:rgba(255,255,255,0.85); line-height:1.5; }
+
+        .page-bottom { height:40px; }
+
+        /* RESPONSIVE */
+        @media (max-width:768px) {
+            .hero { padding:48px 24px 36px; }
+            .hero h1 { font-size:28px; }
+            .hero p { font-size:15px; }
+            .hero-stats { flex-wrap:wrap; gap:20px; }
+            .hs-item .hs-val { font-size:24px; }
+            section { padding:36px 20px; }
+            .section-title { font-size:24px; }
+            .options-grid { grid-template-columns:1fr; }
+            .assumption-grid { grid-template-columns:repeat(2,1fr); }
+            .comp-grid { grid-template-columns:repeat(2,1fr); }
+            .next-grid { grid-template-columns:1fr; }
+            .tl-phase { font-size:9px; }
+            nav { padding:0 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <div>
+        <span class="nav-title">Fontaine + Dimeo</span>
+        <span class="nav-badge" style="margin-left:8px;">POLLARD MODULAR SOLUTION</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+        <span class="draft-flag">DRAFT — FOR MARK'S REVIEW</span>
+        <a href="/needham/">&#8592; Back to Main Proposal</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-inner">
+        <div class="hero-label">INTERVIEW FEATURE — TEMPORARY FACILITIES</div>
+        <h1>Pollard's <span>Modular</span> Solution</h1>
+        <p>A proactive, cost-conscious plan for temporary classrooms during construction — ensuring uninterrupted learning while we build the new Pollard Middle School.</p>
+        <div class="hero-stats">
+            <div class="hs-item"><div class="hs-val">20</div><div class="hs-lbl">Classrooms</div></div>
+            <div class="hs-item"><div class="hs-val">4</div><div class="hs-lbl">Bathrooms</div></div>
+            <div class="hs-item"><div class="hs-val">1</div><div class="hs-lbl">Admin Space</div></div>
+            <div class="hs-item"><div class="hs-val">~3 Years</div><div class="hs-lbl">Duration on Site</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- THE NEED -->
+<section>
+    <div class="section-label">THE CHALLENGE</div>
+    <div class="section-title">Why Modulars Are Required</div>
+    <div class="divider"></div>
+    <div class="section-sub">Building a new school on the existing Pollard campus means the current building stays occupied through Phase 1 construction. As Phase 2 requires demolition of the existing school, temporary classroom space must be planned, procured, installed, and operational before students vacate the old building. This isn't an afterthought — it's a critical-path item.</div>
+
+    <!-- TIMELINE -->
+    <div class="timeline-bar">
+        <h3>Modular Classroom Timeline</h3>
+        <div class="tl-track">
+            <div class="tl-phase install">Install</div>
+            <div class="tl-phase use">In Use — Students Occupying Modulars</div>
+            <div class="tl-phase remove">Remove</div>
+        </div>
+        <div class="tl-labels">
+            <span>May 2027</span>
+            <span>Sept 2027 — School Opens in Modulars</span>
+            <span>Phase 1 Complete — Students Move to New Building</span>
+            <span>Summer 2030</span>
+        </div>
+    </div>
+
+    <!-- ASSUMPTIONS -->
+    <div class="assumption-box">
+        <h3>Planning Assumptions</h3>
+        <div class="assumption-grid">
+            <div class="assumption-item"><div class="ai-val">20</div><div class="ai-lbl">Classrooms Required</div></div>
+            <div class="assumption-item"><div class="ai-val">4</div><div class="ai-lbl">Bathroom Facilities</div></div>
+            <div class="assumption-item"><div class="ai-val">1</div><div class="ai-lbl">Admin / Office Space</div></div>
+            <div class="assumption-item"><div class="ai-val">2-Story</div><div class="ai-lbl">Configuration (to fit site)</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- THREE OPTIONS -->
+<section id="options">
+    <div class="section-label">PROCUREMENT OPTIONS</div>
+    <div class="section-title">Three Paths. One Decision.</div>
+    <div class="divider"></div>
+    <div class="section-sub">Each option carries different cost, schedule, and quality tradeoffs. Our recommendation accounts for Pollard's tight site, the 2-story requirement, and the need for a reliable, code-compliant learning environment for 3+ years.</div>
+
+    <div class="options-grid">
+        <!-- OPTION 1 -->
+        <div class="option-card recommended">
+            <div class="oc-header">
+                <div class="oc-number">OPTION 1</div>
+                <h3>Relocate Existing + Supplement</h3>
+                <p>Move available used modulars to the Pollard site and supplement with additional pre-owned units to meet the full classroom count.</p>
+            </div>
+            <div class="oc-cost">
+                <div class="oc-cost-label">ESTIMATED MODULAR COST</div>
+                <div class="oc-cost-val">~$4M</div>
+                <div class="oc-cost-note">Minimum — modulars only, before infrastructure</div>
+            </div>
+            <div class="oc-details">
+                <h5>ADVANTAGES</h5>
+                <div class="oc-detail-row"><div class="dot pro"></div><span>Lowest base cost of all three options</span></div>
+                <div class="oc-detail-row"><div class="dot pro"></div><span>Faster procurement — units already exist</span></div>
+                <div class="oc-detail-row"><div class="dot pro"></div><span>Can leverage district-owned or state surplus inventory</span></div>
+                <h5 style="margin-top:12px;">CONSIDERATIONS</h5>
+                <div class="oc-detail-row"><div class="dot con"></div><span>Condition varies — inspection and refurb costs</span></div>
+                <div class="oc-detail-row"><div class="dot con"></div><span>May not meet current code without modifications</span></div>
+                <div class="oc-detail-row"><div class="dot con"></div><span>Availability not guaranteed at time of need</span></div>
+            </div>
+        </div>
+
+        <!-- OPTION 2 -->
+        <div class="option-card">
+            <div class="oc-header">
+                <div class="oc-number">OPTION 2</div>
+                <h3>Acquire Pre-Owned Units</h3>
+                <p>Purchase pre-owned modular classrooms from the secondary market and have them transported, refurbished, and installed on the Pollard site.</p>
+            </div>
+            <div class="oc-cost">
+                <div class="oc-cost-label">ESTIMATED MODULAR COST</div>
+                <div class="oc-cost-val">~$5–6M</div>
+                <div class="oc-cost-note">Mid-range — depends on availability and condition</div>
+            </div>
+            <div class="oc-details">
+                <h5>ADVANTAGES</h5>
+                <div class="oc-detail-row"><div class="dot pro"></div><span>Broader selection from national market</span></div>
+                <div class="oc-detail-row"><div class="dot pro"></div><span>Can be refurbished to near-new condition</span></div>
+                <div class="oc-detail-row"><div class="dot pro"></div><span>Known inventory — can inspect before committing</span></div>
+                <h5 style="margin-top:12px;">CONSIDERATIONS</h5>
+                <div class="oc-detail-row"><div class="dot con"></div><span>Transportation costs from distant locations</span></div>
+                <div class="oc-detail-row"><div class="dot con"></div><span>Refurbishment timeline adds lead time</span></div>
+                <div class="oc-detail-row"><div class="dot con"></div><span>2-story configuration may limit availability</span></div>
+            </div>
+        </div>
+
+        <!-- OPTION 3 -->
+        <div class="option-card">
+            <div class="oc-header">
+                <div class="oc-number">OPTION 3</div>
+                <h3>Procure New Units</h3>
+                <p>Order brand-new modular classroom buildings manufactured to specification, including purpose-built 2-story structures with integrated stairs and elevator.</p>
+            </div>
+            <div class="oc-cost">
+                <div class="oc-cost-label">ESTIMATED MODULAR COST</div>
+                <div class="oc-cost-val">~$8M+</div>
+                <div class="oc-cost-note">Cost doubles for new 2-story configuration</div>
+            </div>
+            <div class="oc-details">
+                <h5>ADVANTAGES</h5>
+                <div class="oc-detail-row"><div class="dot pro"></div><span>Full code compliance from day one</span></div>
+                <div class="oc-detail-row"><div class="dot pro"></div><span>Custom layout optimized for Pollard site</span></div>
+                <div class="oc-detail-row"><div class="dot pro"></div><span>Best learning environment — HVAC, acoustics, lighting</span></div>
+                <h5 style="margin-top:12px;">CONSIDERATIONS</h5>
+                <div class="oc-detail-row"><div class="dot con"></div><span>Highest cost — approximately double Option 1</span></div>
+                <div class="oc-detail-row"><div class="dot con"></div><span>Longest lead time for manufacturing</span></div>
+                <div class="oc-detail-row"><div class="dot con"></div><span>Temporary asset — significant spend for ~3 year use</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- INFRASTRUCTURE COSTS -->
+<div class="banner">
+    <section>
+        <div class="section-label">BEYOND THE MODULARS</div>
+        <div class="section-title" style="color:#fff;">Infrastructure Is the Real Cost Driver.</div>
+        <div class="divider" style="background:linear-gradient(90deg, var(--orange), rgba(255,255,255,0.3));"></div>
+        <div style="font-size:15px;color:rgba(255,255,255,0.6);max-width:700px;margin-bottom:28px;line-height:1.6;">The modular units themselves are only part of the equation. Pollard's site requires significant infrastructure to support a 2-story temporary campus — and these costs apply regardless of which procurement option is selected.</div>
+
+        <table class="infra-table">
+            <tr><th>INFRASTRUCTURE ITEM</th><th style="text-align:right;">NOTES</th></tr>
+            <tr><td>Site Work &amp; Grading</td><td>Prep pad, drainage, access paths</td></tr>
+            <tr><td>Tree Clearing &amp; Civil Work</td><td>Clear footprint, erosion control, grading</td></tr>
+            <tr><td>Utility Connections — Electrical</td><td>3 connections — temp power, panels, distribution</td></tr>
+            <tr><td>Utility Connections — Drainage</td><td>3 connections — sanitary, storm, water service</td></tr>
+            <tr><td>Fire Safety &amp; Suppression</td><td>Sprinkler, alarm, egress compliance</td></tr>
+            <tr><td>Elevator + Stairs (2-Story)</td><td>ADA-compliant vertical access, exterior stair towers</td></tr>
+            <tr><td>Data/Telecom Infrastructure</td><td>Network, WiFi, phone for 20 classrooms</td></tr>
+            <tr><td>Temporary HVAC</td><td>Heating/cooling for all units (may be included in modular cost)</td></tr>
+            <tr class="infra-total"><td>TOTAL INFRASTRUCTURE</td><td>TBD — Estimated $1.5–3M+ depending on site conditions</td></tr>
+        </table>
+
+        <div style="margin-top:20px;padding:20px 24px;background:rgba(232,119,34,0.12);border-radius:12px;border-left:4px solid var(--orange);">
+            <div style="font-size:14px;color:rgba(255,255,255,0.85);font-weight:600;">Combined Estimate: Modulars + Infrastructure</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:4px;">Option 1: <strong style="color:var(--orange-light);">~$5.5–7M</strong> &nbsp;|&nbsp; Option 2: <strong style="color:var(--orange-light);">~$6.5–9M</strong> &nbsp;|&nbsp; Option 3: <strong style="color:var(--orange-light);">~$9.5–11M+</strong></div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">Note: Ranges will tighten as we gather GMP data from comparable projects and complete site-specific analysis.</div>
+        </div>
+    </section>
+</div>
+
+<!-- DISTRICT COMPS -->
+<section>
+    <div class="section-label">COMPARABLE DISTRICT ACQUISITIONS</div>
+    <div class="section-title">What Other Districts Have Done</div>
+    <div class="divider"></div>
+    <div class="section-sub">These Massachusetts districts recently procured modular classrooms for school construction projects. Unit counts provide benchmarking for Pollard's 20-classroom requirement.</div>
+
+    <div class="comp-grid">
+        <div class="comp-card">
+            <h4>Watertown</h4>
+            <div class="cc-val">40</div>
+            <div class="cc-lbl">Modular Units</div>
+        </div>
+        <div class="comp-card">
+            <h4>Nauset</h4>
+            <div class="cc-val">30</div>
+            <div class="cc-lbl">Modular Units</div>
+        </div>
+        <div class="comp-card">
+            <h4>Winchester</h4>
+            <div class="cc-val">20</div>
+            <div class="cc-lbl">Modular Units</div>
+        </div>
+        <div class="comp-card">
+            <h4>Webster</h4>
+            <div class="cc-val">20</div>
+            <div class="cc-lbl">Modular Units</div>
+        </div>
+    </div>
+
+    <div style="margin-top:16px;padding:16px 20px;background:rgba(26,39,68,0.04);border-radius:10px;border:1px solid var(--border);">
+        <div style="font-size:13px;color:var(--text-light);line-height:1.6;"><strong style="color:var(--dark);">Watertown</strong> is the closest comparable — a 2-story modular configuration during occupied campus construction. Detailed cost data from Watertown would significantly sharpen our estimates for Pollard.</div>
+    </div>
+
+    <!-- KEY QUESTIONS -->
+    <div class="question-box">
+        <h3>Key Questions for the Selection Committee</h3>
+        <p>Fontaine + Dimeo has identified the modular solution as a critical-path decision. We want to demonstrate that we've thought through the problem and are ready to act as soon as we're awarded.</p>
+        <div class="qb-items">
+            <div class="qb-item"><div class="qb-num">1</div><div class="qb-text">What is the Town's preferred quality threshold for temporary learning spaces? Code-minimum vs. near-permanent quality affects cost significantly.</div></div>
+            <div class="qb-item"><div class="qb-num">2</div><div class="qb-text">Are there existing district-owned modulars that could be relocated and supplemented?</div></div>
+            <div class="qb-item"><div class="qb-num">3</div><div class="qb-text">What is the preferred siting location on the Pollard campus? Our site logistics plan has a recommended location, but Town input is critical.</div></div>
+            <div class="qb-item"><div class="qb-num">4</div><div class="qb-text">Should the modular cost be included in the GMP or treated as a separate owner-direct procurement?</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- NEXT STEPS / DATA NEEDED -->
+<section>
+    <div class="section-label">SHARPENING THE ESTIMATE</div>
+    <div class="section-title">What We Need to Finalize Costs</div>
+    <div class="divider"></div>
+    <div class="section-sub">This draft is based on Mark Abdella's initial analysis. To present firm numbers at interview, we need comparable cost data from recent projects.</div>
+
+    <div class="next-grid">
+        <div class="next-card needed">
+            <div class="nc-tag data">DATA NEEDED</div>
+            <h4>Walpole GMP Docs</h4>
+            <p>GMP breakdown from Walpole Middle School — modular costs, infrastructure line items, and any change orders related to temporary facilities.</p>
+        </div>
+        <div class="next-card needed">
+            <div class="nc-tag data">DATA NEEDED</div>
+            <h4>Clinton GMP Docs</h4>
+            <p>GMP data from Clinton project — modular procurement approach, unit costs, and infrastructure spending.</p>
+        </div>
+        <div class="next-card needed">
+            <div class="nc-tag data">DATA NEEDED</div>
+            <h4>Peck — Schedule of Values</h4>
+            <p>Schedule of values from Peck project to benchmark modular classroom unit costs and installation pricing.</p>
+        </div>
+        <div class="next-card needed">
+            <div class="nc-tag data">DATA NEEDED</div>
+            <h4>Recent HS Auditorium &amp; Site Comps</h4>
+            <p>Cost data from recent high school projects (auditorium construction and site work) for cross-referencing Pollard's scope.</p>
+        </div>
+        <div class="next-card">
+            <div class="nc-tag action">ACTION ITEM</div>
+            <h4>Plot Modular Siting on Campus Map</h4>
+            <p>Overlay the 20-classroom modular footprint on the Pollard site plan to confirm fit, access paths, utility runs, and construction zone separation.</p>
+        </div>
+        <div class="next-card">
+            <div class="nc-tag action">ACTION ITEM</div>
+            <h4>Engage Modular Vendors for Budgets</h4>
+            <p>Contact 2-3 modular classroom vendors (e.g., Triumph Modular, Williams Scotsman, ModSpace) for indicative pricing on 20-unit 2-story configurations.</p>
+        </div>
+        <div class="next-card">
+            <div class="nc-tag action">ACTION ITEM</div>
+            <h4>Chelsey — Infrastructure Estimate</h4>
+            <p>Have preconstruction team develop a detailed infrastructure cost estimate: site prep, utilities, fire safety, elevator/stairs, data.</p>
+        </div>
+        <div class="next-card">
+            <div class="nc-tag action">ACTION ITEM</div>
+            <h4>Confirm with Needham — Existing Inventory</h4>
+            <p>Check whether the Town of Needham or neighboring districts have any modular units available for relocation to Pollard.</p>
+        </div>
+    </div>
+</section>
+
+<div class="page-bottom"></div>
+
+</body>
+</html>
